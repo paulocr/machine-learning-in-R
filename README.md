@@ -1,3 +1,14 @@
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "Get Started" at https://bookdown.org/ for how to compile this example.
+# useR! Machine Learning Tutorial
 
-You can find the preview of this example at https://bookdown.org/yihui/bookdown-demo/
+![UseR 2016](./images/user2016.png "UseR 2016")
+
+useR! 2016 Tutorial: [Machine Learning Algorithmic Deep Dive](http://user2016.org/tutorials/10.html)
+
+This tutorial contains training modules for six popular [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods:
+
+- [Classification and Regression Trees (CART)](decision-trees)
+- [Random Forests (RF)](random-forest)
+- [Gradient Boosting Machines (GBM)](gradient-boosting-machines)
+- [Generalized Linear Models (GLM)](generalized-linear-models)
+- [Deep Neural Networks (DNN)](deep-neural-networks)
+- [Stacking / Super Learner (SL)](stacking)
