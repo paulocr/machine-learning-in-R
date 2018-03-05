@@ -1,7 +1,20 @@
 # Random Forests (RF) {random-forest}
 
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
 * * *
 ![Alt text](./images/Forest3.jpg "Random Forest Drawing")
+
 * * *
 Drawing by Phil Cutler.
 
@@ -326,8 +339,8 @@ slower when the formula interface is used).
 
 ```{r   n=4}
 # randomForest example
-#install.packages("randomForest")
-#install.packages("cvAUC")
+# install.packages("randomForest")
+# install.packages("cvAUC")
 library(randomForest)
 library(cvAUC)
 ```
@@ -386,7 +399,7 @@ library(e1071)
 
 ```{r   n=19}
 # Train a "parRF" model using caret
-registerDoParallel(cores = 8)
+# registerDoParallel(cores = 8)
 
 model <- caret::train(x = train[,xcols], 
                       y = train[,ycol], 
