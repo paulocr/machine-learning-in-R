@@ -1686,7 +1686,7 @@ summary(fit)
 
 
 
-```{r   n=3}
+```{r   n=3, error=TRUE}
 # Predict on the test set
 pred <- predict(fit, newdata = test)
 ```
@@ -1794,7 +1794,7 @@ regularized and non-regularized GLMs.  The implementation details are documented
 [here](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/booklets/GLMBooklet.pdf).
 
 ```{r   n=13}
-h2o.shutdown(prompt = FALSE)
+#h2o.shutdown(prompt = FALSE)
 ```
 
 
