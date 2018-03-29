@@ -1,4 +1,14 @@
-# Generalized Linear Models (GLM) {generalized-linear-models}
+# Generalized Linear Models (GLM) {#generalized-linear-models}
+
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
 
 * * *
 ![](./images/linear_regression.png "Linear Regression Model")

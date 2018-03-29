@@ -1,4 +1,4 @@
-# Gradient Boosting Machines (GBM) {gradient-boosting-machines}
+# Gradient Boosting Machines (GBM) {#gradient-boosting-machines}
 
 ```{r setup2, include=FALSE}
 knitr::opts_chunk$set(

@@ -1,5 +1,14 @@
-# Deep Neural Networks (DNN) {deep-neural-networks}
+# Deep Neural Networks (DNN) {#deep-neural-networks}
 
+```{r setup4, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
 
 * * *
 ![](./images/jmsl-7.png "Neural Network")
@@ -156,6 +165,7 @@ package](http://mxnet.readthedocs.io/en/latest/packages/r/index.html) brings
 flexible and efficient GPU computing and state-of-art deep learning to R.
 
 Features:
+
 - It enables you to write seamless tensor/matrix computation with multiple GPUs
 in R.
 - Distributed computation.
@@ -189,7 +199,7 @@ opposed to the Kaggle version in the blog post.
 
 
 
-```{r   n=6}
+```{r   n=6, message=FALSE, warning=FALSE}
 library(mxnet)
 ```
 

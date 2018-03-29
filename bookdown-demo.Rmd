@@ -1,0 +1,197 @@
+--- 
+title: "useR! Machine Learning Tutorial"
+author: "Erin LeDell"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive."
+---
+
+# Preface {-}
+
+Placeholder
+
+
+## Overview {-}
+## Dimensionality Issues {-}
+## Sparsity {-}
+## Normalization {-}
+## Categorical Data {-}
+## Missing Data {-}
+## Class Imbalance {-}
+## Overfitting {-}
+## Software {-}
+## Scalability {-}
+## Resources {-}
+
+<!--chapter:end:index.Rmd-->
+
+
+# Classification and Regression Trees (CART) {#decision-trees}
+
+Placeholder
+
+
+## Introduction
+## Properties of Trees
+## Tree Algorithms
+## CART vs C4.5
+## Splitting Criterion & Best Split
+### Gini Impurity
+### Entropy
+### Information gain
+## Decision Boundary
+## Missing Data
+## Visualizing Decision Trees
+## CART Software in R
+
+<!--chapter:end:01-decision-trees.Rmd-->
+
+
+# Random Forests (RF) {#random-forest}
+
+Placeholder
+
+
+## Introduction
+## History
+## Bagging
+## Random Forest Algorithm
+## Decision Boundary
+## Random Forest by Randomization (aka "Extra-Trees")
+## Out-of-Bag (OOB) Estimates
+## Variable Importance
+## Overfitting
+## Missing Data
+## Practical Uses
+## Resources
+## randomForest
+## caret method "parRF"
+## h2o
+## Rborist
+## ranger
+## References
+
+<!--chapter:end:02-random-forest.Rmd-->
+
+
+# Gradient Boosting Machines (GBM) {#gradient-boosting-machines}
+
+Placeholder
+
+
+## Introduction
+## History
+## Gradient Boosting
+## Stagewise Additive Modeling
+## AdaBoost
+## Gradient Boosting Algorithm
+### Loss Functions and Gradients
+## Stochastic GBM
+## Practical Tips
+## Resources
+## GBM Software in R
+### gbm
+### xgboost
+### h2o
+## References
+
+<!--chapter:end:03-gradient-boosting-machines.Rmd-->
+
+
+# Generalized Linear Models (GLM) {#generalized-linear-models}
+
+Placeholder
+
+
+## Introduction
+## Linear Models
+### Ordinary Least Squares (OLS)
+## Regularization
+### Ridge Regression
+### Lasso Regression
+### Elastic Net
+## Other Solvers
+### Iteratively Re-weighted Least Squares (IRLS)
+### Iteratively Re-weighted Least Squares with ADMM
+### Cyclical Coordinate Descent
+### L-BFGS
+## Data Preprocessing
+## GLM Software in R
+### glm
+#### Example Linear Regression with glm()
+#### GLM in caret
+#### h2o
+#### speedglm
+## Regularized GLM in R
+#### glmnet
+#### h2o
+## References
+
+<!--chapter:end:04-generalized-linear-models.Rmd-->
+
+
+# Deep Neural Networks (DNN) {#deep-neural-networks}
+
+Placeholder
+
+
+## Introduction
+## History
+## Backpropagation
+## Architectures
+### Multilayer Perceptron (MLP)
+### Recurrent
+### Convolutional
+## Visualizing Neural Nets
+## Deep Learning Software in R
+### MXNet
+## load training data https://h2o-public-test-data.s3.namazonaws.com/bigdata/laptop/mnist/train.csv.gz
+## load test data https://h2o-public-test-data.s3.namazonaws.com/bigdata/laptop/mnist/test.csv.gz
+## [1]    10 10000
+### h2o
+## References
+
+<!--chapter:end:05-deep-neural-networks.Rmd-->
+
+
+# Stacking {#stacking}
+
+Placeholder
+
+
+## Introduction
+## Background
+## Common Types of Ensemble Methods
+### Bagging
+### Boosting
+### Stacking
+## The Super Learner Algorithm
+### 1. Set up the ensemble
+### 2. Train the ensemble
+#### Cross-validate Base Learners
+#### Metalearning
+### 3. Predict on new data
+## Stacking Software in R
+### SuperLearner
+### subsemble
+### H2O Ensemble
+### Higgs Demo
+#### Start H2O Cluster
+#### Load Data into H2O Cluster
+#### Specify Base Learners & Metalearner
+#### Train an Ensemble
+#### Evaluate Model Performance
+#### Predict 
+#### Specifying new learners
+#### Customized base learner library
+### Stacking Existing Model Sets
+#### All done, shutdown H2O
+
+<!--chapter:end:06-stacking.Rmd-->
+
