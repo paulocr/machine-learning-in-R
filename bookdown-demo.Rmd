@@ -14,184 +14,3098 @@ description: "useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive."
 
 # Preface {-}
 
-Placeholder
+```{r, echo=FALSE, out.width="100%", fig.cap="UseR 2016"}
+knitr::include_graphics("./images/user2016.png")
+```
 
+useR! 2016 Tutorial: [Machine Learning Algorithmic Deep Dive](http://user2016.org/tutorials/10.html)
 
 ## Overview {-}
+
+This tutorial contains training modules for six popular [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods:
+
+- Classification and Regression Trees (CART)
+- Random Forests (RF)](random-forest)
+- Gradient Boosting Machines (GBM)
+- Generalized Linear Models (GLM)
+- Deep Neural Networks (DNN)
+- Stacking / Super Learner (SL)
+
+Here are some practical, related topics we will cover for each algorithm:
+
+- Dimensionality Issues
+- Sparsity
+- Normalization
+- Categorical Data
+- Missing Data
+- Class Imbalance
+- Overfitting
+- Software
+- Scalability
+
+Instructions for how to install the necessary software for this tutorial is available [here](tutorial-installation.md).  Data for the tutorial can be downloaded...
+
 ## Dimensionality Issues {-}
+Certain algorithms don't scale well when there are millions of features.  For example, decision trees require computing some sort of metric (to determine the splits) on all the feature values (or some fraction of the values as in Random Forest and Stochastic GBM).  Therefore, computation time is linear in the number of features.  Other algorithms, such as GLM, scale much better to high-dimensional (n << p) and wide data with appropriate regularization (e.g. Lasso, Elastic Net, Ridge).
+
 ## Sparsity {-}
+Algorithms can deal with data sparsity (where many of the feature values are zero) in different ways.  In some algorithms there are ways to speed up the computations if sparsity is present, so it's good to know if these shortcuts are available. 
+
 ## Normalization {-}
+Some algorithms such as Deep Neural Nets and GLMs require that data be normalized for effective interpretation of the models.  Tree-based algorithms (Decision Trees, Random Forest, Gradient Boosting Machines) do not require normalization.  Tree-based methods only use information about whether a value is greater than or less than a certain value (e.g. x > 7 vs. x &leq; 7), the values themselves do not matter.
+
 ## Categorical Data {-}
+Algorithms handle categorical data differently.  Some algorithms such as GLM and Deep Neural Nets require that a categorical variable be expanded into a set of indicator variables, prior to training.  With tree-based methods and software that supports it, there are ways to get around this requirement, which allows the algorithm to handle the categorical features directly.  It is important to be cognizant of the cardinality of your categorical features before training, as additional pre-processing (collapsing categories, etc) may be beneficial with high-cardinality features.
+
 ## Missing Data {-}
+Assuming the features are missing completely at random, there are a number of ways of handling missing data:
+
+1. Discard observations with any missing values.
+2. Rely on the learning algorithm to deal with missing values in its training phase.
+3. Impute all missing values before training.
+
+For most learning methods, the imputation approach (3) is necessary. The simplest tactic is to impute the missing value with the mean or median of the nonmissing values for that feature.  If the features have at least some moderate degree of dependence, one can do better by estimating a predictive model for each feature given the other features and then imputing each missing value by its prediction from the model. 
+
+Some software packages handle missing data automatically, although many don't, so it's important to be aware if any pre-processing is required by the user.
+
 ## Class Imbalance {-}
+Algorithms that optimize a metric such as accuracy may fail to perform well on training sets that contain a significant degree of class imbalance.  Certain algorithms, such as GBM, allow the user to optimize a performance metric of choice, which is useful when you have a highly imbalanced training set.
+
 ## Overfitting {-}
+
+It is always good to pay attention to the potential of overfitting, but certain algorithms and certain implementations are more prone to this issue.  For example, when using Deep Neural Nets and Gradient Boosting Machines, it's always a good idea to check for overfitting.
+
+
 ## Software {-}
+For each algorithm, we will provide examples of open source R packages that implement the algorithm.  All implementations are different, so we will provide information on how each of the implementations differ.
+
 ## Scalability {-}
+We will address scalability issues inherent to the algorithm and discuss algorithmic or technological solutions to scalability concerns for "big data."
+
 ## Resources {-}
+
+Where to learn more?
+
+- [An Introduction to Statistical Learning with Applications in R](http://www-bcf.usc.edu/~gareth/ISL/) by  Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani
+- [The Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/) by Trevor Hastie, Rob Tibshirani and Jerome Friedman
+- [Practical Data Science with R](http://www.win-vector.com/blog/practical-data-science-with-r/) by John Mount and Nina Zumel
+- [Applied Predictive Modeling](http://appliedpredictivemodeling.com/) by Max Kuhn and Kjell Johnson
+- [15 hours of expert videos](http://www.dataschool.io/15-hours-of-expert-machine-learning-videos/) by Trevor Hastie and Rob Tibshirani
 
 <!--chapter:end:index.Rmd-->
 
-
 # Classification and Regression Trees (CART) {#decision-trees}
 
-Placeholder
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center"
+)
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Decision Tree visualization by Tony Chu and Stephanie Yee."}
+knitr::include_graphics("./images/dt.png")
+```
+
 
 
 ## Introduction
+
+Classification and regression trees (CART) are a non-parametric [decision tree learning](https://en.wikipedia.org/wiki/Decision_tree_learning) technique that produces either classification or regression trees, depending on whether the dependent variable is categorical or numeric, respectively.  CART is both a generic term to describe tree algorithms and also a specific name for Breiman's original algorithm for constructing classification and regression trees.
+
+- **Decision Tree:** A tree-shaped graph or model of decisions used to determine a course of action or show a statistical probability.
+- **Classification Tree:** A decision tree that performs classification (predicts a categorical response).
+- **Regression Tree:** A decision tree that performs regression (predicts a numeric response).
+- **Split Point:** A split point occurs at each node of the tree where a decision is made (e.g. x > 7 vs. x &leq; 7).
+- **Terminal Node:** A terminal node is a node which has no descendants (child nodes).  Also called a "leaf node."
+
 ## Properties of Trees
+
+- Can handle huge datasets.
+- Can handle *mixed* predictors implicitly -- numeric and categorical.
+- Easily ignore redundant variables.
+- Handle missing data elegantly through *surrogate splits*.
+- Small trees are easy to interpret.
+- Large trees are hard to interpret.
+- Prediction performance is often poor (high variance).
+
 ## Tree Algorithms
+
+There are a handful of different tree algorithms in addition to Breiman's original CART algorithm.  Namely, [ID3](https://en.wikipedia.org/wiki/ID3_algorithm), [C4.5](https://en.wikipedia.org/wiki/C4.5_algorithm) and [C5.0](https://en.wikipedia.org/wiki/C4.5_algorithm#Improvements_in_C5.0.2FSee5_algorithm), all created by [Ross Quinlan](https://en.wikipedia.org/wiki/Ross_Quinlan).  C5.0 is an improvement over C4.5, however, the C4.5 algorithm is still quite popular since the multi-threaded version of C5.0 is proprietary (although the single threaded is released as GPL). 
+
 ## CART vs C4.5
+
+Here are some of the differences between CART and C4.5:
+
+- Tests in CART are always binary, but C4.5 allows two or more outcomes.
+- CART uses the Gini diversity index to rank tests, whereas C4.5 uses information-based criteria.
+- CART prunes trees using a cost-complexity model whose parameters are estimated by
+cross-validation; C4.5 uses a single-pass algorithm derived from binomial confidence
+limits.
+- With respect to missing data, CART looks for surrogate tests that approximate the outcomes when the tested attribute has an unknown value, but C4.5 apportions the case probabilistically among the outcomes. 
+
+
+Decision trees are formed by a collection of rules based on variables in the modeling data set:
+
+1. Rules based on variables' values are selected to get the best split to differentiate observations based on the dependent variable.
+2. Once a rule is selected and splits a node into two, the same process is applied to each "child" node (i.e. it is a recursive procedure).
+3. Splitting stops when CART detects no further gain can be made, or some pre-set stopping rules are met. (Alternatively, the data are split as much as possible and then the tree is later pruned.)
+
+Each branch of the tree ends in a terminal node. Each observation falls into one and exactly one terminal node, and each terminal node is uniquely defined by a set of rules.
+
 ## Splitting Criterion & Best Split
+
+The original CART algorithm uses the Gini Impurity, whereas ID3, C4.5 and C5.0 use Entropy or Information Gain (related to Entropy).
+
 ### Gini Impurity
+
+Used by the CART algorithm, [Gini Impurity](https://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity) is a measure of how often a randomly chosen element from the set would be incorrectly labeled if it was randomly labeled according to the distribution of labels in the subset. Gini impurity can be computed by summing the probability $f_i$ of each item being chosen times the probability $1 − f_i$ of a mistake in categorizing that item. It reaches its minimum (zero) when all cases in the node fall into a single target category.
+
+To compute Gini impurity for a set of m items, suppose $i ∈ {1, 2, ..., m}$, and let $f_i$ be the fraction of items labeled with value $i$ in the set.
+
+$$ I_{G}(f)=\sum _{i=1}^{m}f_{i}(1-f_{i})=\sum _{i=1}^{m}(f_{i}-{f_{i}}^{2})=\sum _{i=1}^{m}f_{i}-\sum _{i=1}^{m}{f_{i}}^{2}=1-\sum _{i=1}^{m}{f_{i}}^{2}=\sum _{i\neq k}f_{i}f_{k}$$
+
 ### Entropy
+
+[Entropy](https://en.wikipedia.org/wiki/ID3_algorithm#Entropy), $H(S)$, is a measure of the amount of uncertainty in the (data) set $S$ (i.e. entropy characterizes the (data) set $S$).
+
+$$ H(S)=-\sum _{{x\in X}}p(x)\log _{{2}}p(x) $$
+
+Where,
+- $S$ is the current (data) set for which entropy is being calculated (changes every iteration of the ID3 algorithm)
+- $X$ is set of classes in $S$
+- $p(x)$ is the ratio of the number of elements in class $x$ to the number of elements in set $S$
+
+When $H(S)=0$, the set $S$ is perfectly classified (i.e. all elements in $S$ are of the same class).
+
+In ID3, entropy is calculated for each remaining attribute. The attribute with the smallest entropy is used to split the set $S$ on this iteration. The higher the entropy, the higher the potential to improve the classification here.
+
 ### Information gain
+
+Information gain $IG(A)$ is the measure of the difference in entropy from before to after the set $S$ is split on an attribute $A$: in other words, how much uncertainty in $S$ was reduced after splitting set $S$ on attribute $A$.
+
+$$ IG(A,S)=H(S)-\sum _{{t\in T}}p(t)H(t)$$
+
+Where,
+- $H(S)$ is the entropy of set $S$
+- $T$ is the set of subsets created from splitting set $S$ by attribute $A$ such that $S=\bigcup _{{t\in T}}t$
+- $p(t)$ is the ratio of the number of elements in $t$ to the number of elements in set $S$
+- $H(t)$ is the entropy of subset $t$
+
+In ID3, information gain can be calculated (instead of entropy) for each remaining attribute. The attribute with the *largest* information gain is used to split the set $S$ on this iteration.
+
 ## Decision Boundary
+
+This is an example of a decision boundary in two dimensions of a (binary) classification tree.  The black circle is the Bayes Optimal decision boundary and the blue square-ish boundary is learned by the classification tree.
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Source: Elements of Statistical Learning."}
+knitr::include_graphics("./images/boundary_dt.png")
+```
+
+
 ## Missing Data
+
+CART is an algorithm that deals effectively with missing values through *surrogate splits*.
+
+
 ## Visualizing Decision Trees
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Source: Elements of Statistical Learning."}
+knitr::include_graphics("./images/r2d3_visual_ml.png")
+```
+
+[Tony Chu](https://twitter.com/tonyhschu) and [Stephanie Yee](https://twitter.com/stephaniejyee) designed an award-winning visualization of how decision trees work called "A Visual Introduction to Machine Learning."  Their interactive D3 visualization is available [here](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/).
+
+
 ## CART Software in R
+
+Since it's more common in machine learning to use trees in an ensemble, we'll skip the code tutorial for CART in R. For reference, trees can be grown using the [rpart](https://cran.r-project.org/web/packages/rpart/index.html) package, among others.
 
 <!--chapter:end:01-decision-trees.Rmd-->
 
-
 # Random Forests (RF) {#random-forest}
 
-Placeholder
 
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+* * *
+![](./images/Forest3.jpg "Random Forest Drawing")
+
+* * *
+Drawing by Phil Cutler.
 
 ## Introduction
+
+Any tutorial on [Random Forests](https://en.wikipedia.org/wiki/Random_forest)
+(RF) should also include a review of decicion trees, as these are models that
+are ensembled together to create the Random Forest model -- or put another way,
+the "trees that comprise the forest."  Much of the complexity and detail of the
+Random Forest algorithm occurs within the individual decision trees and
+therefore it's important to understand decision trees to understand the RF
+algorithm as a whole.  Therefore, before proceeding, it is recommended that you
+read through the accompanying [Classification and Regression Trees Tutorial
+](decision-trees.ipynb).
+
+
 ## History
+
+The Random Forest algorithm is preceeded by the [Random SubspaceMethod](https://en.wikipedia.org/wiki/Random_subspace_method) (aka "attribute
+bagging"), which accounts for half of the source of randomness in a Random
+Forest.  The Random Subspace Method is an ensemble method that consists of
+several classifiers each operating in a subspace of the original feature space.
+The outputs of the models are then combined, usually by a simple majority vote.
+Tin Kam Ho applied the random subspace method to decision trees in 1995.
+
+[Leo Breiman](https://en.wikipedia.org/wiki/Leo_Breiman) and [Adele
+Culter](http://www.math.usu.edu/~adele/) combined Breiman's
+[bagging](https://en.wikipedia.org/wiki/Bootstrap_aggregating) idea with the
+random subspace method to create a "Random Forest", a name which is trademarked
+by the duo.  Due to the trademark, the algorithm is sometimes called Random
+Decision Forests.
+
+The introduction of random forests proper was first made in a
+[paper](http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf) by Leo
+Breiman [1]. This paper describes a method of building a forest of uncorrelated
+trees using a CART like procedure, combined with randomized node optimization
+and bagging. In addition, this paper combines several ingredients, some
+previously known and some novel, which form the basis of the modern practice of
+random forests, in particular:
+
+- Using [out-of-bag error](https://en.wikipedia.org/wiki/Out-of-bag_error) as an
+estimate of the [generalization
+error](https://en.wikipedia.org/wiki/Generalization_error).
+- Measuring [variable
+importance](https://en.wikipedia.org/wiki/Random_forest#Properties) through
+permutation.
+
+The report also offers the first theoretical result for random forests in the
+form of a bound on the generalization error which depends on the strength of the
+trees in the forest and their correlation.
+
+Although Brieman's implemenation of Random Forests used his CART algorithm to
+construct the decision trees, many modern implementations of Random Forest use
+entropy-based algorithms for constructing the trees.
+
 ## Bagging
+
+Bagging (Bootstrap aggregating) was proposed by Leo Breiman in 1994 to improve
+the classification by combining classifications of randomly generated training
+sets.  Although it is usually applied to decision tree methods, it can be used
+with any type of method. Bagging is a special case of the [model
+averaging](https://en.wikipedia.org/wiki/Ensemble_learning) approach.
+
+- Bagging or *bootstrap aggregation* averages a noisy fitted function, refit to
+many bootstrap samples to reduce it's variance.
+- Bagging can dramatically reduce the variance of unstable procedures (like
+trees), leading to improved prediction, however any simple, interpretable, model
+structure (like that of a tree) is lost.
+- Bagging produces smoother decision boundaries than trees.
+
+The training algorithm for random forests applies the general technique of
+bootstrap aggregating, or bagging, to tree learners. Given a training set $X =
+x_1, ..., x_n$ with responses $Y = y_1, ..., y_n$, bagging repeatedly ($B$
+times) selects a random sample with replacement of the training set and fits
+trees to these samples:
+
+For $b = 1, ..., B$:
+ 1. Sample, with replacement, $n$ training examples from $X$, $Y$; call these
+$X_b$, $Y_b$.
+ 2. Train a decision or regression tree, $f_b$, on $X_b$, $Y_b$.
+
+After training, predictions for unseen samples $x'$ can be made by averaging the
+predictions from all the individual regression trees on $x'$:
+
+$$ {\hat {f}}={\frac {1}{B}}\sum _{b=1}^{B}{\hat {f}}_{b}(x')$$
+
+or by taking the majority vote in the case of decision trees.
+
+
+
 ## Random Forest Algorithm
+
+The above procedure describes the original bagging algorithm for trees. [Random
+Forests](https://en.wikipedia.org/wiki/Random_forest) differ in only one way
+from this general scheme: they use a modified tree learning algorithm that
+selects, at each candidate split in the learning process, a random subset of the
+features. This process is sometimes called "feature bagging".
+
+- Random Forests correct for decision trees' habit of overfitting to their
+training set.
+- Random Forest is an improvement over bagged trees that "de-correlates" the
+trees even further, reducing the variance.
+- At each tree split, a random sample of $m$ features is drawn and only those
+$m$ features are considered for splitting.
+- Typically $m = \sqrt{p}$ or $\log_2p$ where $p$ is the original number of
+features.
+- For each tree gown on a bootstrap sample, the error rates for observations
+left out of the bootstrap sample is monitored.  This is called the ["out-of-
+bag"](https://en.wikipedia.org/wiki/Out-of-bag_error) or OOB error rate.
+- Each tree has the same (statistical)
+[expectation](https://en.wikipedia.org/wiki/Expected_value), so increasing the
+number of trees does not alter the bias of bagging or the Random Forest
+algorithm.
+
 ## Decision Boundary
+
+This is an example of a decision boundary in two dimensions of a (binary)
+classification Random Forest.  The black circle is the Bayes Optimal decision
+boundary and the blue square-ish boundary is learned by the classification tree.
+
+![](./images/boundary_bagging.png "Bagging Bounday")
+Source: Elements of Statistical Learning
+
 ## Random Forest by Randomization (aka "Extra-Trees")
+
+In [Extremely Randomized
+Trees](http://link.springer.com/article/10.1007%2Fs10994-006-6226-1) (aka Extra-
+Trees) [2], randomness goes one step further in the way splits are computed. As
+in Random Forests, a random subset of candidate features is used, but instead of
+looking for the best split, thresholds (for the split) are drawn at random for
+each candidate feature and the best of these randomly-generated thresholds is
+picked as the splitting rule. This usually allows to reduce the variance of the
+model a bit more, at the expense of a slightly greater increase in bias.
+
+Extremely Randomized Trees is implemented in the
+[extraTrees](https://cran.r-project.org/web/packages/extraTrees/index.html) R
+package and also available in the
+[h2o](https://0xdata.atlassian.net/browse/PUBDEV-2837) R package as part of the
+`h2o.randomForest()` function via the `histogram_type = "Random"` argument.
+
 ## Out-of-Bag (OOB) Estimates
+
+In random forests, there is no need for cross-validation or a separate test set
+to get an unbiased estimate of the test set error. It is estimated internally,
+during the run, as follows:
+
+- Each tree is constructed using a different bootstrap sample from the original
+data. About one-third of the cases are left out of the bootstrap sample and not
+used in the construction of the kth tree.
+- Put each case left out in the construction of the kth tree down the kth tree
+to get a classification. In this way, a test set classification is obtained for
+each case in about one-third of the trees.
+- At the end of the run, take j to be the class that got most of the votes every
+time case n was oob. The proportion of times that j is not equal to the true
+class of n averaged over all cases is the oob error estimate. This has proven to
+be unbiased in many tests.
+
 ## Variable Importance
+
+In every tree grown in the forest, put down the OOB cases and count the number
+of votes cast for the correct class. Now randomly permute the values of variable
+m in the oob cases and put these cases down the tree.  Subtract the number of
+votes for the correct class in the variable-$m$-permuted OOB data from the
+number of votes for the correct class in the untouched OOB data. The average of
+this number over all trees in the forest is the raw importance score for
+variable $m$.
+
+If the values of this score from tree to tree are independent, then the standard
+error can be computed by a standard computation. The correlations of these
+scores between trees have been computed for a number of data sets and proved to
+be quite low, therefore we compute standard errors in the classical way, divide
+the raw score by its standard error to get a $z$-score, ands assign a
+significance level to the $z$-score assuming normality.
+
+If the number of variables is very large, forests can be run once with all the
+variables, then run again using only the most important variables from the first
+run.
+
+For each case, consider all the trees for which it is oob. Subtract the
+percentage of votes for the correct class in the variable-$m$-permuted OOB data
+from the percentage of votes for the correct class in the untouched OOB data.
+This is the local importance score for variable m for this case.
+
+Variable importance in Extremely Randomized Trees is explained
+[here](http://www.slideshare.net/glouppe/understanding-variable-importances-in-
+forests-of-randomized-trees).
+
 ## Overfitting
+
+Leo Brieman famously claimed that "Random Forests do not overfit."  This is
+perhaps not exactly the case, however they are certainly more robust to
+overfitting than a Gradient Boosting Machine (GBM).  Random Forests can be
+overfit by growing trees that are "too deep", for example.  However, it is hard
+to overfit a Random Forest by adding more trees to the forest -- typically that
+will increase accuracy (at the expense of computation time).
+
 ## Missing Data
+
+Missing values do not neccessarily have to be imputed in a Random Forest
+implemenation, although some software packages will require it.
+
 ## Practical Uses
+
+Here is a short article called, [The Unreasonable Effectiveness of Random
+Forests](https://medium.com/rants-on-machine-learning/the-unreasonable-
+effectiveness-of-random-forests-f33c3ce28883#.r734znc9f), by Ahmed El Deeb,
+about the utility of Random Forests.  It summarizes some of the algorithm's pros
+and cons nicely.
+
 ## Resources
+
+- [Gilles Louppe - Understanding Random Forests (PhD
+Dissertation)](http://arxiv.org/abs/1407.7502) (pdf)
+- [Gilles Louppe - Understanding Random Forests: From Theory to
+Practice](http://www.slideshare.net/glouppe/understanding-random-forests-from-
+theory-to-practice) (slides)
+- [Trevor Hastie - Gradient Boosting & Random Forests at H2O World 2014](https:/
+/www.youtube.com/watch?v=wPqtzj5VZus&index=16&list=PLNtMya54qvOFQhSZ4IKKXRbMkyLM
+n0caa) (YouTube)
+- [Mark Landry - Gradient Boosting Method and Random Forest at H2O World
+2015](https://www.youtube.com/watch?v=9wn1f-30_ZY) (YouTube)
+
+***
+
+# Random Forest Software in R
+
+The oldest and most well known implementation of the Random Forest algorithm in
+R is the
+[randomForest](https://cran.r-project.org/web/packages/randomForest/index.html)
+package.  There are also a number of packages that implement variants of the
+algorithm, and in the past few years, there have been several "big data" focused
+implementations contributed to the R ecosystem as well.
+
+Here is a non-comprehensive list:
+
+- [randomForest::randomForest](http://www.rdocumentation.org/packages/randomFore
+st/functions/randomForest)
+- [h2o::h2o.randomForest](http://www.rdocumentation.org/packages/h2o/functions/h
+2o.randomForest)
+- [DistributedR::hpdRF_parallelForest](https://github.com/vertica/DistributedR/b
+lob/master/algorithms/HPdclassifier/R/hpdRF_parallelForest.R)
+- [party::cForest](http://www.rdocumentation.org/packages/party/functions/cfores
+t): A random forest variant for response variables measured at arbitrary scales
+based on conditional inference trees.
+- [randomForestSRC](https://cran.r-project.org/web/packages/randomForestSRC/inde
+x.html) implements a unified treatment of Breiman's random forests for survival,
+regression and classification problems.
+- [quantregForest](https://cran.r-project.org/web/packages/quantregForest/index.
+html) can regress quantiles of a numeric response on exploratory variables via a
+random forest approach.
+- [ranger](https://cran.r-project.org/web/packages/ranger/index.html)
+- [Rborist](https://cran.r-project.org/web/packages/Rborist/index.html)
+- The [caret](https://topepo.github.io/caret/index.html) package wraps a number
+of different Random Forest packages in R ([full list
+here](https://topepo.github.io/caret/Random_Forest.html)):
+  - Conditional Inference Random Forest (`party::cForest`)
+  - Oblique Random Forest (`obliqueRF`)
+  - Parallel Random Forest (`randomForest` + `foreach`)
+  - Random Ferns (`rFerns`)
+  - Random Forest (`randomForest`)
+  - Random Forest (`ranger`)
+  - Quantile Random Forest (`quantregForest`)
+  - Random Forest by Randomization (`extraTrees`)
+  - Random Forest Rule-Based Model (`inTrees`)
+  - Random Forest with Additional Feature Selection (`Boruta`)
+  - Regularized Random Forest (`RRF`)
+  - Rotation Forest (`rotationForest`)
+  - Weighted Subspace Random Forest (`wsrf`)
+- The [mlr](https://github.com/mlr-org/mlr) package wraps a number of different
+Random Forest packages in R:
+  - Conditional Inference Random Forest (`party::cForest`)
+  - Rotation Forest (`rotationForest`)
+  - Parallel Forest (`ParallelForest`)
+  - Survival Forest (`randomForestSRC`)
+  - Random Ferns (`rFerns`)
+  - Random Forest (`randomForest`)
+  - Random Forest (`ranger`)
+  - Synthetic Random Forest (`randomForestSRC`)
+  - Random Uniform Forest (`randomUniformForest`)
+
+Since there are so many different Random Forest implementations available, there
+have been several benchmarks to compare the performance of popular
+implementations, including implementations outside of R.  A few examples:
+1. [Benchmarking Random Forest Classification](http://www.wise.io/tech
+/benchmarking-random-forest-part-1) by Erin LeDell, 2013
+2. [Benchmarking Random Forest Implementations](http://datascience.la
+/benchmarking-random-forest-implementations/) by Szilard Pafka, 2015
+3. [Ranger](http://arxiv.org/pdf/1508.04409v1.pdf) publication by Marvin N.
+Wright and Andreas Ziegler, 2015
+
+
+
+
 ## randomForest
+
+Authors: Fortran original by [Leo
+Breiman](http://www.stat.berkeley.edu/~breiman/) and [Adele
+Cutler](http://www.math.usu.edu/~adele/), R port by [Andy
+Liaw](https://www.linkedin.com/in/andy-liaw-1399347) and Matthew Wiener.
+
+Backend: Fortran
+
+Features:
+- This package wraps the original Fortran code by Leo Breiman and Adele Culter
+and is probably the most widely known/used implemenation in R.
+- Single-threaded.
+- Although it's single-threaded, smaller forests can be trained in parallel by
+writing custom
+[foreach](https://cran.r-project.org/web/packages/foreach/index.html) or [parall
+el](http://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf)
+code, then combined into a bigger forest using the [randomForest::combine()](htt
+p://www.rdocumentation.org/packages/randomForest/functions/combine) function.
+- Row weights unimplemented (been on the wishlist for as long as I can
+remember).
+- Uses CART trees split by Gini Impurity.
+- Categorical predictors are allowed to have up to 53 categories.
+- Multinomial response can have no more than 32 categories.
+- Supports R formula interface (but I've read some reports that claim it's
+slower when the formula interface is used).
+- GPL-2/3 Licensed.
+
+```{r   n=4}
+# randomForest example
+# install.packages("randomForest")
+# install.packages("cvAUC")
+library(randomForest)
+library(cvAUC)
+```
+
+```{r   n=31}
+# Load binary-response dataset
+train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+
+# convert to regular data frames
+train <- as.data.frame(train)
+test <- as.data.frame(test)
+
+# Dimensions
+dim(train)
+dim(test)
+
+# Columns
+names(train)
+```
+
+
+
+```{r   n=32}
+# Identity the response column
+ycol <- "response"
+
+# Identify the predictor columns
+xcols <- setdiff(names(train), ycol)
+
+# Convert response to factor (required by randomForest)
+train[,ycol] <- as.factor(train[,ycol])
+test[,ycol] <- as.factor(test[,ycol])
+```
+
+```{r   n=33}
+# Train a default RF model with 500 trees
+set.seed(1)  # For reproducibility
+system.time(
+  model <- randomForest(
+    x = train[,xcols], 
+    y = train[,ycol],
+    xtest = test[,xcols],
+    ntree = 500
+    )
+  )
+```
+
+```{r}
+# Generate predictions on test dataset
+preds <- model$test$votes[, 2]
+labels <- test[,ycol]
+
+# Compute AUC on the test set
+cvAUC::AUC(predictions = preds, labels = labels)
+```
+
+
 ## caret method "parRF"
+
+Authors: Max Kuhn
+
+Backend: Fortran (wraps the `randomForest` package)
+
+This is a wrapper for the `randomForest` package that parallelizes the tree
+building.
+
+```{r   n=30, eval=FALSE}
+library(caret)
+library(doParallel)
+library(e1071)
+```
+
+```{r   n=19, eval=FALSE}
+# set up parallel environment
+cl <- makeCluster(4) 
+registerDoParallel(cl) 
+
+# Train a "parRF" model using caret
+model <- caret::train(
+  x = train[,xcols],
+  y = train[,ycol],
+  method = "parRF",
+  preProcess = NULL,
+  weights = NULL,
+  metric = "Accuracy",
+  maximize = TRUE,
+  trControl = trainControl(),
+  tuneGrid = NULL,
+  tuneLength = 3
+  )
+
+# good practice to shut down parallel environment
+stopCluster(cl) 
+```
+
 ## h2o
+
+Authors: [Jan Vitek](http://www.cs.purdue.edu/homes/jv/), [Arno
+Candel](https://www.linkedin.com/in/candel), H2O.ai contributors
+
+Backend: Java
+
+Features:
+
+- Distributed and parallelized computation on either a single node or a multi-
+node cluster.
+- Automatic early stopping based on convergence of user-specied metrics to user-
+specied relative tolerance.
+- Data-distributed, which means the entire dataset does not need to fit into
+memory on a single node.
+- Uses histogram approximations of continuous variables for speedup.
+- Uses squared error to determine optimal splits.
+- Automatic early stopping based on convergence of user-specied metrics to user-
+specied relative tolerance.
+- Support  for  exponential  families  (Poisson,  Gamma,  Tweedie)  and  loss
+functions in addition to binomial (Bernoulli), Gaussian and multinomial
+distributions, such as Quantile regression (including Laplace).
+- Grid search for hyperparameter optimization and model selection.
+- Apache 2.0 Licensed.
+- Model export in plain Java code for deployment in production environments.
+- GUI for training & model eval/viz (H2O Flow).
+
+Implementation details are presented in slidedecks by [Michal
+Mahalova](http://www.slideshare.net/0xdata/rf-brighttalk) and [Jan
+Vitek](http://www.slideshare.net/0xdata/jan-vitek-
+distributedrandomforest522013).
+
+```{r   n=38}
+#install.packages("h2o")
+library(h2o)
+#h2o.shutdown(prompt = FALSE)
+h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num available cores
+```
+
+
+
+```{r   n=39}
+# convert data to h2o objects
+train <- as.h2o(train)
+test <- as.h2o(test)
+
+# Dimensions
+dim(train)
+dim(test)
+
+# Columns
+names(train)
+```
+
+```{r   n=40}
+# Identity the response column
+ycol <- "response"
+
+# Identify the predictor columns
+xcols <- setdiff(names(train), ycol)
+
+# Convert response to factor (required by randomForest)
+train[,ycol] <- as.factor(train[,ycol])
+test[,ycol] <- as.factor(test[,ycol])
+```
+
+```{r   n=41}
+# Train a default RF model with 500 trees
+system.time(
+  model <- h2o.randomForest(
+    x = xcols,
+    y = ycol,
+    training_frame = train,
+    seed = 1, #for reproducibility
+    ntrees = 500
+    )
+  ) 
+```
+
+```{r}
+# Compute AUC on test dataset
+# H2O computes many model performance metrics automatically, including AUC
+
+perf <- h2o.performance(model = model, newdata = test)
+h2o.auc(perf)
+```
+
+
+```{r}
+# good practice to shut down h2o environment
+h2o.shutdown(prompt = FALSE)
+```
+
+
 ## Rborist
+
+Authors: Mark Seligman
+
+Backend: C++
+
+The [Arborist](https://github.com/suiji/Arborist) provides a fast, open-source
+implementation of the Random Forest algorithm.  The Arborist achieves its speed
+through efficient C++ code and parallel, distributed tree construction.  This
+[slidedeck](http://www.rinfinance.com/agenda/2015/talk/MarkSeligman.pdf)
+provides detail about the implementation and vision of the project.
+
+Features:
+- Began as proprietary implementation, but was open-sourced and rewritten
+following dissolution of venture.
+- Project called "Aborist" but R package is called "Rborist".  A Python
+interface is in development.
+- CPU based but a GPU version called Curborist (Cuda Rborist) is in development
+(unclear if it will be open source).
+- Unlimited factor cardinality.
+- Emphasizes multi-core but not multi-node.
+- Both Python support and GPU support have been "coming soon" since summer 2015,
+not sure the status of the projects.
+- GPL-2/3 licensed.
+
+
 ## ranger
+
+Authors: [Marvin N. Wright](http://www.imbs-luebeck.de/imbs/node/323) and
+Andreas Ziegler
+
+Backend: C++
+
+[Ranger](http://arxiv.org/pdf/1508.04409v1.pdf) is a fast
+[implementation](https://github.com/imbs-hl/ranger) of random forest (Breiman
+2001) or recursive partitioning, particularly suited for high dimensional data.
+Classification, regression, probability estimation and survival forests are
+supported. Classification and regression forests are implemented as in the
+original Random Forest (Breiman 2001), survival forests as in Random Survival
+Forests (Ishwaran et al. 2008). For probability estimation forests see Malley et
+al. (2012).
+
+Features:
+
+- Multi-threaded.
+- Direct support for [GWAS](https://en.wikipedia.org/wiki/Genome-
+wide_association_study) (Genome-wide association study) data.
+- Excellent speed and support for high-dimensional or wide data.
+- Not as fast for "tall & skinny" data (many rows, few columns).
+- GPL-3 licensed.
+
+![Alt text](./images/ranger_vs_arborist.png "Ranger vs Rborist")
+Plot from the [ranger article](http://arxiv.org/pdf/1508.04409v1.pdf).
+
 ## References
+
+[1] [http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf](http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf)
+
+[2] [P. Geurts, D. Ernst., and L. Wehenkel, “Extremely randomized trees”,Machine Learning, 63(1), 3-42,2006.](http://link.springer.com/article/10.1007%2Fs10994-006-6226-1)
+
+[3] [http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf](http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf)
 
 <!--chapter:end:02-random-forest.Rmd-->
 
-
 # Gradient Boosting Machines (GBM) {#gradient-boosting-machines}
 
-Placeholder
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
 
+* * *
+![](./images/shrubs.jpg "GBMs")
+
+* * *
+Image Source: brucecompany.com
 
 ## Introduction
+
+[Gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) is a
+machine learning technique for regression and classification problems, which
+produces a prediction model in the form of an ensemble of weak prediction
+models, typically decision trees. It builds the model in an iterative fashion
+like other boosting methods do, and it generalizes them by allowing optimization
+of an arbitrary differentiable loss function.
+
+It is recommended that you read through the accompanying [Classification and
+Regression Trees Tutorial](decision-trees.ipynb) for an overview of decision
+trees.
+
 ## History
+
+Boosting is one of the most powerful learning ideas introduced in the last
+twenty years. It was originally designed for classification problems, but it can
+be extended to regression as well. The motivation for boosting was a procedure
+that combines the outputs of many "weak" classifiers to produce a powerful
+"committee."  A weak classifier (e.g. decision tree) is one whose error rate is
+only slightly better than random guessing.
+
+[AdaBoost](https://en.wikipedia.org/wiki/AdaBoost) short for "Adaptive
+Boosting", is a machine learning meta-algorithm formulated by [Yoav
+Freund](https://en.wikipedia.org/wiki/Yoav_Freund) and [Robert
+Schapire](https://en.wikipedia.org/wiki/Robert_Schapire) in 1996, which is now
+considered to be a special case of Gradient Boosting.  There are [some
+differences](http://stats.stackexchange.com/questions/164233/intuitive-
+explanations-of-differences-between-gradient-boosting-trees-gbm-ad) between the
+AdaBoost algorithm and modern Gradient Boosting.  In the AdaBoost algorithm, the
+"shortcomings" of existing weak learners are identified by high-weight data
+points, however in Gradient Boosting, the shortcomings are identified by
+gradients.
+
+The idea of gradient boosting originated in the observation by Leo Breiman that
+boosting can be interpreted as an optimization algorithm on a suitable cost
+function. Explicit regression gradient boosting algorithms were subsequently
+developed by Jerome H. Friedman, simultaneously with the more general functional
+gradient boosting perspective of Llew Mason, Jonathan Baxter, Peter Bartlett and
+Marcus Frean. The latter two papers introduced the abstract view of boosting
+algorithms as iterative functional gradient descent algorithms. That is,
+algorithms that optimize a cost function over function space by iteratively
+choosing a function (weak hypothesis) that points in the negative gradient
+direction. This functional gradient view of boosting has led to the development
+of boosting algorithms in many areas of machine learning and statistics beyond
+regression and classification.
+
+In general, in terms of model performance, we have the following heirarchy:
+
+$$Boosting > Random \: Forest > Bagging > Single \: Tree$$
+
 ## Gradient Boosting
+
+[Gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) is a
+machine learning technique for regression and classification problems, which
+produces a prediction model in the form of an ensemble of weak prediction
+models, typically decision trees. It builds the model in a stage-wise fashion
+like other boosting methods do, and it generalizes them by allowing optimization
+of an arbitrary differentiable loss function.
+
+The purpose of boosting is to sequentially apply the weak classification
+algorithm to repeatedly modified versions of the data, thereby producing a
+sequence of weak classifiers $G_m(x)$, $m = 1, 2, ... , M$.
+
 ## Stagewise Additive Modeling
+
+Boosting builds an additive model:
+
+$$F(x) = \sum_{m=1}^M \beta_m b(x; \gamma_m)$$
+
+where $b(x; \gamma_m)$ is a tree and $\gamma_m$ parameterizes the splits.  With
+boosting, the parameters, $(\beta_m, \gamma_m)$ are fit in a *stagewise*
+fashion.  This slows the process down, and overfits less quickly.
+
 ## AdaBoost
+
+- AdaBoost builds an additive logistic regression model by stagewise fitting.
+- AdaBoost uses an exponential loss function of the form, $L(y, F(x)) =
+exp(-yF(x))$, similar to the negative binomial log-likelihood loss.
+- The principal attraction of the exponential loss in the context of additive
+modeling is computational; it leads to the simple modular reweighting
+- Instead of fitting trees to residuals, the special form of the exponential
+loss function in AdaBoost leads to fitting trees to weighted versions of the
+original data.
+
+![](./images/boosting_diagram.png "Boosting")
+Source: Elements of Statistical Learning
+
+![](./images/adaboost_m1.png "AdaBoost M1")
+Source: Elements of Statistical Learning
+
 ## Gradient Boosting Algorithm
+
+- The idea of gradient boosting originated in the observation by Leo Breiman that boosting can be interpreted as an optimization algorithm on a suitable cost function.
+- Explicit regression gradient boosting algorithms were subsequently developed by Jerome H. Friedman simultaneously with the more general functional gradient boosting perspective of Llew Mason, Jonathan Baxter, Peter Bartlett and Marcus Frean.
+- The latter two papers introduced the abstract view of boosting algorithms as iterative functional gradient descent algorithms. That is, algorithms that optimize a cost function over function space by iteratively choosing a function (weak hypothesis) that points in the negative gradient direction.
+- This functional gradient view of boosting has led to the development of boosting algorithms in many areas of machine learning and statistics beyond regression and classification.
+
+Friedman's Gradient Boosting Algorithm for a generic loss function, $L(y_i,
+\gamma)$:
+
+![](./images/friedman_gbm.png "GBM Algorithm")
+Source: Elements of Statistical Learning
+
+
 ### Loss Functions and Gradients
+
+![](./images/gbm_gradients_loss.png "GBM Algorithm")
+Source: Elements of Statistical Learning
+
+
+The optimal number of iterations, T, and the learning rate, λ, depend on each
+other.
+
+
+
+
 ## Stochastic GBM
+
+[Stochastic Gradient Boosting](https://statweb.stanford.edu/~jhf/ftp/stobst.pdf)
+(Friedman, 2002) proposed the stochastic gradient boosting algorithm that simply
+samples uniformly without replacement from the dataset before estimating the
+next gradient step. He found that this additional step greatly improved
+performance.
+
 ## Practical Tips
+
+- It's more common to grow shorter trees ("shrubs" or "stumps") in GBM than you
+do in Random Forest.
+- It's useful to try a variety of column sample (and column sample per tree)
+rates.
+- Don't assume that the set of optimal tuning parameters for one implementation
+of GBM will carry over and also be optimal in a different GBM implementation.
+
 ## Resources
+
+ - [Trevor Hastie - Gradient Boosting & Random Forests at H2O World 2014](https:
+//www.youtube.com/watch?v=wPqtzj5VZus&index=16&list=PLNtMya54qvOFQhSZ4IKKXRbMkyL
+Mn0caa) (YouTube)
+ - [Trevor Hastie - Data Science of GBM
+(2013)](http://www.slideshare.net/0xdata/gbm-27891077) (slides)
+ - [Mark Landry - Gradient Boosting Method and Random Forest at H2O World
+2015](https://www.youtube.com/watch?v=9wn1f-30_ZY) (YouTube)
+ - [Peter Prettenhofer - Gradient Boosted Regression Trees in scikit-learn at
+PyData London 2014](https://www.youtube.com/watch?v=IXZKgIsZRm0) (YouTube)
+ - [Alexey Natekin1 and Alois Knoll - Gradient boosting machines, a
+tutorial](http://journal.frontiersin.org/article/10.3389/fnbot.2013.00021/full)
+(blog post)
+
+***
+
 ## GBM Software in R
+
+This is not a comprehensive list of GBM software in R, however, we detail a few
+of the most popular implementations below:
+[gbm](https://cran.r-project.org/web/packages/gbm/index.html),
+[xgboost](https://cran.r-project.org/web/packages/xgboost/index.html) and
+[h2o](https://cran.r-project.org/web/packages/gamboostLSS/index.html).
+
+The [CRAN Machine Learning Task
+View](https://cran.r-project.org/web/views/MachineLearning.html) lists the
+following projects as well.  The Hinge-loss is optimized by the boosting
+implementation in package
+[bst](https://cran.r-project.org/web/packages/bst/index.html). Package
+[GAMBoost](https://cran.r-project.org/web/packages/GAMBoost/index.html) can be
+used to fit generalized additive models by a boosting algorithm. An extensible
+boosting framework for generalized linear, additive and nonparametric models is
+available in package
+[mboost](https://cran.r-project.org/web/packages/mboost/index.html). Likelihood-
+based boosting for Cox models is implemented in
+[CoxBoost](https://cran.r-project.org/web/packages/CoxBoost/index.html) and for
+mixed models in
+[GMMBoost](https://cran.r-project.org/web/packages/GMMBoost/index.html). GAMLSS
+models can be fitted using boosting by
+[gamboostLSS](https://cran.r-project.org/web/packages/gamboostLSS/index.html).
+
 ### gbm
+
+Authors: Originally written by Greg Ridgeway, added to by various authors,
+currently maintained by Harry Southworth
+
+Backend: C++
+
+The [gbm](https://github.com/gbm-developers/gbm) R package is an implementation
+of extensions to Freund and Schapire's AdaBoost algorithm and Friedman's
+gradient boosting machine.  This is the original R implementation of GBM. A
+presentation is available [here](https://www.slideshare.net/mark_landry/gbm-package-in-r) by Mark Landry.
+
+Features:
+
+- Stochastic GBM.
+- Supports up to 1024 factor levels.
+- Supports Classification and regression trees.
+- Includes regression methods for:
+  - least squares
+  - absolute loss
+  - t-distribution loss
+  - quantile regression
+  - logistic
+  - multinomial logistic
+  - Poisson
+  - Cox proportional hazards partial likelihood
+  - AdaBoost exponential loss
+  - Huberized hinge loss
+  - Learning to Rank measures ([LambdaMart](https://www.microsoft.com/en-
+us/research/wp-content/uploads/2016/02/tr-2008-109.pdf))
+- Out-of-bag estimator for the optimal number of iterations is provided.
+- Easy to overfit since early stopping functionality is not automated in this
+package.
+- If internal cross-validation is used, this can be parallelized to all cores on
+the machine.
+- Currently undergoing a major refactoring & rewrite (and has been for some
+time).
+- GPL-2/3 License.
+
+```{r   n=19}
+#install.packages("gbm")
+#install.packages("cvAUC")
+library(gbm)
+library(cvAUC)
+```
+
+
+```{r   n=20}
+# Load 2-class HIGGS dataset
+train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+```
+
+```{r   n=21}
+set.seed(1)
+model <- gbm(
+  formula = response ~ .,
+  distribution = "bernoulli",
+  data = train,
+  n.trees = 70,
+  interaction.depth = 5,
+  shrinkage = 0.3,
+  bag.fraction = 0.5,
+  train.fraction = 1.0,
+  n.cores = NULL # will use all cores by default
+  )  
+```
+
+```{r   n=22}
+print(model)
+```
+
+
+
+```{r   n=23}
+# Generate predictions on test dataset
+preds <- predict(model, newdata = test, n.trees = 70)
+labels <- test[,"response"]
+
+# Compute AUC on the test set
+cvAUC::AUC(predictions = preds, labels = labels)
+```
+
+
+
 ### xgboost
+
+Authors: Tianqi Chen, Tong He, Michael Benesty
+
+Backend: C++
+
+The [xgboost](https://cran.r-project.org/web/packages/xgboost/index.html) R
+package provides an R API to "Extreme Gradient Boosting", which is an efficient
+implementation of gradient boosting framework. [Parameter tuning
+guide](http://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-
+tuning-xgboost-with-codes-python/) and more resources
+[here](https://github.com/dmlc/xgboost/tree/master/demo).  The xgboost package
+is quite popular on [Kaggle](http://blog.kaggle.com/tag/xgboost/) for data
+mining competitions.
+
+Features:
+
+- Stochastic GBM with  column and row sampling (per split and per tree) for
+better generalization.
+- Includes efficient linear model solver and tree learning algorithms.
+- Parallel computation on a single machine.
+- Supports various objective functions, including regression, classification and
+ranking.
+- The package is made to be extensible, so that users are also allowed to define
+their own objectives easily.
+- Apache 2.0 License.
+
+```{r   n=24}
+#install.packages("xgboost")
+#install.packages("cvAUC")
+library(xgboost)
+library(Matrix)
+library(cvAUC)
+```
+
+```{r   n=25}
+# convert data.table to data frames
+train <- as.data.frame(train)
+test <- as.data.frame(test)
+```
+
+```{r   n=26}
+# Set seed because we column-sample
+set.seed(1)
+
+y <- "response"
+train.mx <- sparse.model.matrix(response ~ ., train)[,-1]
+test.mx <- sparse.model.matrix(response ~ ., test)[,-1]
+dtrain <- xgb.DMatrix(train.mx, label = train[,y])
+dtest <- xgb.DMatrix(test.mx, label = test[,y])
+
+train.gdbt <- xgb.train(
+  params = list(
+    objective = "binary:logistic",
+    #num_class = 2,
+    #eval_metric = "mlogloss",
+    eta = 0.3,
+    max_depth = 5,
+    subsample = 1,
+    colsample_bytree = 0.5), 
+  data = dtrain, 
+  nrounds = 70, 
+  watchlist = list(train = dtrain, test = dtest),
+  verbose = FALSE   # turn on to see modelling progress
+  )
+```
+
+
+
+```{r   n=29}
+# Generate predictions on test dataset
+preds <- predict(train.gdbt, newdata = dtest)
+labels <- test[,y]
+
+# Compute AUC on the test set
+cvAUC::AUC(predictions = preds, labels = labels)
+```
+
+
+
+```{r   n=30}
+#Advanced functionality of xgboost
+#install.packages("Ckmeans.1d.dp")
+library(Ckmeans.1d.dp)
+
+# Compute feature importance matrix
+names <- dimnames(data.matrix(train[,-1]))[[2]]
+importance_matrix <- xgb.importance(names, model = train.gdbt)
+
+# Plot feature importance
+xgb.plot.importance(importance_matrix[1:10,])
+```
+
+
+
 ### h2o
+
+Authors: [Arno Candel](https://www.linkedin.com/in/candel), [Cliff
+Click](http://www.cliffc.org/blog/), H2O.ai contributors
+
+Backend: Java
+
+[H2O GBM Tuning guide by Arno Candel](https://github.com/h2oai/h2o-3/blob/master
+/h2o-docs/src/product/tutorials/gbm/gbmTuning.Rmd) and [H2O GBM
+Vignette](http://docs.h2o.ai/h2o/latest-stable/h2o-
+docs/booklets/GBMBooklet.pdf).
+
+Features:
+
+- Distributed and parallelized computation on either a single node or a multi-
+node cluster.
+- Automatic early stopping based on convergence of user-specied metrics to user-
+specied relative tolerance.
+- Stochastic GBM with column and  row sampling  (per split and per tree) for
+better generalization.
+- Support  for  exponential  families  (Poisson,  Gamma,  Tweedie)  and  loss
+functions in addition to binomial (Bernoulli), Gaussian and multinomial
+distributions, such as Quantile regression (including Laplace).
+- Grid search for hyperparameter optimization and model selection.
+- Data-distributed, which means the entire dataset does not need to fit into
+memory on a single node, hence scales to any size training set.
+- Uses histogram approximations of continuous variables for speedup.
+- Uses dynamic binning - bin limits are reset at each tree level based on the
+split bins' min and max values discovered during the last pass.
+- Uses squared error to determine optimal splits.
+- Distributed implementation details outlined in a [blog
+post](http://blog.h2o.ai/2013/10/building-distributed-gbm-h2o/) by Cliff Click.
+- Unlimited factor levels.
+- Multiclass trees (one for each class) built in parallel with each other.
+- Apache 2.0 Licensed.
+- Model export in plain Java code for deployment in production environments.
+- GUI for training & model eval/viz (H2O Flow).
+
+```{r   n=67}
+#install.packages("h2o")
+library(h2o)
+h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num available cores
+```
+
+
+
+```{r   n=68}
+# Load 10-class MNIST dataset
+train <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+print(dim(train))
+print(dim(test))
+```
+
+
+
+```{r   n=69}
+# Identity the response column
+y <- "response"
+
+# Identify the predictor columns
+x <- setdiff(names(train), y)
+
+# Convert response to factor
+train[,y] <- as.factor(train[,y])
+test[,y] <- as.factor(test[,y])
+
+# convert train and test data frames to h2o objects
+train.h2o <- as.h2o(train)
+test.h2o <- as.h2o(test)
+```
+
+```{r   n=70}
+# Train an H2O GBM model
+model <- h2o.gbm(
+  x = x,
+  y = y,
+  training_frame = train.h2o,
+  ntrees = 70,
+  learn_rate = 0.3,
+  sample_rate = 1.0,
+  max_depth = 5,
+  col_sample_rate_per_tree = 0.5,
+  seed = 1
+  )
+```
+
+
+```{r   n=71}
+# Get model performance on a test set
+perf <- h2o.performance(model, test.h2o)
+print(perf)
+```
+
+
+
+```{r   n=72}
+# To retreive individual metrics
+h2o.auc(perf)
+```
+
+```{r   n=73}
+# Print confusion matrix
+h2o.confusionMatrix(perf)
+```
+
+```{r   n=74}
+# Plot scoring history over time
+plot(model)
+```
+
+
+
+```{r   n=75}
+# Retreive feature importance
+vi <- h2o.varimp(model)
+vi[1:10,]
+```
+
+
+
+```{r   n=76}
+# Plot feature importance
+barplot(
+  vi$scaled_importance,
+  names.arg = vi$variable,
+  space = 1,
+  las = 2,
+  main = "Variable Importance: H2O GBM"
+  )
+```
+
+
+Note that all models, data and model metrics can be viewed via the [H2O Flow
+GUI](http://127.0.0.1:54321/flow/index.html), which should already be running
+since you started the H2O cluster with `h2o.init()`.
+
+```{r   n=77}
+# Early stopping example
+# Keep in mind that when you use early stopping, you should pass a validation set
+# Since the validation set is used to detmine the stopping point, a separate test set should be used for model eval
+
+# fit <- h2o.gbm(
+#   x = x,
+#   y = y,
+#   training_frame = train,
+#   model_id = "gbm_fit3",
+#   validation_frame = valid,  #only used if stopping_rounds > 0
+#   ntrees = 500,
+#   score_tree_interval = 5,      #used for early stopping
+#   stopping_rounds = 3,          #used for early stopping
+#   stopping_metric = "misclassification", #used for early stopping
+#   stopping_tolerance = 0.0005,  #used for early stopping
+#   seed = 1
+#   )
+```
+
+```{r   n=78}
+# GBM hyperparamters
+gbm_params <- list(
+  learn_rate = seq(0.01, 0.1, 0.01),
+  max_depth = seq(2, 10, 1),
+  sample_rate = seq(0.5, 1.0, 0.1),
+  col_sample_rate = seq(0.1, 1.0, 0.1)
+  )
+
+search_criteria <- list(
+  strategy = "RandomDiscrete", 
+  max_models = 20
+  )
+
+# Train and validate a grid of GBMs
+gbm_grid <- h2o.grid(
+  "gbm", x = x, y = y,
+  grid_id = "gbm_grid",
+  training_frame = train.h2o,
+  validation_frame = test.h2o,  #test frame will only be used to calculate metrics
+  ntrees = 70,
+  seed = 1,
+  hyper_params = gbm_params,
+  search_criteria = search_criteria
+  )
+
+gbm_gridperf <- h2o.getGrid(
+  grid_id = "gbm_grid", 
+  sort_by = "auc", 
+  decreasing = TRUE
+  )
+
+print(gbm_gridperf)
+```
+
+
+
+The grid search helped a lot.  The first model we trained only had a 0.774 test
+set AUC, but the top GBM in our grid has a test set AUC of 0.786.  More
+information about grid search is available in the [H2O grid search R
+tutorial](https://github.com/h2oai/h2o-tutorials/blob/master/h2o-open-
+tour-2016/chicago/grid-search-model-selection.R).
+
+```{r}
+# good practice to shut down h2o environment
+h2o.shutdown(prompt = FALSE)
+```
+
+
 ## References
+
+[1] [Friedman, Jerome H. Greedy function approximation: A gradient boostingmachine. Ann. Statist. 29 (2001), no. 5, 1189--1232. doi:10.1214/aos/1013203451.http://projecteuclid.org/euclid.aos/1013203451.](http://projecteuclid.org/DPubS?verb=Display&version=1.0&service=UI&handle=euclid.aos/1013203451&page=record)
 
 <!--chapter:end:03-gradient-boosting-machines.Rmd-->
 
-
 # Generalized Linear Models (GLM) {#generalized-linear-models}
 
-Placeholder
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
 
+* * *
+![](./images/linear_regression.png "Linear Regression Model")
+
+* * *
+Image Source: Wikipedia
 
 ## Introduction
+
+[Linear Models](https://en.wikipedia.org/wiki/Linear_regression) are one of the
+oldest and most well known statistical prediction algorithms which nowdays is
+often categorized as a "machine learning algorithm." [Generalized LinearModels](https://en.wikipedia.org/wiki/Generalized_linear_model) (GLMs) are are a
+framework for modeling a response variable $y$ that is bounded or discrete.
+Generalized linear models allow for an arbitrary link function $g$ that relates
+the mean of the response variable to the predictors, i.e. $E(y) = g(β′x)$. The
+link function is often related to the distribution of the response, and in
+particular it typically has the effect of transforming between, $(-\infty
+,\infty )$, the range of the linear predictor, and the range of the response
+variable (e.g. $[0,1]$). [1]
+
+Therefore, GLMs allow for response variables that have error distribution models
+other than a normal distribution. Some common examples of GLMs are:
+
+- [Poisson regression](https://en.wikipedia.org/wiki/Poisson_regression) for
+count data.
+- [Logistic regression](https://en.wikipedia.org/wiki/Logistic_regression) and
+[probit regression](https://en.wikipedia.org/wiki/Probit_regression) for binary
+data.
+- [Multinomial logistic
+regression](https://en.wikipedia.org/wiki/Multinomial_logistic_regression) and
+[multinomial probit](https://en.wikipedia.org/wiki/Multinomial_probit)
+regression for categorical data.
+- [Ordered probit](https://en.wikipedia.org/wiki/Ordered_probit) regression for
+ordinal data.
+
+
+
 ## Linear Models
+
+In a linear model, given a vector of inputs, $X^T = (X_1, X_2, ..., X_p)$, we
+predict the output $Y$ via the model:
+
+$$\hat{Y} = \hat{\beta}_0 + \sum_{j=1}^p X_j \hat{\beta}_j$$
+
+The term $\hat{\beta}_0$ is the intercept, also known as the *bias* in machine
+learning.  Often it is convenient to include the constant variable $1$ in $X$,
+include $\beta_0$ in the vector of coefficients $\hat{\beta}$, and then write
+the linear model in vector form as an inner product,
+
+$$\hat{Y} = X^T\hat{\beta},$$
+
+where $X^T$ denotes the transpose of the design matrix.  We will review the case
+where $Y$ is a scalar, however, in general $Y$ can have more than one dimension.
+Viewed as a function over the $p$-dimensional input space, $f(X) = X^T\beta$ is
+linear, and the [gradient](https://en.wikipedia.org/wiki/Gradient), $f′(X) =
+\beta$, is a vector in input space that points in the steepest uphill direction.
+
 ### Ordinary Least Squares (OLS)
+
+There are many different methods to fitting a linear model, but the most simple
+and popular method is [Ordinary LeastSquares](https://en.wikipedia.org/wiki/Ordinary_least_squares) (OLS).  The OLS
+method minimizes the [residual sum ofsquares](https://en.wikipedia.org/wiki/Residual_sum_of_squares) (RSS), and leads
+to a closed-form expression for the estimated value of the unknown parameter
+$\beta$.
+
+$$RSS(\beta) = \sum_{i=1}^n (y_i - x_i^T\beta)^2$$
+
+$RSS(\beta)$ is a quadradic function of the parameters, and hence its minimum
+always exists, but may not be unique.  The solution is easiest to characterize
+in matrix notation:
+
+$$RSS(\beta) = (\boldsymbol{y} - \boldsymbol{X}\beta)^T(\boldsymbol{y} -
+\boldsymbol{X}\beta)$$
+
+where $\boldsymbol{X}$ is an $n \times p$ matrix with each row an input vector,
+and $\boldsymbol{y}$ is a vector of length $n$ representing the response in the
+training set.  Differentiating with respect to $\beta$, we get the *normal
+equations*,
+
+$$\boldsymbol{X}^T(\boldsymbol{y} - \boldsymbol{X}\beta) = 0$$
+
+If $\boldsymbol{X}^T\boldsymbol{X}$ is
+[nonsingular](https://en.wikipedia.org/wiki/Invertible_matrix), then the unique
+solution is given by:
+
+$$\hat{\beta} =
+(\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{y}$$
+
+The fitted value at the $i^{th}$ input, $x_i$ is $\hat{y}_i = \hat{y}(x_i) =
+x_i^T\hat{\beta}$.  To solve this equation for $\beta$, we must invert a matrix,
+$\boldsymbol{X}^T\boldsymbol{X}$, however it can be computationally expensive to
+invert this matrix directly.  There are computational shortcuts for solving the
+normal equations available via
+[QR](https://en.wikipedia.org/wiki/QR_decomposition) or
+[Cholesky](https://en.wikipedia.org/wiki/Cholesky_decomposition) decomposition.
+When dealing with large training sets, it is useful to have an understanding of
+the underlying computational methods in the software that you are using.  Some
+GLM software implementations may not utilize all available computational
+shortcuts, costing you extra time to train your GLMs, or require you to upgrade
+the memory on your machine.
+
 ## Regularization
+
+http://web.stanford.edu/~hastie/Papers/glmpath.pdf
+
+
 ### Ridge Regression
+
+
+Consider a sample consisting of $n$ cases, each of which consists of $p$
+covariates and a single outcome. Let $y_i$ be the outcome and $X_i := ( x_1 ,
+x_2 , … , x_p)^T$.
+
+Then the objective of Ridge is to solve:
+
+$${\displaystyle \min _{\beta }\left\{{\frac {1}{N}}\sum
+_{i=1}^{N}\left(y_{i}-\beta_0 - \sum_{j=1}^p x_{ij}\beta_j
+\right)^{2}\right\}{\text{ subject to }}\sum _{j=1}^{p}\beta _{j}^2 \leq t.}$$
+
+
+Here $t$ is a prespecified free parameter that determines the amount of
+regularization.  Ridge is also called $\ell_2$ regularization.
+
 ### Lasso Regression
+
+[Lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) (least absolute
+shrinkage and selection operator) (also Lasso or LASSO) is a regression analysis
+method that performs both variable selection and regularization in order to
+enhance the prediction accuracy and interpretability of the statistical model it
+produces.
+
+- It was [introduced by Robert Tibshirani in 1996](http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf) based on Leo Breiman’s Nonnegative
+Garrote.
+- Lasso conveniently performs coefficient shrinkage comparable to the ridge
+regression as well as variable selection by reducing coefficients to zero.
+- By sacrificing a small amount of bias in the predicted response variable in
+order to decrease variance, the lasso achieves improved predictive accuracy
+compared with ordinary least squares (OLS) models, particularly with data
+containing highly correlated predictor variables or in over determined data
+where $p>n$.
+
+Then the objective of Lasso is to solve:
+
+$${\displaystyle \min _{\beta }\left\{{\frac {1}{N}}\sum
+_{i=1}^{N}\left(y_{i}-\beta_0 - \sum_{j=1}^p x_{ij}\beta_j
+\right)^{2}\right\}{\text{ subject to }}\sum _{j=1}^{p}|\beta _{j}| \leq t.}$$
+
+Here $t$ is a prespecified free parameter that determines the amount of
+regularization.
+Lasso is also called $\ell_1$ regularization.
+
+
 ### Elastic Net
+
+[Elastic Net
+regularization](https://en.wikipedia.org/wiki/Elastic_net_regularization) is a
+simple blend of Lasso and Ridge regularization.  In software, this is typically
+controlled by an `alpha` parameter in between 0 and 1, where:
+
+- `alpha = 0.0` is Ridge regression
+- `alpha = 0.5` is a 50/50 blend of Ridge/Lasso regression
+- `alpha = 1.0` is Lasso regression
+
 ## Other Solvers
+
+GLM models are trained by finding the set of parameters that maximizes the
+likelihood of the data.  For the Gaussian family, maximum likelihood consists of
+minimizing the mean squared error.  This has an analytical solution and can be
+solved with a standard method of least squares.  This is also applicable when
+the $\ell_2$ penalty is added to the optimization.  For all other families and
+when the $\ell_1$ penalty is included, the maximum likelihood
+problem has no analytical  solution.  Therefore an iterative method  such as
+IRLSM, L-BFGS, the Newton method, or gradient descent, must be used.
+
+
 ### Iteratively Re-weighted Least Squares (IRLS)
+
+The [IRLS](https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares)
+method is used to solve certain optimization problems with objective functions
+of the form:
+
+$${\underset  {{\boldsymbol  \beta }}{\operatorname {arg\,min}}}\sum
+_{{i=1}}^{n}{\big |}y_{i}-f_{i}({\boldsymbol  \beta }){\big |}^{p},$$
+
+by an iterative method in which each step involves solving a weighted least
+squares problem of the form:
+
+$${\boldsymbol  \beta }^{{(t+1)}}={\underset  {{\boldsymbol  \beta
+}}{\operatorname {arg\,min}}}\sum _{{i=1}}^{n}w_{i}({\boldsymbol  \beta
+}^{{(t)}}){\big |}y_{i}-f_{i}({\boldsymbol  \beta }){\big |}^{2}.$$
+
+IRLS is used to find the [maximum
+likelihood](https://en.wikipedia.org/wiki/Maximum_likelihood) estimates of a
+generalized linear model as a way of mitigating the influence of outliers in an
+otherwise normally-distributed data set.  For example, by minimizing the least
+absolute error rather than the least square error.
+
+One of the advantages of IRLS over [linear
+programming](https://en.wikipedia.org/wiki/Linear_programming) and [convex
+programming](https://en.wikipedia.org/wiki/Convex_programming) is that it can be
+used with [Gauss-Newton](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton) and
+[Levenberg-Marquardt](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt)
+numerical algorithms.
+
+The IRL1 algorithm solves a sequence of non-smooth weighted
+$\ell_1$-minimization problems, and hence can be seen as the non-smooth
+counterpart to the IRLS algorithm.
+
+
 ### Iteratively Re-weighted Least Squares with ADMM
+
+The IRLS method with [alternating direction method of
+multipliers](http://web.stanford.edu/~boyd/admm.html) (ADMM) inner solver as
+described in [Distributed Optimization and Statistical Learning via the
+Alternating Direction Method of
+Multipliers](http://web.stanford.edu/~boyd/papers/admm_distr_stats.html) by Boyd
+et. al to deal with the $\ell_1$ penalty. ADMM is an algorithm that solves
+convex optimization problems by breaking them into smaller pieces, each of which
+are then easier to handle.  Every iteration of the algorithm consists of
+following steps:
+
+1. Generate weighted least squares problem based on previous solution, i.e.
+vector of weights w and response z.
+2. Compute the weighted [Gram
+matrix](https://en.wikipedia.org/wiki/Gramian_matrix) XT WX and XT z vector
+3. Decompose the Gram matrix ([Cholesky
+decomposition](https://en.wikipedia.org/wiki/Cholesky_decomposition)) and apply
+ADMM solver to solve the  $\ell_1$ penalized least squares problem.
+
+In the [H2O GLM](http://docs.h2o.ai/h2o/latest-stable/h2o-
+docs/booklets/GLMBooklet.pdf) implementation, steps 1 and 2 are performed
+distributively, and Step 3 is computed in parallel on a single node.  The Gram
+matrix appraoch is very efficient for tall and narrow datasets when running
+lamnda search with a sparse solution.
+
+
 ### Cyclical Coordinate Descent
+
+The IRLS method can also use cyclical coordinate descent in it's inner loop (as
+opposed to ADMM).  The
+[glmnet](http://web.stanford.edu/~hastie/glmnet/glmnet_beta.html) package uses
+[cyclical coordinate descent](http://web.stanford.edu/~hastie/Papers/glmnet.pdf)
+which successively optimizes the objective function over each parameter with
+others fixed, and cycles repeatedly until convergence.
+
+Cyclical  coordinate  descent  methods  are  a  natural  approach  for  solving
+convex  problems  with $\ell_1$ or $\ell_2$ constraints,  or  mixtures  of  the
+two  (elastic net).  Each coordinate-descent step is fast, with an explicit
+formula for each coordinate-wise minimization.  The method also exploits the
+sparsity of the model, spending much of its time evaluating only inner products
+for variables with non-zero coefficients.
+
+
 ### L-BFGS
+
+[Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS)
+(L-BFGS) is an optimization algorithm in the family of [quasi-Newton
+methods](https://en.wikipedia.org/wiki/Quasi-Newton_method) that approximates
+the
+[Broyden–Fletcher–Goldfarb–Shanno](https://en.wikipedia.org/wiki/BFGS_method)
+(BFGS) algorithm using a limited amount of computer memory. Due to its resulting
+linear memory requirement, the L-BFGS method is particularly well suited for
+optimization problems with a large number of variables.  The method is popular
+among "big data" GLM implementations such as
+[h2o::h2o.glm()](http://www.rdocumentation.org/packages/h2o/functions/h2o.glm)
+(one of two available solvers) and
+[SparkR::glm()](https://spark.apache.org/docs/latest/api/R/index.html).  The
+[L-BFGS-B algorithm](http://sepwww.stanford.edu/data/media/public/docs/sep117/an
+toine1/paper_html/node12.html#lbfgsb) is an extension of the L-BFGS algorithm to
+handle simple bounds on the model.
+
 ## Data Preprocessing
+
+In order for the coefficients to be easily interpretable, the features must be
+centered and scaled (aka "normalized").  Many software packages will allow the
+direct input of categorical/factor columns in the training frame, however
+internally any categorical columns will be expaded into binary indicator
+variables.  The caret package offers a handy utility function, [caret::dummyVars
+()](http://www.rdocumentation.org/packages/caret/functions/dummyVars), for
+dummy/indicator expansion if you need to do this manually.
+
+Missing data will need to be imputed, otherwise in many GLM packages, those rows
+will simply be omitted from the training set at train time.  For example, in the
+`stats::glm()` function there is an `na.action` argument which allows the user
+to do one of the three options:
+
+- na.omit and na.exclude: observations are removed if they contain any missing
+values; if na.exclude is used some functions will pad residuals and predictions
+to the correct length by inserting NAs for omitted cases.
+- na.pass: keep all data, including NAs
+- na.fail: returns the object only if it contains no missing values
+
+Other GLM implementations such as `h2o::glm()` will impute the mean
+automatically (in both training and test data), unless specified by the user.
+
+***
+
 ## GLM Software in R
+
+There is an implementation of the standard GLM (no regularization) in the built-
+in "stats" package in R called
+[glm](http://www.rdocumentation.org/packages/stats/functions/glm).
+
 ### glm
+
+Authors: The original R implementation of glm was written by Simon Davies
+working for Ross Ihaka at the University of Auckland, but has since been
+extensively re-written by members of the R Core team.  The design was inspired
+by the S function of the same name described in Hastie & Pregibon (1992).
+
+Backend: Fortran
+
 #### Example Linear Regression with glm()
+
+```{r   n=1}
+#install.packages("caret")
+library(caret)
+data("Sacramento")
+
+# Split the data into a 70/25% train/test sets
+set.seed(1)
+idxs <- caret::createDataPartition(y = Sacramento$price, p = 0.75)[[1]]
+train <- Sacramento[idxs,]
+test <- Sacramento[-idxs,]
+```
+
+
+```{r   n=2}
+# Fit the GLM
+fit <- glm(
+  price ~ .,
+  data = train,
+  family = gaussian()
+  )
+
+summary(fit)
+```
+
+
+
+```{r   n=3, error=TRUE}
+# Predict on the test set
+pred <- predict(fit, newdata = test)
+```
+
+
+
+Above we have a slight issue.  The `city` column has new factor levels in the
+test set that were not present in the training set.  Even though the `train` and
+`test` data frames originated from a single data frame, `Sacramento`, and
+therefore have identical factor levels, we still run into this problem.  Let's
+take a closer look at the factor levels to see what's going on:
+
+```{r   n=4}
+str(train)
+```
+
+
+```{r   n=5}
+str(test)
+```
+
+
+Although `train` and `test` have identical structure, not all the levels are
+represented in the training data.  To validate this, let's take a look at the
+actual unique levels that were used in the model:
+
+```{r   n=6}
+# Check the number of levels in the model features
+sapply(fit$xlevels, function(x) print(length(x)))
+```
+
+
+
+We can manually fix this by updating the `xlevels` element of the model.  We
+have the same issue with `zip`, so we should go ahead and manually update that
+as well.
+
+```{r   n=7}
+# Update factor levels so that prediction works
+fit$xlevels[["city"]] <- union(fit$xlevels[["city"]], levels(test$city))
+fit$xlevels[["zip"]] <- union(fit$xlevels[["zip"]], levels(test$zip))
+```
+
+```{r   n=8}
+# Predict on the test set
+pred <- predict(fit, newdata = test)
+summary(fit)
+```
+
+
+
+```{r   n=9}
+# Compute model performance on the test set
+
+caret::R2(pred = pred, obs = test$price)
+caret::RMSE(pred = pred, obs = test$price)
+```
+
+
+
 #### GLM in caret
+
+Now let's run the same model using caret's glm method to get a sense of how much
+easier it is to use.
+
+```{r   n=10}
+# Train a caret glm model
+fit <- caret::train(
+  form = price ~ ., 
+  data = train, 
+  trControl = trainControl(method = "none"),
+  method = "glm", 
+  family = gaussian()
+  )
+
+summary(fit$finalModel)
+```
+
+```{r   n=11}
+# Predict on the test set
+pred <- predict(fit, newdata = test)
+```
+
+
+
+```{r   n=12}
+# Compute model performance on the test set
+
+caret::R2(pred = pred, obs = test$price)
+caret::RMSE(pred = pred, obs = test$price)
+```
+
+
+Ok, this looks much better.  And we didn't have to deal with the missing factor
+levels! :-)
+
 #### h2o
+
+Authors: Tomas Nykodym, H2O.ai contributors
+
+Backend: Java
+
+The [h2o](https://cran.r-project.org/web/packages/h2o/index.html) package offers
+a data-distributed implementation of Generalized Linear Models.  A "data-
+distribtued" version uses distributed data frames, so that the whole design
+matrix does not need to fit into memory at once.  The h2o package fits both
+regularized and non-regularized GLMs.  The implementation details are documented
+[here](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/booklets/GLMBooklet.pdf).
+
+```{r   n=13, echo=FALSE, eval=FALSE}
+#h2o.shutdown(prompt = FALSE)
+```
+
+
+
+```{r   n=14}
+# h2o.glm example
+#install.packages("h2o")
+library(h2o)
+
+# Start a local H2O cluster using nthreads = num available cores
+h2o.init(nthreads = -1)
+```
+
+
+Typically one would load a dataset in parallel from disk using the
+`h2o.importFile()` function, however for the purposes of this tutorial, we are
+going to use a tiny built-in R dataset, so we can send that data to the H2O
+cluster (from R memory) using the `as.h2o()` function.  We would also use the
+`h2o.splitFrame()` function to split the data instead of the
+`caret::createDataPartition()`, but for an apples-to-apples comparison with the
+methods above, it's good to use the same exact train and test split, generated
+the same way as above.
+
+```{r   n=15}
+# Load Sacramento dataset
+library(caret)
+data("Sacramento")
+
+# Convert the data into an H2OFrame
+sac <- as.h2o(Sacramento)
+
+# Split the data into a 70/25% train/test sets
+set.seed(1)
+idxs <- caret::createDataPartition(y = Sacramento$price, p = 0.75)[[1]]
+train <- sac[idxs,]
+test <- sac[-idxs,]
+
+# Dimensions
+dim(train)
+dim(test)
+
+# Columns
+names(train)
+```
+
+
+```{r   n=16}
+# Identify the predictor columns
+xcols <- setdiff(names(train), "price")
+
+# Train a default GLM model with no regularization
+system.time(
+  fit <- h2o.glm(
+    x = xcols,
+    y = "price",
+    training_frame = train,
+    family = "gaussian",
+    lambda = 0  #lambda = 0 means no regularization
+    )   
+  )  
+```
+
+```{r   n=17}
+summary(fit)
+```
+
+
+```{r   n=18}
+# H2O computes many model performance metrics automatically, accessible by utility functions
+
+perf <- h2o.performance(model = fit, newdata = test)
+h2o.r2(perf)
+sqrt(h2o.mse(perf))
+```
+
+```{r}
+# good practice
+h2o.shutdown(prompt = FALSE)
+```
+
+
 #### speedglm
+
+Also worth metioning is the
+[speedglm](https://cran.r-project.org/web/packages/speedglm/index.html) package,
+which fits Linear and Generalized Linear Models to large data sets. This is
+particularly useful if R is linked against an optimized
+[BLAS](https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). For data
+sets of size greater of R memory, the fitting is performed by an iterative
+algorithm.
+
 ## Regularized GLM in R
+
+Ok, so let's assume that we have wide, sparse, collinear or big data.  If your
+training set falls into any of those categories, it might be a good idea to use
+a regularlized GLM.
+
 #### glmnet
+
+Authors: [Jerome Friedman](https://statweb.stanford.edu/~jhf/), [Trevor
+Hastie](http://web.stanford.edu/~hastie/), [Noah
+Simon](http://faculty.washington.edu/nrsimon/), [Rob
+Tibshirani](http://statweb.stanford.edu/~tibs/)
+
+Backend: [Mortran](https://en.wikipedia.org/wiki/Mortran) (extension of Fortran
+used for scientific computation)
+
+[glmnet](http://web.stanford.edu/~hastie/glmnet/glmnet_beta.html) is a package
+that fits a generalized linear model via penalized maximum likelihood. The
+regularization path is computed for the lasso or elastic-net penalty at a grid
+of values for the regularization parameter lambda. The algorithm is extremely
+fast, and can exploit sparsity in the input matrix $\boldsymbol{X}$.
+
+Features:
+
+- The code can handle sparse input-matrix formats, as well as range constraints
+on coefficients.
+- Glmnet also makes use of the strong rules for efficient restriction of the
+active set.
+- The core of Glmnet is a set of fortran subroutines, which make for very fast
+execution.
+- The algorithms use coordinate descent with warm starts and active set
+iterations.
+- Supports the following distributions:
+`"gaussian","binomial","poisson","multinomial","cox","mgaussian"`
+- Supports standardization and offsets.
+
+The Glmnet package is a fast implementation, but it requires some extra
+processing up-front to your data if it's not already represented as a numeric
+matrix.  For example, if you have categorical data or missing data, you need to
+deal with that yourself.
+
+```{r   n=19}
+#install.packages("glmnet")
+#install.packages("Cairo")  #for plotting lasso coefficients in Jupyter notebook
+library(glmnet)
+```
+
+
+
+```{r   n=20}
+data("QuickStartExample")  #loads 'x' and 'y'
+str(x)
+class(x)
+```
+
+
+
+```{r   n=21}
+fit <- glmnet(x, y)
+```
+
+We can visualize the coefficients by executing the `plot` function.  Each curve
+corresponds to a variable. It shows the path of its coefficient against the
+$\ell_1$-norm of the whole coefficient vector at as $\lambda$ varies. The axis
+above indicates the number of nonzero coefficients at the current $\lambda$,
+which is the effective degrees of freedom for the lasso.
+
+```{r   n=22}
+plot(fit)
+```
+
+
+
+
+```{r   n=55}
+# Simulate a binary response dataset
+library(caret)
+set.seed(1)
+df <- caret::twoClassSim(
+  n = 100000,
+  linearVars = 10, 
+  noiseVars = 50, 
+  corrVars = 50
+  )
+
+dim(df)
+```
+
+
+
+```{r   n=75}
+# Identify the response & predictor columns
+ycol <- "Class"
+xcols <- setdiff(names(df), ycol)
+df[,ycol] <- ifelse(df[,ycol]=="Class1", 0, 1)
+
+# Split the data into a 70/25% train/test sets
+set.seed(1)
+idxs <- caret::createDataPartition(y = df[,ycol], p = 0.75)[[1]]
+train <- df[idxs,]
+test <- df[-idxs,]
+train_y <- df[idxs, ycol]
+test_y <- df[-idxs, ycol]
+train_x <- model.matrix(~-1 + ., train[, xcols])
+test_x <- model.matrix(~-1 + ., test[, xcols])
+
+
+# Dimensions
+dim(train_x)
+length(train_y)
+dim(test_x)
+length(test_y)
+```
+
+
+```{r   n=76}
+head(test_y)
+```
+
+
+```{r   n=88}
+# Train a Lasso GLM
+system.time(
+  cvfit <- cv.glmnet(
+    x = train_x,
+    y = train_y,
+    family = "binomial",
+    alpha = 1.0     # alpha = 1 means lasso by default
+    )
+  )  
+```
+
+
+
+```{r   n=92}
+preds <- predict(
+  cvfit$glmnet.fit,
+  newx = test_x, 
+  s = cvfit$lambda.min, 
+  type = "response"
+  )
+
+head(preds)
+```
+
+
+
+```{r   n=93}
+#install.packages("cvAUC")
+library(cvAUC)
+
+cvAUC::AUC(predictions = preds, labels = test_y)
+```
+
+
+
 #### h2o
+
+Introduced in the previous section, the h2o package can perform unregularized or
+regularized regression.  By default, `h2o.glm` will perform an Elastic Net
+regression.  Similar to the `glmnet` function, you can adjust the Elastic Net
+penalty through the `alpha` parameter (`alpha = 1.0` is Lasso and `alpha = 0.0`
+is Ridge).
+
+```{r   n=94}
+# Simulate a binary response dataset
+library(caret)
+set.seed(1)
+df <- caret::twoClassSim(
+  n = 100000,
+  linearVars = 10, 
+  noiseVars = 50, 
+  corrVars = 50
+  )
+
+dim(df)
+```
+
+
+
+```{r   n=95}
+# Convert the data into an H2OFrame
+library(h2o)
+
+# initialize h2o instance
+h2o.init(nthreads = -1)
+
+# Convert the data into an H2OFrame
+hf <- as.h2o(df)
+```
+
+
+```{r   n=97}
+# Identify the response & predictor columns
+ycol <- "Class"
+xcols <- setdiff(names(hf), ycol)
+
+# Convert the 0/1 binary response to a factor 
+hf[,ycol] <- as.factor(hf[,ycol])
+```
+
+```{r   n=98}
+dim(hf)
+```
+
+
+```{r   n=99}
+# Split the data into a 70/25% train/test sets
+set.seed(1)
+idxs <- caret::createDataPartition(y = df[,ycol], p = 0.75)[[1]]
+train <- hf[idxs,]
+test <- hf[-idxs,]
+
+# Dimensions
+dim(train)
+dim(test)
+```
+
+
+
+```{r   n=100}
+# Train a Lasso GLM
+system.time(
+  fit <- h2o.glm(
+    x = xcols,
+    y = ycol,
+    training_frame = train,
+    family = "binomial",
+    lambda_search = TRUE,  # compute lasso path
+    alpha = 1  # alpha = 1 means lasso, same as glmnet above
+    )
+  ) 
+```
+
+
+
+```{r   n=101}
+# Compute AUC on test dataset
+# H2O computes many model performance metrics automatically, including AUC
+
+perf <- h2o.performance(
+  model = fit,
+  newdata = test
+  )
+
+h2o.auc(perf)
+```
+
+```{r}
+# good practice
+h2o.shutdown(prompt = FALSE)
+```
+
+
 ## References
+
+[1] [https://en.wikipedia.org/wiki/Linear_regression#Generalized\_linear\_models](https://en.wikipedia.org/wiki/Linear_regression#Generalized_linear_models)
+
+[2] [https://en.wikipedia.org/wiki/Generalized\_linear\_model](https://en.wikipedia.org/wiki/Generalized_linear_model)
+
+[3] [Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J.Royal. Statist. Soc B., Vol. 58, No. 1, pages 267-288).](http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf)
 
 <!--chapter:end:04-generalized-linear-models.Rmd-->
 
-
 # Deep Neural Networks (DNN) {#deep-neural-networks}
 
-Placeholder
+```{r setup4, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
 
+* * *
+![](./images/jmsl-7.png "Neural Network")
+
+* * *
+Image Source: https://machprinciple.wordpress.com/2013/11/09/neural-network-controlled-spacecraft-control-logic-exists/
 
 ## Introduction
+
+A [Deep Neural Network](https://en.wikipedia.org/wiki/Deep_learning#Deep_neural_
+network_architectures) (DNN) is an [artificial neural
+network](https://en.wikipedia.org/wiki/Artificial_neural_network) (ANN) with
+multiple hidden layers of units between the input and output layers.  Similar to
+shallow ANNs, DNNs can model complex non-linear relationships. DNN architectures
+(e.g. for object detection and parsing) generate compositional models where the
+object is expressed as a layered composition of image primitives. The extra
+layers enable composition of features from lower layers, giving the potential of
+modeling complex data with fewer units than a similarly performing shallow
+network.
+
+DNNs are typically designed as
+[feedforward](https://en.wikipedia.org/wiki/Feedforward_neural_network)
+networks, but research has very successfully applied recurrent neural networks,
+especially LSTM, for applications such as language modeling. Convolutional deep
+neural networks (CNNs) are used in computer vision where their success is well-
+documented. CNNs also have been applied to acoustic modeling for automatic
+speech recognition, where they have shown success over previous models.
+
+This tutorial will cover DNNs, however, we will introduce the concept of a
+"shallow" neural network as a starting point.
+
 ## History
+
+An interesting fact about neural networks is that the first artificial neural
+network was implemented in hardware, not software.  In 1943, neurophysiologist
+Warren McCulloch and mathematician Walter Pitts wrote a paper on how neurons
+might work. In order to describe how neurons in the brain might work, they
+modeled a simple neural network using electrical circuits. [1]
+
 ## Backpropagation
+
+[Backpropagation](https://en.wikipedia.org/wiki/Backpropagation), an
+abbreviation for "backward propagation of errors", is a common method of
+training artificial neural networks used in conjunction with an optimization
+method such as [gradient
+descent](https://en.wikipedia.org/wiki/Gradient_descent). The method calculates
+the gradient of a loss function with respect to all the weights in the network.
+The gradient is fed to the optimization method which in turn uses it to update
+the weights, in an attempt to minimize the loss function.
+
+
 ## Architectures
+
 ### Multilayer Perceptron (MLP)
+
+A [multilayer perceptron](https://en.wikipedia.org/wiki/Multilayer_perceptron)
+(MLP) is a [feed-
+forward](https://en.wikipedia.org/wiki/Feedforward_neural_network) artificial
+neural network model that maps sets of input data onto a set of appropriate
+outputs. This is also called a fully-connected fFeed-forward ANN.  An MLP
+consists of multiple layers of nodes in a directed graph, with each layer fully
+connected to the next one. Except for the input nodes, each node is a neuron (or
+processing element) with a nonlinear activation function. MLP utilizes a
+supervised learning technique called backpropagation for training the network.
+MLP is a modification of the standard linear perceptron and can distinguish data
+that are not linearly separable.
+
+![](./images/mlp_network.png "Multilayer Perceptron (MLP)")
+Image Souce: neuralnetworksanddeeplearning.com
+
 ### Recurrent
+
+A [recurrent neural
+network](https://en.wikipedia.org/wiki/Recurrent_neural_network) (RNN) is a
+class of artificial neural network where connections between units form a
+directed cycle. This creates an internal state of the network which allows it to
+exhibit dynamic temporal behavior. Unlike feed-forward neural networks, RNNs can
+use their internal memory to process arbitrary sequences of inputs. This makes
+them applicable to tasks such as unsegmented connected handwriting recognition
+or speech recognition.
+
+There are a number of Twitter bots that are created using LSTMs.  Some fun
+examples are [@DeepDrumpf](https://twitter.com/DeepDrumpf) and
+[@DeepLearnBern](https://twitter.com/DeepLearnBern) by [Brad
+Hayes](https://twitter.com/hayesbh) from MIT.
+
+![](./images/rnn.jpg "Recurrent Neural Network (RNN)")
+
+
+
 ### Convolutional
+
+A [convolutional neural
+network](https://en.wikipedia.org/wiki/Convolutional_neural_network) (CNN, or
+ConvNet) is a type of [feed-
+forward](https://en.wikipedia.org/wiki/Feedforward_neural_network) artificial
+neural network in which the connectivity pattern between its neurons is inspired
+by the organization of the animal visual cortex, whose individual neurons are
+arranged in such a way that they respond to overlapping regions tiling the
+visual field. Convolutional networks were inspired by biological processes and
+are variations of multilayer perceptrons designed to use minimal amounts of
+preprocessing. They have wide applications in image and video recognition,
+recommender systems and natural language processing.
+
+Some creative application of CNNs are [DeepDream](https://github.com/ledell
+/grayarea-deepdream) images and [Neural Style Transfer](https://github.com/fzliu
+/style-transfer).
+
+![](./images/cnn.png "Convolutional Neural Network (CNN)")
+
 ## Visualizing Neural Nets
+
+![](./images/tensorflow_playground.png "Tensorflow Playground")
+
+
+[http://playground.tensorflow.org](http://playground.tensorflow.org/#activation=
+tanh&batchSize=10&dataset=xor&regDataset=reg-plane&learningRate=0.03&regularizat
+ionRate=0&noise=0&networkShape=4,2&seed=0.21753&showTestData=false&discretize=fa
+lse&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=true&co
+sX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classificat
+ion&initZero=false) is a website where you can tweak and visualize neural
+networks.
+
+
+***
+
 ## Deep Learning Software in R
+
+For the purposes of this tutorial, we will review CPU-based deep learning
+packages in R that support numeric, tabular data (data frames).  There is deep
+learning software that supports image data directly, but we will not cover those
+features in this tutorial.  The demos below will train a fully-connected, feed-
+forward ANN (aka mutilayer perceptron) using the
+[mxnet](http://mxnet.readthedocs.io/en/latest/how_to/build.html#r-package-
+installation) and [h2o](https://cran.r-project.org/web/packages/h2o/index.html)
+R packages.  Also worth noting are two other Deep Learning packages in R,
+[deepnet](https://cran.r-project.org/web/packages/deepnet/index.html) and
+[darch](https://cran.r-project.org/web/packages/darch/index.html) (which I don't
+have much experience with).
+
 ### MXNet
+
+Authors: [Tianqi Chen](http://homes.cs.washington.edu/~tqchen/), [Qiang Kou
+(KK)](https://github.com/thirdwing), et. al.
+
+Backend: C++
+
+[MXNet](http://mxnet.readthedocs.io/en/latest/) is deep neural net
+implementation by the same authors as
+[xgboost](https://xgboost.readthedocs.io/en/latest/), and a part of the same
+umbrella project called [DMLC](http://dmlc.ml/) (Distributed Machine Learning
+Community). The [MXNet R
+package](http://mxnet.readthedocs.io/en/latest/packages/r/index.html) brings
+flexible and efficient GPU computing and state-of-art deep learning to R.
+
+Features:
+
+- It enables you to write seamless tensor/matrix computation with multiple GPUs
+in R.
+- Distributed computation.
+- Read image files directly.
+- Offers both a simplified and complex interface for architecting networks.
+- Supports mulit-layer feed-forward ANNs (aka. [multi-layer perceptrons
+(MLP)](https://en.wikipedia.org/wiki/Multilayer_perceptron)).
+- Supports [Convolutional Neural Networks
+(CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network) -- good for
+image recognition.
+- Supports [Long Short-term memory (LSTM)](https://en.wikipedia.org/wiki
+/Long_short-term_memory), a type of [Recurrent Neural Network
+(RNN)](https://en.wikipedia.org/wiki/Recurrent_neural_network) -- good for
+sequence learning, (e.g. speech, text).
+- License: BSD
+
+MXNet Example code below modified from: http://www.r-bloggers.com/deep-learning-
+with-mxnetr/
+The example below contains the canonical 60k/10k MNIST train/test files as
+opposed to the Kaggle version in the blog post.
+
+```{r   n=4}
+# Install pre-build CPU-based mxnet package (no GPU support)
+# install.packages("drat")
+# drat:::addRepo("dmlc")
+# cran <- getOption("repos")
+# cran["dmlc"] <- "https://s3-us-west-2.amazonaws.com/apache-mxnet/R/CRAN/"
+# options(repos = cran)
+# install.packages("mxnet",dependencies = T)
+```
+
+
+
+```{r   n=6, message=FALSE, warning=FALSE}
+library(mxnet)
+```
+
+```{r   n=7}
+# Data load & preprocessing
+
 ## load training data https://h2o-public-test-data.s3.namazonaws.com/bigdata/laptop/mnist/train.csv.gz
+train <- data.table::fread("data/mnist_train.csv")
+
 ## load test data https://h2o-public-test-data.s3.namazonaws.com/bigdata/laptop/mnist/test.csv.gz
+test <- data.table::fread("data/mnist_test.csv")
+
+train <- data.matrix(train)
+test <- data.matrix(test)
+
+train <- data.matrix(train)
+test <- data.matrix(test)
+
+train_x <- train[,-785]
+train_y <- train[,785]
+test_x <- test[,-785]
+test_y <- test[,785]
+
+# lineraly transform it into [0,1]
+# transpose input matrix to npixel x nexamples (format expected by mxnet)
+train_x <- t(train_x/255)
+test_x <- t(test_x/255)
+
+#see that the number of each digit is fairly even
+table(train_y)
+```
+
+
+
+```{r   n=8}
+# Configure the structure of the network
+
+# in mxnet use its own data type symbol to configure the network
+data <- mx.symbol.Variable("data")
+
+# set the first hidden layer where data is the input, name and number of hidden neurons
+fc1 <- mx.symbol.FullyConnected(data, name = "fc1", num_hidden = 128)
+
+# set the activation which takes the output from the first hidden layer fc1
+act1 <- mx.symbol.Activation(fc1, name = "relu1", act_type = "relu")
+
+# second hidden layer takes the result from act1 as the input, name and number of hidden neurons
+fc2 <- mx.symbol.FullyConnected(act1, name = "fc2", num_hidden = 64)
+
+# second activation which takes the output from the second hidden layer fc2
+act2 <- mx.symbol.Activation(fc2, name = "relu2", act_type = "relu")
+
+# this is the output layer where number of nuerons is set to 10 because there's only 10 digits
+fc3 <- mx.symbol.FullyConnected(act2, name = "fc3", num_hidden = 10)
+
+# finally set the activation to softmax to get a probabilistic prediction
+softmax <- mx.symbol.SoftmaxOutput(fc3, name = "sm")
+```
+
+```{r   n=9}
+# set which device to use before we start the computation
+# assign cpu to mxnet
+devices <- mx.cpu()
+
+# set seed to control the random process in mxnet
+mx.set.seed(0)
+
+# train the nueral network
+model <- mx.model.FeedForward.create(
+  softmax, 
+  X = train_x, 
+  y = train_y,
+  ctx = devices, 
+  num.round = 10, 
+  array.batch.size = 100,
+  learning.rate = 0.07, 
+  momentum = 0.9,
+  eval.metric = mx.metric.accuracy,
+  initializer = mx.init.uniform(0.07),
+  epoch.end.callback = mx.callback.log.train.metric(100)
+  )
+```
+
+
+```{r   n=10}
+# make a prediction
+preds <- predict(model, test_x)
+dim(preds)
 ## [1]    10 10000
+
+# matrix with 10000 rows and 10 columns containing the classification probabilities from the output layer
+# use max.col to extract the maximum label for each row
+pred_label <- max.col(t(preds)) - 1
+table(pred_label)
+
+# Compute accuracy
+acc <- sum(test_y == pred_label)/length(test_y)
+print(acc)
+```
+
+
+
+MXNet also has a simplified api,
+[mx.mlp()](https://github.com/dmlc/mxnet/blob/master/R-package/R/mlp.R), which
+provides a more generic interface compared to the network construction procedure
+above.
+
 ### h2o
+
+Authors: [Arno Candel](https://www.linkedin.com/in/candel), H2O.ai contributors
+
+Backend: Java
+
+[H2O Deep Learning](http://docs.h2o.ai/h2o/latest-stable/h2o-
+docs/booklets/DeepLearningBooklet.pdf) builds a feed-forward multilayer
+artificial neural network on an distributed H2O data frame.
+
+Features:
+
+- Distributed and parallelized computation on either a single node or a multi-
+node cluster.
+- Data-distributed, which means the entire dataset does not need to fit into
+memory on a single node.
+- Uses [HOGWILD!](http://pages.cs.wisc.edu/~brecht/papers/hogwildTR.pdf) for
+fast computation.
+- Simplified network building interface.
+- Fully connected, feed-forward ANNs only (CNNs and LSTMs in development).
+- CPU only (GPU interface in development).
+- Automatic early stopping based on convergence of user-specied metrics to user-
+specied relative tolerance.
+- Support  for  exponential  families  (Poisson,  Gamma,  Tweedie)  and  loss
+functions in addition to binomial (Bernoulli), Gaussian and multinomial
+distributions, such as Quantile regression (including Laplace).
+- Grid search for hyperparameter optimization and model selection.
+- Apache 2.0 Licensed.
+- Model export in plain Java code for deployment in production environments.
+- GUI for training & model eval/viz (H2O Flow).
+
+```{r   n=11}
+library(h2o)
+h2o.init(nthreads = -1)  # This means nthreads = num available cores
+```
+
+
+
+```{r   n=22}
+# Data load & preprocessing
+
+train <- h2o.importFile("data/mnist_train.csv")
+test <- h2o.importFile("data/mnist_test.csv")
+
+# Specify the response and predictor columns
+y <- "C785"
+x <- setdiff(names(train), y)
+
+# We encode the response column as categorical for multinomial classification
+train[,y] <- as.factor(train[,y])
+test[,y] <- as.factor(test[,y])
+```
+
+
+```{r}
+# Train an H2O Deep Learning model
+model <- h2o.deeplearning(
+  x = x, 
+  y = y, 
+  training_frame = train,
+  sparse = TRUE,  #speed-up on sparse data (like MNIST)
+  distribution = "multinomial",
+  activation = "Rectifier",
+  hidden = c(128,64),
+  epochs = 10
+  )
+
+```
+
+
+```{r   n=21}
+# Get model performance on a test set
+perf <- h2o.performance(model, test)
+
+# Or get the preds directly and compute classification accuracy
+preds <- h2o.predict(model, newdata = test)
+acc <- sum(test[,y] == preds$predict)/nrow(test)
+print(acc)
+```
+
+```{r}
+# good practice
+h2o.shutdown(prompt = FALSE)
+```
+
+
 ## References
+
+[1] [http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html](http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html)
 
 <!--chapter:end:05-deep-neural-networks.Rmd-->
 
-
 # Stacking {#stacking}
 
-Placeholder
+```{r setup5, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  collapse = TRUE, 
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Super Learner."}
+knitr::include_graphics("./images/h2oEnsemble.png")
+```
+
 
 
 ## Introduction
+
+[Stacking](https://en.wikipedia.org/wiki/Ensemble_learning#Stacking) (sometimes called "stacked generalization") involves training a learning algorithm to combine the predictions of several other learning algorithms. First, all of the other algorithms are trained using the available data, then a combiner algorithm, the *metalearner*, is trained to make a final prediction using all the predictions of the other algorithms as additional inputs. If an arbitrary metalearning algorithm is used, then stacking can theoretically represent any of the ensemble techniques described in this article, although in practice, a single-layer [logistic regression](https://en.wikipedia.org/wiki/Logistic_regression) model is often used for metalearning.
+
+Stacking typically yields performance better than any single one of the trained models in the ensemble.
+
 ## Background
+
+[Leo Breiman](https://en.wikipedia.org/wiki/Leo_Breiman), known for his work on classification and regression trees and the creator of the Random Forest algorithm, formalized stacking in his 1996 paper, ["Stacked Regressions"](http://statistics.berkeley.edu/sites/default/files/tech-reports/367.pdf). Although the idea originated with David Wolpert in 1992 under the name "Stacked Generalization", the modern form of stacking that uses internal k-fold cross-validation was Dr. Breiman's contribution.
+
+However, it wasn't until 2007 that the [theoretical background](http://dx.doi.org/10.2202/1544-6115.1309) for stacking was developed, which is when the algorithm took on the name, "Super Learner". Until this time, the mathematical reasons for why stacking worked were unknown and stacking was considered a "black art." The Super Learner algorithm learns the optimal combination of the base learner fits. In an article titled, "Super Learner", by Mark van der Laan et al., proved that the Super Learner ensemble represents an asymptotically optimal system for learning.
+
 ## Common Types of Ensemble Methods
+
+In statistics and machine learning, ensemble methods use multiple learning algorithms to obtain better predictive performance than could be obtained by any of the constituent algorithms.
+
 ### Bagging
+
+- Reduces variance and increases accuracy
+- Robust against outliers or noisy data
+- Often used with Decision Trees (i.e. Random Forest)
+
 ### Boosting
+
+- Also reduces variance and increases accuracy
+- Not robust against outliers or noisy data
+- Flexible - can be used with any loss function
+
 ### Stacking
+
+- Used to ensemble a diverse group of strong learners
+- Involves training a second-level machine learning algorithm called a "metalearner" to learn the optimal combination of the base learners
+
 ## The Super Learner Algorithm
+
+A common task in machine learning is to perform model selection by specifying a number of models with different parameters.  An example of this is Grid Search.  The first phase of the Super Learner algorithm is computationally equivalent to performing model selection via cross-validation.  The latter phase of the Super Learner algorithm (the metalearning step) is just training another single model (no cross-validation) on the *level one* data.
+
 ### 1. Set up the ensemble
+
+- Specify a list of $L$ base algorithms (with a specific set of model parameters).  These are also called *base learners*.
+- Specify a metalearning algorithm (just another algorithm).
+
 ### 2. Train the ensemble
+
 #### Cross-validate Base Learners
+
+- Perform k-fold cross-validation on each of these learners and collect the cross-validated predicted values from each of the $L$ algorithms.
+- The $N$ cross-validated predicted values from each of the $L$ algorithms can be combined to form a new $N \times L$ matrix. This matrix, along wtih the original response vector, is called the "level-one" data.
+
+
+```{r, echo=FALSE, out.width="70%", fig.cap="Stacking."}
+knitr::include_graphics("./images/stacking_cv.png")
+```
+
 #### Metalearning
+
+- Train the metalearning algorithm on the level-one data.
+- Train each of the $L$ base algorithms on the full training set.
+- The "ensemble model" consists of the $L$ base learning models and the metalearning model, which can then be used to generate predictions on a test set.
+
 ### 3. Predict on new data
+
+- To generate ensemble predictions, first generate predictions from the base learners.
+- Feed those predictions into the metalearner model to generate the ensemble prediction.
+
 ## Stacking Software in R
+
+Stacking is a broad class of algorithms that involves training a second-level "metalearner" to ensemble a group of base learners.  The three packages in the R ecosystem which implement the Super Learner algorithm (stacking on cross-validated predictions) are [SuperLearner](https://github.com/ecpolley/SuperLearner), [subsemble](https://github.com/ledell/subsemble) and [h2oEnsemble](https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble).
+
+Among ensemble software in R, there is also [caretEnsemble](https://github.com/zachmayer/caretEnsemble), but it implements a boostrapped (rather than cross-validated) version of stacking via the `caretStack()` function.  The bootstrapped version will train faster since bootrapping (with a train/test) is a fraction of the work as k-fold cross-validation, however the the ensemble performance suffers as a result of this shortcut.
+
 ### SuperLearner
+
+Authors: Eric Polley, Erin LeDell, Mark van der Laan  
+
+Backend: R with constituent algorithms written in a variety of languages
+
+The original Super Learner implemenation is the [SuperLearner](https://github.com/ecpolley/SuperLearner) R package (2010).
+
+Features: 
+
+- Implements the Super Learner prediction method (stacking) and contains a library of prediction algorithms to be used in the Super Learner.
+- Provides a clean interface to 30+ algorithms in R and defines a consistent API for extensibility.
+- GPL-3 Licensed.
+
 ### subsemble
+
+Authors: Erin LeDell, Stephanie Sapp
+
+Backend: R with constituent algorithms written in a variety of languages
+
+[Subsemble](https://github.com/ledell/subsemble) is a general subset ensemble prediction method, which can be used for small, moderate, or large datasets. Subsemble partitions the full dataset into subsets of observations, fits a specified underlying algorithm on each subset, and uses a unique form of k-fold cross-validation to output a prediction function that combines the subset-specific fits. An oracle result provides a theoretical performance guarantee for Subsemble.
+
+Features:
+
+- Implements the Subsemble Algorithm.
+- Implements the Super Learner Algorithm (stacking).
+- Uses the SuperLearner wrapper interface for defining base learners and metalearners.
+- Multicore and multi-node cluster support via the [snow](https://cran.r-project.org/web/packages/snow/index.html) R package.
+- Improved parallelization over the SuperLearner package.
+- Apache 2.0 Licensed.
+
 ### H2O Ensemble
+
+Authors: Erin LeDell
+
+Backend: Java
+
+H2O Ensemble has been implemented as a stand-alone R package called [h2oEnsemble](https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble). The package is an extension to the [h2o](https://cran.r-project.org/web/packages/h2o/index.html) R package that allows the user to train an ensemble in the H2O cluster using any of the supervised machine learning algorithms H2O.
+
+Features:
+
+- Uses data-distributed and parallelized Java-based algorithms for the ensemble.
+- All training and data processing are performed in the high-performance H2O cluster rather than in R memory.
+- Supports regression and binary classification.
+- Multi-class support in development.
+- Code refactor underway (moving from a separate R package into H2O "proper") so that the H2O Ensemble interface can be exposed in Python and Scala.
+- Apache 2.0 Licensed.
+
+```{r stderr, eval=FALSE}
+# Install h2oEnsemble from GitHub
+install.packages("https://h2o-release.s3.amazonaws.com/h2o-ensemble/R/h2oEnsemble_0.2.1.tar.gz", repos = NULL)
+library(h2oEnsemble)
+```
+
+
+```{r load, echo=FALSE}
+library(h2oEnsemble)
+```
+
 ### Higgs Demo
+
+This is an example of binary classification using the `h2o.ensemble` function, which is available in **h2oEnsemble**.  This demo uses a subset of the [HIGGS dataset](https://archive.ics.uci.edu/ml/datasets/HIGGS), which has 28 numeric features and a binary response.  The machine learning task in this example is to distinguish between a signal process which produces Higgs bosons (Y = 1) and a background process which does not (Y = 0).  The dataset contains approximately the same number of positive vs negative examples.  In other words, this is a balanced, rather than imbalanced, dataset.
+   
+If run from plain R, execute R in the directory of this script. If run from RStudio, be sure to setwd() to the location of this script. h2o.init() starts H2O in R's current working directory. h2o.importFile() looks for files from the perspective of where H2O was started.
+
 #### Start H2O Cluster
+
+```{r, init_h2o}
+h2o.init(nthreads = -1)  # Start an H2O cluster with nthreads = num cores on your machine
+h2o.removeAll() # (Optional) Remove all objects in H2O cluster
+```
+
+
 #### Load Data into H2O Cluster
+
+First, import a sample binary outcome train and test set into the H2O cluster.
+
+```{r data_import, results='hide'}
+# import data
+train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+
+# convert to h2o objects
+train <- as.h2o(train)
+test <- as.h2o(test)
+
+y <- "response"
+x <- setdiff(names(train), y)
+family <- "binomial"
+```
+
+
+For binary classification, the response should be encoded as a [factor](http://stat.ethz.ch/R-manual/R-patched/library/base/html/factor.html) type (also known as the [enum](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html) type in Java or [categorial](http://pandas.pydata.org/pandas-docs/stable/categorical.html) in Python Pandas).  The user can specify column types in the `h2o.importFile` command, or you can convert the response column as follows:
+
+```{r train_test}
+train[, y] <- as.factor(train[, y])  
+test[, y] <- as.factor(test[, y])
+```
+
 #### Specify Base Learners & Metalearner
+
+For this example, we will use the default base learner library for `h2o.ensemble`, which includes the default H2O GLM, Random Forest, GBM and Deep Neural Net (all using default model parameter values).  We will also use the default metalearner, the H2O GLM.
+
+```{r default_learners}
+learner <- c("h2o.glm.wrapper", "h2o.randomForest.wrapper", 
+             "h2o.gbm.wrapper", "h2o.deeplearning.wrapper")
+metalearner <- "h2o.glm.wrapper"
+```
+
 #### Train an Ensemble
+
+Train the ensemble (using 5-fold internal CV) to generate the level-one data.  Note that more CV folds will take longer to train, but should increase performance.
+
+```{r train_ens, results='hide'}
+fit <- h2o.ensemble(
+  x = x, y = y, 
+  training_frame = train, 
+  family = family, 
+  learner = learner, 
+  metalearner = metalearner,
+  cvControl = list(V = 5)
+  )
+```
+
 #### Evaluate Model Performance
+
+Since the response is binomial, we can use Area Under the ROC Curve ([AUC](https://www.kaggle.com/wiki/AUC)) to evaluate the model performance.  Compute test set performance, and sort by AUC (the default metric that is printed for a binomial classification):
+
+```{r perf, results='hide'}
+perf <- h2o.ensemble_performance(fit, newdata = test)
+```
+
+Print the base learner and ensemble performance:
+
+```{r print_perf}
+perf
+```
+
+
+We can compare the performance of the ensemble to the performance of the individual learners in the ensemble.
+
+So we see the best individual algorithm in this group is the GBM with a test set AUC of 0.778, as compared to 0.781 for the ensemble.  At first thought, this might not seem like much, but in many industries like medicine or finance, this small advantage can be highly valuable. 
+
+To increase the performance of the ensemble, we have several options.  One of them is to increase the number of internal cross-validation folds using the `cvControl` argument.  The other options are to change the base learner library or the metalearning algorithm.
+
+Note that the ensemble results above are not reproducible since `h2o.deeplearning` is not reproducible when using multiple cores, and we did not set a seed for `h2o.randomForest.wrapper`.
+
+If we want to evaluate the model by a different metric, say "MSE", then we can pass that metric to the `print` method for and ensemble performance object as follows:
+
+```{r perf_mse}
+print(perf, metric = "MSE")
+```
+
 #### Predict 
+
+If you actually need to generate the predictions (instead of looking only at model performance), you can use the `predict()` function with a test set.  Generate predictions on the test set and store as an H2O Frame:
+
+```{r pred, message=FALSE, results='hide'}
+pred <- predict(fit, newdata = test)
+```
+
+If you need to bring the predictions back into R memory for futher processing, you can convert `pred` to a local R data.frame as follows:
+
+```{r pred_df}
+predictions <- as.data.frame(pred$pred)[,3]  #third column is P(Y==1)
+labels <- as.data.frame(test[,y])[,1]
+```
+
+The `predict` method for an `h2o.ensemble` fit will return a list of two objects.  The `pred$pred` object contains the ensemble predictions, and `pred$basepred` is a matrix of predictions from each of the base learners.  In this particular example where we used four base learners, the `pred$basepred` matrix has four columns.  Keeping the base learner predictions around is useful for model inspection and will allow us to calculate performance of each of the base learners on the test set (for comparison to the ensemble).
+
+
 #### Specifying new learners
+
+Now let's try again with a more extensive set of base learners.  The **h2oEnsemble** packages comes with four functions by default that can be customized to use non-default parameters. 
+
+Here is an example of how to generate a custom learner wrappers:
+
+```{r new_learners}
+h2o.glm.1 <- function(..., alpha = 0.0) h2o.glm.wrapper(..., alpha = alpha)
+h2o.glm.2 <- function(..., alpha = 0.5) h2o.glm.wrapper(..., alpha = alpha)
+h2o.glm.3 <- function(..., alpha = 1.0) h2o.glm.wrapper(..., alpha = alpha)
+
+h2o.randomForest.1 <- function(..., ntrees = 200, nbins = 50, seed = 1) h2o.randomForest.wrapper(..., ntrees = ntrees, nbins = nbins, seed = seed)
+h2o.randomForest.2 <- function(..., ntrees = 200, sample_rate = 0.75, seed = 1) h2o.randomForest.wrapper(..., ntrees = ntrees, sample_rate = sample_rate, seed = seed)
+h2o.randomForest.3 <- function(..., ntrees = 200, sample_rate = 0.85, seed = 1) h2o.randomForest.wrapper(..., ntrees = ntrees, sample_rate = sample_rate, seed = seed)
+h2o.randomForest.4 <- function(..., ntrees = 200, nbins = 50, balance_classes = TRUE, seed = 1) h2o.randomForest.wrapper(..., ntrees = ntrees, nbins = nbins, balance_classes = balance_classes, seed = seed)
+
+h2o.gbm.1 <- function(..., ntrees = 100, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, seed = seed)
+h2o.gbm.2 <- function(..., ntrees = 100, nbins = 50, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, nbins = nbins, seed = seed)
+h2o.gbm.3 <- function(..., ntrees = 100, max_depth = 10, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, max_depth = max_depth, seed = seed)
+h2o.gbm.4 <- function(..., ntrees = 100, col_sample_rate = 0.8, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, col_sample_rate = col_sample_rate, seed = seed)
+h2o.gbm.5 <- function(..., ntrees = 100, col_sample_rate = 0.7, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, col_sample_rate = col_sample_rate, seed = seed)
+h2o.gbm.6 <- function(..., ntrees = 100, col_sample_rate = 0.6, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, col_sample_rate = col_sample_rate, seed = seed)
+h2o.gbm.7 <- function(..., ntrees = 100, balance_classes = TRUE, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, balance_classes = balance_classes, seed = seed)
+h2o.gbm.8 <- function(..., ntrees = 100, max_depth = 3, seed = 1) h2o.gbm.wrapper(..., ntrees = ntrees, max_depth = max_depth, seed = seed)
+
+h2o.deeplearning.1 <- function(..., hidden = c(500,500), activation = "Rectifier", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+h2o.deeplearning.2 <- function(..., hidden = c(200,200,200), activation = "Tanh", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+h2o.deeplearning.3 <- function(..., hidden = c(500,500), activation = "RectifierWithDropout", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+h2o.deeplearning.4 <- function(..., hidden = c(500,500), activation = "Rectifier", epochs = 50, balance_classes = TRUE, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, balance_classes = balance_classes, seed = seed)
+h2o.deeplearning.5 <- function(..., hidden = c(100,100,100), activation = "Rectifier", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+h2o.deeplearning.6 <- function(..., hidden = c(50,50), activation = "Rectifier", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+h2o.deeplearning.7 <- function(..., hidden = c(100,100), activation = "Rectifier", epochs = 50, seed = 1)  h2o.deeplearning.wrapper(..., hidden = hidden, activation = activation, seed = seed)
+```
+
+Let's grab a subset of these learners for our base learner library and re-train the ensemble.
+
 #### Customized base learner library
+
+```{r apply_learners}
+learner <- c(
+  "h2o.glm.wrapper",
+  "h2o.randomForest.1", 
+  "h2o.randomForest.2",
+  "h2o.gbm.1", 
+  "h2o.gbm.6", 
+  "h2o.gbm.8",
+  "h2o.deeplearning.1", 
+  "h2o.deeplearning.6", 
+  "h2o.deeplearning.7"
+  )
+```
+
+
+Train with new library:
+
+```{r train_new_learners, results='hide'}
+fit <- h2o.ensemble(
+  x = x, y = y, 
+  training_frame = train,
+  family = family, 
+  learner = learner, 
+  metalearner = metalearner,
+  cvControl = list(V = 5)
+  )
+```
+
+Evaluate the test set performance: 
+
+```{r new_perf, message=FALSE, results='hide'}
+perf <- h2o.ensemble_performance(fit, newdata = test)
+```
+
+We see an increase in performance by including a more diverse library.
+
+Base learner test AUC (for comparison)
+
+```{r new_perf2}
+perf
+```
+
+So what happens to the ensemble if we remove some of the weaker learners?  Let's remove the GLM and DL from the learner library and see what happens...
+
+Here is a more stripped down version of the base learner library used above:
+
+```{r lean_learners}
+learner <- c(
+  "h2o.randomForest.1",
+  "h2o.randomForest.2",
+  "h2o.gbm.1", 
+  "h2o.gbm.6", 
+  "h2o.gbm.8"
+  )
+```
+
+Again re-train the ensemble and evaluate the performance:
+
+```{r re_train, message=FALSE, results='hide'}
+fit <- h2o.ensemble(
+  x = x, y = y, 
+  training_frame = train,
+  family = family, 
+  learner = learner,
+  metalearner = metalearner,
+  cvControl = list(V = 5)
+  )
+
+perf <- h2o.ensemble_performance(fit, newdata = test)
+```
+
+We actually lose ensemble performance by removing the weak learners!  This demonstrates the power of stacking with a large and diverse set of base learners.
+
+```{r new_perf3}
+perf
+```
+
+At first thought, you may assume that removing less performant models would increase the perforamnce of the ensemble.  However, each learner has it's own unique contribution to the ensemble and the added diversity among learners usually improves performance.  The Super Learner algorithm learns the optimal way of combining all these learners together in a way that is superior to other combination/blending methods.
+
+
 ### Stacking Existing Model Sets
+
+You can also use an existing (cross-validated) list of H2O models as the starting point and use the `h2o.stack()` function to ensemble them together via a specified metalearner.  The base models must have been trained on the same dataset with same response and for cross-validation, must have all used the same folds.
+
+An example follows.  As above, start up the H2O cluster and load the training and test data.
+
+```{r new_example, results='hide', eval=FALSE, echo=FALSE}
+# start a new instance
+library(h2oEnsemble)
+h2o.init(nthreads = -1) # Start H2O cluster using all available CPU threads
+
+# Import a sample binary outcome train/test set into R
+train <- h2o.importFile("https://s3.amazonaws.com/erin-data/higgs/higgs_train_5k.csv")
+test <- h2o.importFile("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+
+y <- "response"
+x <- setdiff(names(train), y)
+family <- "binomial"
+
+#For binary classification, response should be a factor
+train[,y] <- as.factor(train[,y])
+test[,y] <- as.factor(test[,y])
+```
+
+Cross-validate and train a handful of base learners and then use the `h2o.stack()` function to create the ensemble:
+
+```{r train_mult, results='hide'}
+# The h2o.stack function is an alternative to the h2o.ensemble function, which
+# allows the user to specify H2O models individually and then stack them together
+# at a later time.  Saved models, re-loaded from disk, can also be stacked.
+
+# The base models must use identical cv folds; this can be achieved in two ways:
+# 1. they be specified explicitly by using the fold_column argument, or
+# 2. use same value for `nfolds` and set `fold_assignment = "Modulo"`
+
+nfolds <- 5  
+
+glm1 <- h2o.glm(
+  x = x, y = y,
+  family = family,
+  training_frame = train,
+  nfolds = nfolds,
+  fold_assignment = "Modulo",
+  keep_cross_validation_predictions = TRUE
+  )
+
+gbm1 <- h2o.gbm(
+  x = x, y = y, 
+  distribution = "bernoulli",
+  training_frame = train,
+  seed = 1,
+  nfolds = nfolds,
+  fold_assignment = "Modulo",
+  keep_cross_validation_predictions = TRUE
+  )
+
+rf1 <- h2o.randomForest(
+  x = x, y = y, # distribution not used for RF
+  training_frame = train,
+  seed = 1,
+  nfolds = nfolds,
+  fold_assignment = "Modulo",
+  keep_cross_validation_predictions = TRUE
+  )
+
+dl1 <- h2o.deeplearning(
+  x = x, y = y, 
+  distribution = "bernoulli",
+  training_frame = train,
+  nfolds = nfolds,
+  fold_assignment = "Modulo",
+  keep_cross_validation_predictions = TRUE
+  )
+
+models <- list(glm1, gbm1, rf1, dl1)
+metalearner <- "h2o.glm.wrapper"
+
+# stack existing models
+stack <- h2o.stack(
+  models = models,
+  response_frame = train[,y],
+  metalearner = metalearner, 
+  seed = 1,
+  keep_levelone_data = TRUE
+  )
+
+
+# Compute test set performance:
+perf <- h2o.ensemble_performance(stack, newdata = test)
+```
+
+Print base learner and ensemble test set performance:
+
+```{r final_perf}
+print(perf)
+```
+
 #### All done, shutdown H2O
+
+```{r shutdown}
+# good practice
+h2o.shutdown(prompt = FALSE)
+```
 
 <!--chapter:end:06-stacking.Rmd-->
 
