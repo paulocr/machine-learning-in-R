@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 ```
 
 * * *
-![Alt text](./images/shrubs.jpg "GBMs")
+![](./images/shrubs.jpg "GBMs")
 
 * * *
 Image Source: brucecompany.com
@@ -101,18 +101,29 @@ modeling is computational; it leads to the simple modular reweighting
 loss function in AdaBoost leads to fitting trees to weighted versions of the
 original data.
 
+![](./images/boosting_diagram.png "Boosting")
+Source: Elements of Statistical Learning
+
+![](./images/adaboost_m1.png "AdaBoost M1")
+Source: Elements of Statistical Learning
+
 ## Gradient Boosting Algorithm
+
+- The idea of gradient boosting originated in the observation by Leo Breiman that boosting can be interpreted as an optimization algorithm on a suitable cost function.
+- Explicit regression gradient boosting algorithms were subsequently developed by Jerome H. Friedman simultaneously with the more general functional gradient boosting perspective of Llew Mason, Jonathan Baxter, Peter Bartlett and Marcus Frean.
+- The latter two papers introduced the abstract view of boosting algorithms as iterative functional gradient descent algorithms. That is, algorithms that optimize a cost function over function space by iteratively choosing a function (weak hypothesis) that points in the negative gradient direction.
+- This functional gradient view of boosting has led to the development of boosting algorithms in many areas of machine learning and statistics beyond regression and classification.
 
 Friedman's Gradient Boosting Algorithm for a generic loss function, $L(y_i,
 \gamma)$:
 
-![Alt text](./images/friedman_gbm.png "GBM Algorithm")
+![](./images/friedman_gbm.png "GBM Algorithm")
 Source: Elements of Statistical Learning
 
 
 ### Loss Functions and Gradients
 
-![Alt text](./images/gbm_gradients_loss.png "GBM Algorithm")
+![](./images/gbm_gradients_loss.png "GBM Algorithm")
 Source: Elements of Statistical Learning
 
 
@@ -140,6 +151,7 @@ rates.
 of GBM will carry over and also be optimal in a different GBM implementation.
 
 ## Resources
+
  - [Trevor Hastie - Gradient Boosting & Random Forests at H2O World 2014](https:
 //www.youtube.com/watch?v=wPqtzj5VZus&index=16&list=PLNtMya54qvOFQhSZ4IKKXRbMkyL
 Mn0caa) (YouTube)
@@ -193,6 +205,7 @@ gradient boosting machine.  This is the original R implementation of GBM. A
 presentation is available [here](https://www.slideshare.net/mark_landry/gbm-package-in-r) by Mark Landry.
 
 Features:
+
 - Stochastic GBM.
 - Supports up to 1024 factor levels.
 - Supports Classification and regression trees.
@@ -228,21 +241,23 @@ library(cvAUC)
 
 ```{r   n=20}
 # Load 2-class HIGGS dataset
-train <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
-test <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
 ```
 
 ```{r   n=21}
 set.seed(1)
-model <- gbm(formula = response ~ ., 
-             distribution = "bernoulli",
-             data = train,
-             n.trees = 70,
-             interaction.depth = 5,
-             shrinkage = 0.3,
-             bag.fraction = 0.5,
-             train.fraction = 1.0,
-             n.cores = NULL)  #will use all cores by default
+model <- gbm(
+  formula = response ~ .,
+  distribution = "bernoulli",
+  data = train,
+  n.trees = 70,
+  interaction.depth = 5,
+  shrinkage = 0.3,
+  bag.fraction = 0.5,
+  train.fraction = 1.0,
+  n.cores = NULL # will use all cores by default
+  )  
 ```
 
 ```{r   n=22}
@@ -278,6 +293,7 @@ is quite popular on [Kaggle](http://blog.kaggle.com/tag/xgboost/) for data
 mining competitions.
 
 Features:
+
 - Stochastic GBM with  column and row sampling (per split and per tree) for
 better generalization.
 - Includes efficient linear model solver and tree learning algorithms.
@@ -297,9 +313,9 @@ library(cvAUC)
 ```
 
 ```{r   n=25}
-# Load 2-class HIGGS dataset
-train <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
-test <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+# convert data.table to data frames
+train <- as.data.frame(train)
+test <- as.data.frame(test)
 ```
 
 ```{r   n=26}
@@ -307,21 +323,25 @@ test <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
 set.seed(1)
 
 y <- "response"
-train.mx <- sparse.model.matrix(response ~ ., train)
-test.mx <- sparse.model.matrix(response ~ ., test)
+train.mx <- sparse.model.matrix(response ~ ., train)[,-1]
+test.mx <- sparse.model.matrix(response ~ ., test)[,-1]
 dtrain <- xgb.DMatrix(train.mx, label = train[,y])
 dtest <- xgb.DMatrix(test.mx, label = test[,y])
 
-train.gdbt <- xgb.train(params = list(objective = "binary:logistic",
-                                      #num_class = 2,
-                                      #eval_metric = "mlogloss",
-                                      eta = 0.3,
-                                      max_depth = 5,
-                                      subsample = 1,
-                                      colsample_bytree = 0.5), 
-                                      data = dtrain, 
-                                      nrounds = 70, 
-                                      watchlist = list(train = dtrain, test = dtest))
+train.gdbt <- xgb.train(
+  params = list(
+    objective = "binary:logistic",
+    #num_class = 2,
+    #eval_metric = "mlogloss",
+    eta = 0.3,
+    max_depth = 5,
+    subsample = 1,
+    colsample_bytree = 0.5), 
+  data = dtrain, 
+  nrounds = 70, 
+  watchlist = list(train = dtrain, test = dtest),
+  verbose = FALSE   # turn on to see modelling progress
+  )
 ```
 
 
@@ -393,7 +413,6 @@ post](http://blog.h2o.ai/2013/10/building-distributed-gbm-h2o/) by Cliff Click.
 ```{r   n=67}
 #install.packages("h2o")
 library(h2o)
-#h2o.shutdown(prompt = FALSE)  #if required
 h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num available cores
 ```
 
@@ -427,15 +446,17 @@ test.h2o <- as.h2o(test)
 
 ```{r   n=70}
 # Train an H2O GBM model
-model <- h2o.gbm(x = x,
-                 y = y,
-                 training_frame = train.h2o,
-                 ntrees = 70,
-                 learn_rate = 0.3,
-                 sample_rate = 1.0,
-                 max_depth = 5,
-                 col_sample_rate_per_tree = 0.5,
-                 seed = 1)
+model <- h2o.gbm(
+  x = x,
+  y = y,
+  training_frame = train.h2o,
+  ntrees = 70,
+  learn_rate = 0.3,
+  sample_rate = 1.0,
+  max_depth = 5,
+  col_sample_rate_per_tree = 0.5,
+  seed = 1
+  )
 ```
 
 
@@ -450,21 +471,6 @@ print(perf)
 ```{r   n=72}
 # To retreive individual metrics
 h2o.auc(perf)
-```
-
-```{.json .output n=72}
-[
- {
-  "data": {
-   "text/html": "0.773566288998556",
-   "text/latex": "0.773566288998556",
-   "text/markdown": "0.773566288998556",
-   "text/plain": "[1] 0.7735663"
-  },
-  "metadata": {},
-  "output_type": "display_data"
- }
-]
 ```
 
 ```{r   n=73}
@@ -489,11 +495,13 @@ vi[1:10,]
 
 ```{r   n=76}
 # Plot feature importance
-barplot(vi$scaled_importance,
-        names.arg = vi$variable,
-        space = 1,
-        las = 2,
-        main = "Variable Importance: H2O GBM")
+barplot(
+  vi$scaled_importance,
+  names.arg = vi$variable,
+  space = 1,
+  las = 2,
+  main = "Variable Importance: H2O GBM"
+  )
 ```
 
 
@@ -506,41 +514,53 @@ since you started the H2O cluster with `h2o.init()`.
 # Keep in mind that when you use early stopping, you should pass a validation set
 # Since the validation set is used to detmine the stopping point, a separate test set should be used for model eval
 
-#fit <- h2o.gbm(x = x,
-#               y = y,
-#               training_frame = train,
-#               model_id = "gbm_fit3",
-#               validation_frame = valid,  #only used if stopping_rounds > 0
-#               ntrees = 500,
-#               score_tree_interval = 5,      #used for early stopping
-#               stopping_rounds = 3,          #used for early stopping
-#               stopping_metric = "misclassification", #used for early stopping
-#               stopping_tolerance = 0.0005,  #used for early stopping
-#               seed = 1)
+# fit <- h2o.gbm(
+#   x = x,
+#   y = y,
+#   training_frame = train,
+#   model_id = "gbm_fit3",
+#   validation_frame = valid,  #only used if stopping_rounds > 0
+#   ntrees = 500,
+#   score_tree_interval = 5,      #used for early stopping
+#   stopping_rounds = 3,          #used for early stopping
+#   stopping_metric = "misclassification", #used for early stopping
+#   stopping_tolerance = 0.0005,  #used for early stopping
+#   seed = 1
+#   )
 ```
 
 ```{r   n=78}
 # GBM hyperparamters
-gbm_params <- list(learn_rate = seq(0.01, 0.1, 0.01),
-                   max_depth = seq(2, 10, 1),
-                   sample_rate = seq(0.5, 1.0, 0.1),
-                   col_sample_rate = seq(0.1, 1.0, 0.1))
-search_criteria <- list(strategy = "RandomDiscrete", 
-                         max_models = 20)
+gbm_params <- list(
+  learn_rate = seq(0.01, 0.1, 0.01),
+  max_depth = seq(2, 10, 1),
+  sample_rate = seq(0.5, 1.0, 0.1),
+  col_sample_rate = seq(0.1, 1.0, 0.1)
+  )
+
+search_criteria <- list(
+  strategy = "RandomDiscrete", 
+  max_models = 20
+  )
 
 # Train and validate a grid of GBMs
-gbm_grid <- h2o.grid("gbm", x = x, y = y,
-                      grid_id = "gbm_grid",
-                      training_frame = train.h2o,
-                      validation_frame = test.h2o,  #test frame will only be used to calculate metrics
-                      ntrees = 70,
-                      seed = 1,
-                      hyper_params = gbm_params,
-                      search_criteria = search_criteria)
+gbm_grid <- h2o.grid(
+  "gbm", x = x, y = y,
+  grid_id = "gbm_grid",
+  training_frame = train.h2o,
+  validation_frame = test.h2o,  #test frame will only be used to calculate metrics
+  ntrees = 70,
+  seed = 1,
+  hyper_params = gbm_params,
+  search_criteria = search_criteria
+  )
 
-gbm_gridperf <- h2o.getGrid(grid_id = "gbm_grid", 
-                            sort_by = "auc", 
-                            decreasing = TRUE)
+gbm_gridperf <- h2o.getGrid(
+  grid_id = "gbm_grid", 
+  sort_by = "auc", 
+  decreasing = TRUE
+  )
+
 print(gbm_gridperf)
 ```
 
@@ -552,9 +572,12 @@ information about grid search is available in the [H2O grid search R
 tutorial](https://github.com/h2oai/h2o-tutorials/blob/master/h2o-open-
 tour-2016/chicago/grid-search-model-selection.R).
 
+```{r}
+# good practice to shut down h2o environment
+h2o.shutdown(prompt = FALSE)
+```
+
+
 ## References
 
-[1] [Friedman, Jerome H. Greedy function approximation: A gradient boosting
-machine. Ann. Statist. 29 (2001), no. 5, 1189--1232. doi:10.1214/aos/1013203451.
-http://projecteuclid.org/euclid.aos/1013203451.](http://projecteuclid.org/DPubS?
-verb=Display&version=1.0&service=UI&handle=euclid.aos/1013203451&page=record)
+[1] [Friedman, Jerome H. Greedy function approximation: A gradient boostingmachine. Ann. Statist. 29 (2001), no. 5, 1189--1232. doi:10.1214/aos/1013203451.http://projecteuclid.org/euclid.aos/1013203451.](http://projecteuclid.org/DPubS?verb=Display&version=1.0&service=UI&handle=euclid.aos/1013203451&page=record)

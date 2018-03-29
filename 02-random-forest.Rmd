@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 
 * * *
-![Alt text](./images/Forest3.jpg "Random Forest Drawing")
+![](./images/Forest3.jpg "Random Forest Drawing")
 
 * * *
 Drawing by Phil Cutler.
@@ -33,8 +33,7 @@ read through the accompanying [Classification and Regression Trees Tutorial
 
 ## History
 
-The Random Forest algorithm is preceeded by the [Random Subspace
-Method](https://en.wikipedia.org/wiki/Random_subspace_method) (aka "attribute
+The Random Forest algorithm is preceeded by the [Random SubspaceMethod](https://en.wikipedia.org/wiki/Random_subspace_method) (aka "attribute
 bagging"), which accounts for half of the source of randomness in a Random
 Forest.  The Random Subspace Method is an ensemble method that consists of
 several classifiers each operating in a subspace of the original feature space.
@@ -136,7 +135,7 @@ This is an example of a decision boundary in two dimensions of a (binary)
 classification Random Forest.  The black circle is the Bayes Optimal decision
 boundary and the blue square-ish boundary is learned by the classification tree.
 
-![Alt text](./images/boundary_bagging.png "Bagging Bounday")
+![](./images/boundary_bagging.png "Bagging Bounday")
 Source: Elements of Statistical Learning
 
 ## Random Forest by Randomization (aka "Extra-Trees")
@@ -347,8 +346,12 @@ library(cvAUC)
 
 ```{r   n=31}
 # Load binary-response dataset
-train <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
-test <- read.csv("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
+test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+
+# convert to regular data frames
+train <- as.data.frame(train)
+test <- as.data.frame(test)
 
 # Dimensions
 dim(train)
@@ -375,10 +378,23 @@ test[,ycol] <- as.factor(test[,ycol])
 ```{r   n=33}
 # Train a default RF model with 500 trees
 set.seed(1)  # For reproducibility
-system.time(model <- randomForest(x = train[,xcols], 
-                                  y = train[,ycol],
-                                  xtest = test[,xcols],
-                                  ntree = 50))
+system.time(
+  model <- randomForest(
+    x = train[,xcols], 
+    y = train[,ycol],
+    xtest = test[,xcols],
+    ntree = 500
+    )
+  )
+```
+
+```{r}
+# Generate predictions on test dataset
+preds <- model$test$votes[, 2]
+labels <- test[,ycol]
+
+# Compute AUC on the test set
+cvAUC::AUC(predictions = preds, labels = labels)
 ```
 
 
@@ -391,26 +407,33 @@ Backend: Fortran (wraps the `randomForest` package)
 This is a wrapper for the `randomForest` package that parallelizes the tree
 building.
 
-```{r   n=30}
+```{r   n=30, eval=FALSE}
 library(caret)
 library(doParallel)
 library(e1071)
 ```
 
-```{r   n=19}
-# Train a "parRF" model using caret
-# registerDoParallel(cores = 8)
+```{r   n=19, eval=FALSE}
+# set up parallel environment
+cl <- makeCluster(4) 
+registerDoParallel(cl) 
 
-model <- caret::train(x = train[,xcols], 
-                      y = train[,ycol], 
-                      method = "parRF",
-                      preProcess = NULL,
-                      weights = NULL,
-                      metric = "Accuracy",
-                      maximize = TRUE,
-                      trControl = trainControl(), 
-                      tuneGrid = NULL,
-                      tuneLength = 3)
+# Train a "parRF" model using caret
+model <- caret::train(
+  x = train[,xcols],
+  y = train[,ycol],
+  method = "parRF",
+  preProcess = NULL,
+  weights = NULL,
+  metric = "Accuracy",
+  maximize = TRUE,
+  trControl = trainControl(),
+  tuneGrid = NULL,
+  tuneLength = 3
+  )
+
+# good practice to shut down parallel environment
+stopCluster(cl) 
 ```
 
 ## h2o
@@ -455,9 +478,9 @@ h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num availab
 
 
 ```{r   n=39}
-# Load binary-response dataset
-train <- h2o.importFile("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
-test <- h2o.importFile("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
+# convert data to h2o objects
+train <- as.h2o(train)
+test <- as.h2o(test)
 
 # Dimensions
 dim(train)
@@ -480,13 +503,30 @@ test[,ycol] <- as.factor(test[,ycol])
 ```
 
 ```{r   n=41}
-# Train a default RF model with 100 trees
+# Train a default RF model with 500 trees
+system.time(
+  model <- h2o.randomForest(
+    x = xcols,
+    y = ycol,
+    training_frame = train,
+    seed = 1, #for reproducibility
+    ntrees = 500
+    )
+  ) 
+```
 
-system.time(model <- h2o.randomForest(x = xcols,
-                                      y = ycol,
-                                      training_frame = train,
-                                      seed = 1, #for reproducibility
-                                      ntrees = 50)) 
+```{r}
+# Compute AUC on test dataset
+# H2O computes many model performance metrics automatically, including AUC
+
+perf <- h2o.performance(model = model, newdata = test)
+h2o.auc(perf)
+```
+
+
+```{r}
+# good practice to shut down h2o environment
+h2o.shutdown(prompt = FALSE)
 ```
 
 
@@ -546,12 +586,8 @@ Plot from the [ranger article](http://arxiv.org/pdf/1508.04409v1.pdf).
 
 ## References
 
-[1] [http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf](http://www.stat
-.berkeley.edu/~breiman/randomforest2001.pdf)
+[1] [http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf](http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf)
 
-[2] [P. Geurts, D. Ernst., and L. Wehenkel, “Extremely randomized trees”,
-Machine Learning, 63(1), 3-42,
-2006.](http://link.springer.com/article/10.1007%2Fs10994-006-6226-1)
+[2] [P. Geurts, D. Ernst., and L. Wehenkel, “Extremely randomized trees”,Machine Learning, 63(1), 3-42,2006.](http://link.springer.com/article/10.1007%2Fs10994-006-6226-1)
 
-[3] [http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf](http://www.cs.u
-vm.edu/~icdm/algorithms/10Algorithms-08.pdf)
+[3] [http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf](http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf)

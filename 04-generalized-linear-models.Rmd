@@ -1,7 +1,7 @@
 # Generalized Linear Models (GLM) {generalized-linear-models}
 
 * * *
-![Alt text](./images/linear_regression.png "Linear Regression Model")
+![](./images/linear_regression.png "Linear Regression Model")
 
 * * *
 Image Source: Wikipedia
@@ -10,8 +10,7 @@ Image Source: Wikipedia
 
 [Linear Models](https://en.wikipedia.org/wiki/Linear_regression) are one of the
 oldest and most well known statistical prediction algorithms which nowdays is
-often categorized as a "machine learning algorithm." [Generalized Linear
-Models](https://en.wikipedia.org/wiki/Generalized_linear_model) (GLMs) are are a
+often categorized as a "machine learning algorithm." [Generalized LinearModels](https://en.wikipedia.org/wiki/Generalized_linear_model) (GLMs) are are a
 framework for modeling a response variable $y$ that is bounded or discrete.
 Generalized linear models allow for an arbitrary link function $g$ that relates
 the mean of the response variable to the predictors, i.e. $E(y) = g(β′x)$. The
@@ -22,6 +21,7 @@ variable (e.g. $[0,1]$). [1]
 
 Therefore, GLMs allow for response variables that have error distribution models
 other than a normal distribution. Some common examples of GLMs are:
+
 - [Poisson regression](https://en.wikipedia.org/wiki/Poisson_regression) for
 count data.
 - [Logistic regression](https://en.wikipedia.org/wiki/Logistic_regression) and
@@ -59,10 +59,8 @@ linear, and the [gradient](https://en.wikipedia.org/wiki/Gradient), $f′(X) =
 ### Ordinary Least Squares (OLS)
 
 There are many different methods to fitting a linear model, but the most simple
-and popular method is [Ordinary Least
-Squares](https://en.wikipedia.org/wiki/Ordinary_least_squares) (OLS).  The OLS
-method minimizes the [residual sum of
-squares](https://en.wikipedia.org/wiki/Residual_sum_of_squares) (RSS), and leads
+and popular method is [Ordinary LeastSquares](https://en.wikipedia.org/wiki/Ordinary_least_squares) (OLS).  The OLS
+method minimizes the [residual sum ofsquares](https://en.wikipedia.org/wiki/Residual_sum_of_squares) (RSS), and leads
 to a closed-form expression for the estimated value of the unknown parameter
 $\beta$.
 
@@ -126,14 +124,13 @@ regularization.  Ridge is also called $\ell_2$ regularization.
 
 ### Lasso Regression
 
-[Lasso](https://en.wikipedia.org/wiki/Lasso_(statistics) (least absolute
+[Lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) (least absolute
 shrinkage and selection operator) (also Lasso or LASSO) is a regression analysis
 method that performs both variable selection and regularization in order to
 enhance the prediction accuracy and interpretability of the statistical model it
 produces.
 
-- It was [introduced by Robert Tibshirani in 1996](http://www-
-stat.stanford.edu/%7Etibs/lasso/lasso.pdf) based on Leo Breiman’s Nonnegative
+- It was [introduced by Robert Tibshirani in 1996](http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf) based on Leo Breiman’s Nonnegative
 Garrote.
 - Lasso conveniently performs coefficient shrinkage comparable to the ridge
 regression as well as variable selection by reducing coefficients to zero.
@@ -160,6 +157,7 @@ Lasso is also called $\ell_1$ regularization.
 regularization](https://en.wikipedia.org/wiki/Elastic_net_regularization) is a
 simple blend of Lasso and Ridge regularization.  In software, this is typically
 controlled by an `alpha` parameter in between 0 and 1, where:
+
 - `alpha = 0.0` is Ridge regression
 - `alpha = 0.5` is a 50/50 blend of Ridge/Lasso regression
 - `alpha = 1.0` is Lasso regression
@@ -330,9 +328,12 @@ test <- Sacramento[-idxs,]
 
 ```{r   n=2}
 # Fit the GLM
-fit <- glm(price ~ ., 
-           data = train, 
-           family = gaussian())
+fit <- glm(
+  price ~ .,
+  data = train,
+  family = gaussian()
+  )
+
 summary(fit)
 ```
 
@@ -406,11 +407,14 @@ easier it is to use.
 
 ```{r   n=10}
 # Train a caret glm model
-fit <- caret::train(form = price ~ ., 
-                    data = train, 
-                    trControl = trainControl(method = "none"),   
-                    method = "glm",  
-                    family = gaussian())
+fit <- caret::train(
+  form = price ~ ., 
+  data = train, 
+  trControl = trainControl(method = "none"),
+  method = "glm", 
+  family = gaussian()
+  )
+
 summary(fit$finalModel)
 ```
 
@@ -445,7 +449,7 @@ matrix does not need to fit into memory at once.  The h2o package fits both
 regularized and non-regularized GLMs.  The implementation details are documented
 [here](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/booklets/GLMBooklet.pdf).
 
-```{r   n=13}
+```{r   n=13, echo=FALSE, eval=FALSE}
 #h2o.shutdown(prompt = FALSE)
 ```
 
@@ -455,7 +459,9 @@ regularized and non-regularized GLMs.  The implementation details are documented
 # h2o.glm example
 #install.packages("h2o")
 library(h2o)
-h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num available cores
+
+# Start a local H2O cluster using nthreads = num available cores
+h2o.init(nthreads = -1)
 ```
 
 
@@ -496,11 +502,15 @@ names(train)
 xcols <- setdiff(names(train), "price")
 
 # Train a default GLM model with no regularization
-system.time(fit <- h2o.glm(x = xcols,
-                           y = "price",
-                           training_frame = train,
-                           family = "gaussian",
-                           lambda = 0))  #lambda = 0 means no regularization
+system.time(
+  fit <- h2o.glm(
+    x = xcols,
+    y = "price",
+    training_frame = train,
+    family = "gaussian",
+    lambda = 0  #lambda = 0 means no regularization
+    )   
+  )  
 ```
 
 ```{r   n=17}
@@ -516,6 +526,10 @@ h2o.r2(perf)
 sqrt(h2o.mse(perf))
 ```
 
+```{r}
+# good practice
+h2o.shutdown(prompt = FALSE)
+```
 
 
 #### speedglm
@@ -600,18 +614,19 @@ plot(fit)
 ```
 
 
-```{r }
-# TO DO: Add caret::twoClassSim example for comparison instead of "QuickStartExample"
-```
+
 
 ```{r   n=55}
 # Simulate a binary response dataset
 library(caret)
 set.seed(1)
-df <- caret::twoClassSim(n = 100000,
-                         linearVars = 10, 
-                         noiseVars = 50, 
-                         corrVars = 50)
+df <- caret::twoClassSim(
+  n = 100000,
+  linearVars = 10, 
+  noiseVars = 50, 
+  corrVars = 50
+  )
+
 dim(df)
 ```
 
@@ -649,19 +664,26 @@ head(test_y)
 
 ```{r   n=88}
 # Train a Lasso GLM
-system.time(cvfit <- cv.glmnet(x = train_x,
-                               y = train_y,
-                               family = "binomial",
-                               alpha = 1.0))  # alpha = 1 means lasso by default
+system.time(
+  cvfit <- cv.glmnet(
+    x = train_x,
+    y = train_y,
+    family = "binomial",
+    alpha = 1.0     # alpha = 1 means lasso by default
+    )
+  )  
 ```
 
 
 
 ```{r   n=92}
-preds <- predict(cvfit$glmnet.fit, 
-                newx = test_x, 
-                s = cvfit$lambda.min, 
-                type = "response")
+preds <- predict(
+  cvfit$glmnet.fit,
+  newx = test_x, 
+  s = cvfit$lambda.min, 
+  type = "response"
+  )
+
 head(preds)
 ```
 
@@ -688,10 +710,13 @@ is Ridge).
 # Simulate a binary response dataset
 library(caret)
 set.seed(1)
-df <- caret::twoClassSim(n = 100000,
-                         linearVars = 10, 
-                         noiseVars = 50, 
-                         corrVars = 50)
+df <- caret::twoClassSim(
+  n = 100000,
+  linearVars = 10, 
+  noiseVars = 50, 
+  corrVars = 50
+  )
+
 dim(df)
 ```
 
@@ -700,7 +725,11 @@ dim(df)
 ```{r   n=95}
 # Convert the data into an H2OFrame
 library(h2o)
+
+# initialize h2o instance
 h2o.init(nthreads = -1)
+
+# Convert the data into an H2OFrame
 hf <- as.h2o(df)
 ```
 
@@ -715,7 +744,7 @@ hf[,ycol] <- as.factor(hf[,ycol])
 ```
 
 ```{r   n=98}
-dim(df)
+dim(hf)
 ```
 
 
@@ -735,12 +764,16 @@ dim(test)
 
 ```{r   n=100}
 # Train a Lasso GLM
-system.time(fit <- h2o.glm(x = xcols,
-                           y = ycol,
-                           training_frame = train,
-                           family = "binomial",
-                           lambda_search = TRUE,  # compute lasso path
-                           alpha = 1))  # alpha = 1 means lasso, same as glmnet above
+system.time(
+  fit <- h2o.glm(
+    x = xcols,
+    y = ycol,
+    training_frame = train,
+    family = "binomial",
+    lambda_search = TRUE,  # compute lasso path
+    alpha = 1  # alpha = 1 means lasso, same as glmnet above
+    )
+  ) 
 ```
 
 
@@ -749,20 +782,24 @@ system.time(fit <- h2o.glm(x = xcols,
 # Compute AUC on test dataset
 # H2O computes many model performance metrics automatically, including AUC
 
-perf <- h2o.performance(model = fit,
-                        newdata = test)
+perf <- h2o.performance(
+  model = fit,
+  newdata = test
+  )
+
 h2o.auc(perf)
+```
+
+```{r}
+# good practice
+h2o.shutdown(prompt = FALSE)
 ```
 
 
 ## References
 
-[1] [https://en.wikipedia.org/wiki/Linear_regression#Generalized\_linear\_models
-](https://en.wikipedia.org/wiki/Linear_regression#Generalized_linear_models)
+[1] [https://en.wikipedia.org/wiki/Linear_regression#Generalized\_linear\_models](https://en.wikipedia.org/wiki/Linear_regression#Generalized_linear_models)
 
-[2] [https://en.wikipedia.org/wiki/Generalized\_linear\_model](https://en.wikipe
-dia.org/wiki/Generalized_linear_model)
+[2] [https://en.wikipedia.org/wiki/Generalized\_linear\_model](https://en.wikipedia.org/wiki/Generalized_linear_model)
 
-[3] [Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J.
-Royal. Statist. Soc B., Vol. 58, No. 1, pages 267-288). ](http://www-
-stat.stanford.edu/%7Etibs/lasso/lasso.pdf)
+[3] [Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J.Royal. Statist. Soc B., Vol. 58, No. 1, pages 267-288).](http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf)
