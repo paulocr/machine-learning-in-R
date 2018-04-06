@@ -1,6 +1,6 @@
 book_filename: "bookdown-start"
 chapter_name: "Chapter "
-repo: https://github.com/koalaverse/useR!-Machine-Learning-Tutorial
+repo: https://github.com/koalaverse/machine-learning-in-R
 output_dir: docs
 clean: [packages.bib, bookdown.bbl]
 new_session: yes
