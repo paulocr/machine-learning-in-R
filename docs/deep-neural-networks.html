@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="generalized-linear-models.html">
+<link rel="next" href="stacking.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="deep-neural-networks" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Deep Neural Networks (DNN)</h1>
+<hr />
+<div class="figure">
+<img src="images/jmsl-7.png" title="Neural Network" />
+
+</div>
+<hr />
+<p>Image Source: <a href="https://machprinciple.wordpress.com/2013/11/09/neural-network-controlled-spacecraft-control-logic-exists/" class="uri">https://machprinciple.wordpress.com/2013/11/09/neural-network-controlled-spacecraft-control-logic-exists/</a></p>
+<div id="introduction-4" class="section level2">
+<h2><span class="header-section-number">5.1</span> Introduction</h2>
+<p>A <a href="https://en.wikipedia.org/wiki/Deep_learning#Deep_neural_%20network_architectures">Deep Neural Network</a> (DNN) is an <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">artificial neural network</a> (ANN) with multiple hidden layers of units between the input and output layers. Similar to shallow ANNs, DNNs can model complex non-linear relationships. DNN architectures (e.g. for object detection and parsing) generate compositional models where the object is expressed as a layered composition of image primitives. The extra layers enable composition of features from lower layers, giving the potential of modeling complex data with fewer units than a similarly performing shallow network.</p>
+<p>DNNs are typically designed as <a href="https://en.wikipedia.org/wiki/Feedforward_neural_network">feedforward</a> networks, but research has very successfully applied recurrent neural networks, especially LSTM, for applications such as language modeling. Convolutional deep neural networks (CNNs) are used in computer vision where their success is well- documented. CNNs also have been applied to acoustic modeling for automatic speech recognition, where they have shown success over previous models.</p>
+<p>This tutorial will cover DNNs, however, we will introduce the concept of a “shallow” neural network as a starting point.</p>
+</div>
+<div id="history-2" class="section level2">
+<h2><span class="header-section-number">5.2</span> History</h2>
+<p>An interesting fact about neural networks is that the first artificial neural network was implemented in hardware, not software. In 1943, neurophysiologist Warren McCulloch and mathematician Walter Pitts wrote a paper on how neurons might work. In order to describe how neurons in the brain might work, they modeled a simple neural network using electrical circuits. [1]</p>
+</div>
+<div id="backpropagation" class="section level2">
+<h2><span class="header-section-number">5.3</span> Backpropagation</h2>
+<p><a href="https://en.wikipedia.org/wiki/Backpropagation">Backpropagation</a>, an abbreviation for “backward propagation of errors”, is a common method of training artificial neural networks used in conjunction with an optimization method such as <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a>. The method calculates the gradient of a loss function with respect to all the weights in the network. The gradient is fed to the optimization method which in turn uses it to update the weights, in an attempt to minimize the loss function.</p>
+</div>
+<div id="architectures" class="section level2">
+<h2><span class="header-section-number">5.4</span> Architectures</h2>
+<div id="multilayer-perceptron-mlp" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> Multilayer Perceptron (MLP)</h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Multilayer_perceptron">multilayer perceptron</a> (MLP) is a <a href="https://en.wikipedia.org/wiki/Feedforward_neural_network">feed- forward</a> artificial neural network model that maps sets of input data onto a set of appropriate outputs. This is also called a fully-connected fFeed-forward ANN. An MLP consists of multiple layers of nodes in a directed graph, with each layer fully connected to the next one. Except for the input nodes, each node is a neuron (or processing element) with a nonlinear activation function. MLP utilizes a supervised learning technique called backpropagation for training the network. MLP is a modification of the standard linear perceptron and can distinguish data that are not linearly separable.</p>
+<p><img src="images/mlp_network.png" title="Multilayer Perceptron (MLP)" /> Image Souce: neuralnetworksanddeeplearning.com</p>
+</div>
+<div id="recurrent" class="section level3">
+<h3><span class="header-section-number">5.4.2</span> Recurrent</h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Recurrent_neural_network">recurrent neural network</a> (RNN) is a class of artificial neural network where connections between units form a directed cycle. This creates an internal state of the network which allows it to exhibit dynamic temporal behavior. Unlike feed-forward neural networks, RNNs can use their internal memory to process arbitrary sequences of inputs. This makes them applicable to tasks such as unsegmented connected handwriting recognition or speech recognition.</p>
+<p>There are a number of Twitter bots that are created using LSTMs. Some fun examples are <span class="citation">(<span class="citeproc-not-found" data-reference-id="DeepDrumpf"><strong>???</strong></span>)</span>(<a href="https://twitter.com/DeepDrumpf" class="uri">https://twitter.com/DeepDrumpf</a>) and <span class="citation">(<span class="citeproc-not-found" data-reference-id="DeepLearnBern"><strong>???</strong></span>)</span>(<a href="https://twitter.com/DeepLearnBern" class="uri">https://twitter.com/DeepLearnBern</a>) by <a href="https://twitter.com/hayesbh">Brad Hayes</a> from MIT.</p>
+<div class="figure">
+<img src="images/rnn.jpg" title="Recurrent Neural Network (RNN)" />
+
+</div>
+</div>
+<div id="convolutional" class="section level3">
+<h3><span class="header-section-number">5.4.3</span> Convolutional</h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Convolutional_neural_network">convolutional neural network</a> (CNN, or ConvNet) is a type of <a href="https://en.wikipedia.org/wiki/Feedforward_neural_network">feed- forward</a> artificial neural network in which the connectivity pattern between its neurons is inspired by the organization of the animal visual cortex, whose individual neurons are arranged in such a way that they respond to overlapping regions tiling the visual field. Convolutional networks were inspired by biological processes and are variations of multilayer perceptrons designed to use minimal amounts of preprocessing. They have wide applications in image and video recognition, recommender systems and natural language processing.</p>
+<p>Some creative application of CNNs are <a href="https://github.com/ledell%20/grayarea-deepdream">DeepDream</a> images and <a href="https://github.com/fzliu%20/style-transfer">Neural Style Transfer</a>.</p>
+<div class="figure">
+<img src="images/cnn.png" title="Convolutional Neural Network (CNN)" />
+
+</div>
+</div>
+</div>
+<div id="visualizing-neural-nets" class="section level2">
+<h2><span class="header-section-number">5.5</span> Visualizing Neural Nets</h2>
+<div class="figure">
+<img src="images/tensorflow_playground.png" title="Tensorflow Playground" />
+
+</div>
+<p><a href="http://playground.tensorflow.org/#activation=%20tanh&amp;batchSize=10&amp;dataset=xor&amp;regDataset=reg-plane&amp;learningRate=0.03&amp;regularizat%20ionRate=0&amp;noise=0&amp;networkShape=4,2&amp;seed=0.21753&amp;showTestData=false&amp;discretize=fa%20lse&amp;percTrainData=50&amp;x=true&amp;y=true&amp;xTimesY=false&amp;xSquared=false&amp;ySquared=true&amp;co%20sX=false&amp;sinX=false&amp;cosY=false&amp;sinY=false&amp;collectStats=false&amp;problem=classificat%20ion&amp;initZero=false">http://playground.tensorflow.org</a> is a website where you can tweak and visualize neural networks.</p>
+<hr />
+</div>
+<div id="deep-learning-software-in-r" class="section level2">
+<h2><span class="header-section-number">5.6</span> Deep Learning Software in R</h2>
+<p>For the purposes of this tutorial, we will review CPU-based deep learning packages in R that support numeric, tabular data (data frames). There is deep learning software that supports image data directly, but we will not cover those features in this tutorial. The demos below will train a fully-connected, feed- forward ANN (aka mutilayer perceptron) using the <a href="http://mxnet.readthedocs.io/en/latest/how_to/build.html#r-package-%20installation">mxnet</a> and <a href="https://cran.r-project.org/web/packages/h2o/index.html">h2o</a> R packages. Also worth noting are two other Deep Learning packages in R, <a href="https://cran.r-project.org/web/packages/deepnet/index.html">deepnet</a> and <a href="https://cran.r-project.org/web/packages/darch/index.html">darch</a> (which I don’t have much experience with).</p>
+<div id="mxnet" class="section level3">
+<h3><span class="header-section-number">5.6.1</span> MXNet</h3>
+<p>Authors: <a href="http://homes.cs.washington.edu/~tqchen/">Tianqi Chen</a>, <a href="https://github.com/thirdwing">Qiang Kou (KK)</a>, et. al.</p>
+<p>Backend: C++</p>
+<p><a href="http://mxnet.readthedocs.io/en/latest/">MXNet</a> is deep neural net implementation by the same authors as <a href="https://xgboost.readthedocs.io/en/latest/">xgboost</a>, and a part of the same umbrella project called <a href="http://dmlc.ml/">DMLC</a> (Distributed Machine Learning Community). The <a href="http://mxnet.readthedocs.io/en/latest/packages/r/index.html">MXNet R package</a> brings flexible and efficient GPU computing and state-of-art deep learning to R.</p>
+<p>Features:</p>
+<ul>
+<li>It enables you to write seamless tensor/matrix computation with multiple GPUs in R.</li>
+<li>Distributed computation.</li>
+<li>Read image files directly.</li>
+<li>Offers both a simplified and complex interface for architecting networks.</li>
+<li>Supports mulit-layer feed-forward ANNs (aka. <a href="https://en.wikipedia.org/wiki/Multilayer_perceptron">multi-layer perceptrons (MLP)</a>).</li>
+<li>Supports <a href="https://en.wikipedia.org/wiki/Convolutional_neural_network">Convolutional Neural Networks (CNN)</a> – good for image recognition.</li>
+<li>Supports <a href="https://en.wikipedia.org/wiki%20/Long_short-term_memory">Long Short-term memory (LSTM)</a>, a type of <a href="https://en.wikipedia.org/wiki/Recurrent_neural_network">Recurrent Neural Network (RNN)</a> – good for sequence learning, (e.g. speech, text).</li>
+<li>License: BSD</li>
+</ul>
+<p>MXNet Example code below modified from: <a href="http://www.r-bloggers.com/deep-learning-" class="uri">http://www.r-bloggers.com/deep-learning-</a> with-mxnetr/ The example below contains the canonical 60k/10k MNIST train/test files as opposed to the Kaggle version in the blog post.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install pre-build CPU-based mxnet package (no GPU support)</span>
+<span class="co"># install.packages(&quot;drat&quot;)</span>
+<span class="co"># drat:::addRepo(&quot;dmlc&quot;)</span>
+<span class="co"># cran &lt;- getOption(&quot;repos&quot;)</span>
+<span class="co"># cran[&quot;dmlc&quot;] &lt;- &quot;https://s3-us-west-2.amazonaws.com/apache-mxnet/R/CRAN/&quot;</span>
+<span class="co"># options(repos = cran)</span>
+<span class="co"># install.packages(&quot;mxnet&quot;,dependencies = T)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mxnet)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Data load &amp; preprocessing</span>
+
+## load training data https://h2o-public-test-data.s3.amazonaws.com/bigdata/laptop/mnist/train.csv.gz
+train &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;data/mnist_train.csv&quot;</span>)
+## 
+Read <span class="fl">66.7</span>% of <span class="dv">60000</span> rows
+Read <span class="dv">60000</span> rows and <span class="dv">785</span> (of <span class="dv">785</span>) columns from <span class="fl">0.102</span> GB file <span class="cf">in</span> <span class="dv">00</span><span class="op">:</span><span class="dv">00</span><span class="op">:</span><span class="dv">03</span>
+
+## load test data https://h2o-public-test-data.s3.amazonaws.com/bigdata/laptop/mnist/test.csv.gz
+test &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;data/mnist_test.csv&quot;</span>)
+
+train &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(train)
+test &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(test)
+
+train &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(train)
+test &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(test)
+
+train_x &lt;-<span class="st"> </span>train[,<span class="op">-</span><span class="dv">785</span>]
+train_y &lt;-<span class="st"> </span>train[,<span class="dv">785</span>]
+test_x &lt;-<span class="st"> </span>test[,<span class="op">-</span><span class="dv">785</span>]
+test_y &lt;-<span class="st"> </span>test[,<span class="dv">785</span>]
+
+<span class="co"># lineraly transform it into [0,1]</span>
+<span class="co"># transpose input matrix to npixel x nexamples (format expected by mxnet)</span>
+train_x &lt;-<span class="st"> </span><span class="kw">t</span>(train_x<span class="op">/</span><span class="dv">255</span>)
+test_x &lt;-<span class="st"> </span><span class="kw">t</span>(test_x<span class="op">/</span><span class="dv">255</span>)
+
+<span class="co">#see that the number of each digit is fairly even</span>
+<span class="kw">table</span>(train_y)
+## train_y
+##    0    1    2    3    4    5    6    7    8    9 
+## 5923 6742 5958 6131 5842 5421 5918 6265 5851 5949</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Configure the structure of the network</span>
+
+<span class="co"># in mxnet use its own data type symbol to configure the network</span>
+data &lt;-<span class="st"> </span><span class="kw">mx.symbol.Variable</span>(<span class="st">&quot;data&quot;</span>)
+
+<span class="co"># set the first hidden layer where data is the input, name and number of hidden neurons</span>
+fc1 &lt;-<span class="st"> </span><span class="kw">mx.symbol.FullyConnected</span>(data, <span class="dt">name =</span> <span class="st">&quot;fc1&quot;</span>, <span class="dt">num_hidden =</span> <span class="dv">128</span>)
+
+<span class="co"># set the activation which takes the output from the first hidden layer fc1</span>
+act1 &lt;-<span class="st"> </span><span class="kw">mx.symbol.Activation</span>(fc1, <span class="dt">name =</span> <span class="st">&quot;relu1&quot;</span>, <span class="dt">act_type =</span> <span class="st">&quot;relu&quot;</span>)
+
+<span class="co"># second hidden layer takes the result from act1 as the input, name and number of hidden neurons</span>
+fc2 &lt;-<span class="st"> </span><span class="kw">mx.symbol.FullyConnected</span>(act1, <span class="dt">name =</span> <span class="st">&quot;fc2&quot;</span>, <span class="dt">num_hidden =</span> <span class="dv">64</span>)
+
+<span class="co"># second activation which takes the output from the second hidden layer fc2</span>
+act2 &lt;-<span class="st"> </span><span class="kw">mx.symbol.Activation</span>(fc2, <span class="dt">name =</span> <span class="st">&quot;relu2&quot;</span>, <span class="dt">act_type =</span> <span class="st">&quot;relu&quot;</span>)
+
+<span class="co"># this is the output layer where number of nuerons is set to 10 because there&#39;s only 10 digits</span>
+fc3 &lt;-<span class="st"> </span><span class="kw">mx.symbol.FullyConnected</span>(act2, <span class="dt">name =</span> <span class="st">&quot;fc3&quot;</span>, <span class="dt">num_hidden =</span> <span class="dv">10</span>)
+
+<span class="co"># finally set the activation to softmax to get a probabilistic prediction</span>
+softmax &lt;-<span class="st"> </span><span class="kw">mx.symbol.SoftmaxOutput</span>(fc3, <span class="dt">name =</span> <span class="st">&quot;sm&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set which device to use before we start the computation</span>
+<span class="co"># assign cpu to mxnet</span>
+devices &lt;-<span class="st"> </span><span class="kw">mx.cpu</span>()
+
+<span class="co"># set seed to control the random process in mxnet</span>
+<span class="kw">mx.set.seed</span>(<span class="dv">0</span>)
+
+<span class="co"># train the nueral network</span>
+model &lt;-<span class="st"> </span><span class="kw">mx.model.FeedForward.create</span>(
+  softmax, 
+  <span class="dt">X =</span> train_x, 
+  <span class="dt">y =</span> train_y,
+  <span class="dt">ctx =</span> devices, 
+  <span class="dt">num.round =</span> <span class="dv">10</span>, 
+  <span class="dt">array.batch.size =</span> <span class="dv">100</span>,
+  <span class="dt">learning.rate =</span> <span class="fl">0.07</span>, 
+  <span class="dt">momentum =</span> <span class="fl">0.9</span>,
+  <span class="dt">eval.metric =</span> mx.metric.accuracy,
+  <span class="dt">initializer =</span> <span class="kw">mx.init.uniform</span>(<span class="fl">0.07</span>),
+  <span class="dt">epoch.end.callback =</span> <span class="kw">mx.callback.log.train.metric</span>(<span class="dv">100</span>)
+  )</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make a prediction</span>
+preds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, test_x)
+<span class="kw">dim</span>(preds)
+## [1]    10 10000
+## [1]    10 10000
+
+<span class="co"># matrix with 10000 rows and 10 columns containing the classification probabilities from the output layer</span>
+<span class="co"># use max.col to extract the maximum label for each row</span>
+pred_label &lt;-<span class="st"> </span><span class="kw">max.col</span>(<span class="kw">t</span>(preds)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
+<span class="kw">table</span>(pred_label)
+## pred_label
+##    0    1    2    3    4    5    6    7    8    9 
+## 1004 1140 1018 1029  929  880  946 1022  981 1051
+
+<span class="co"># Compute accuracy</span>
+acc &lt;-<span class="st"> </span><span class="kw">sum</span>(test_y <span class="op">==</span><span class="st"> </span>pred_label)<span class="op">/</span><span class="kw">length</span>(test_y)
+<span class="kw">print</span>(acc)
+## [1] 0.977</code></pre></div>
+<p>MXNet also has a simplified api, <a href="https://github.com/dmlc/mxnet/blob/master/R-package/R/mlp.R">mx.mlp()</a>, which provides a more generic interface compared to the network construction procedure above.</p>
+</div>
+<div id="h2o-4" class="section level3">
+<h3><span class="header-section-number">5.6.2</span> h2o</h3>
+<p>Authors: <a href="https://www.linkedin.com/in/candel">Arno Candel</a>, H2O.ai contributors</p>
+<p>Backend: Java</p>
+<p><a href="http://docs.h2o.ai/h2o/latest-stable/h2o-%20docs/booklets/DeepLearningBooklet.pdf">H2O Deep Learning</a> builds a feed-forward multilayer artificial neural network on an distributed H2O data frame.</p>
+<p>Features:</p>
+<ul>
+<li>Distributed and parallelized computation on either a single node or a multi- node cluster.</li>
+<li>Data-distributed, which means the entire dataset does not need to fit into memory on a single node.</li>
+<li>Uses <a href="http://pages.cs.wisc.edu/~brecht/papers/hogwildTR.pdf">HOGWILD!</a> for fast computation.</li>
+<li>Simplified network building interface.</li>
+<li>Fully connected, feed-forward ANNs only (CNNs and LSTMs in development).</li>
+<li>CPU only (GPU interface in development).</li>
+<li>Automatic early stopping based on convergence of user-specied metrics to user- specied relative tolerance.</li>
+<li>Support for exponential families (Poisson, Gamma, Tweedie) and loss functions in addition to binomial (Bernoulli), Gaussian and multinomial distributions, such as Quantile regression (including Laplace).</li>
+<li>Grid search for hyperparameter optimization and model selection.</li>
+<li>Apache 2.0 Licensed.</li>
+<li>Model export in plain Java code for deployment in production environments.</li>
+<li>GUI for training &amp; model eval/viz (H2O Flow).</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(h2o)
+<span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)  <span class="co"># This means nthreads = num available cores</span>
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpo3M4DD/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpo3M4DD/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: .. Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 643 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 13 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_ygp041 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Data load &amp; preprocessing</span>
+
+train &lt;-<span class="st"> </span><span class="kw">h2o.importFile</span>(<span class="st">&quot;data/mnist_train.csv&quot;</span>)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================</span><span class="st">                </span><span class="er">|</span><span class="st">  </span><span class="dv">75</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+test &lt;-<span class="st"> </span><span class="kw">h2o.importFile</span>(<span class="st">&quot;data/mnist_test.csv&quot;</span>)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================</span><span class="st">                                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">25</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+
+<span class="co"># Specify the response and predictor columns</span>
+y &lt;-<span class="st"> &quot;C785&quot;</span>
+x &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), y)
+
+<span class="co"># We encode the response column as categorical for multinomial classification</span>
+train[,y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(train[,y])
+test[,y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(test[,y])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train an H2O Deep Learning model</span>
+model &lt;-<span class="st"> </span><span class="kw">h2o.deeplearning</span>(
+  <span class="dt">x =</span> x, 
+  <span class="dt">y =</span> y, 
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">sparse =</span> <span class="ot">TRUE</span>,  <span class="co">#speed-up on sparse data (like MNIST)</span>
+  <span class="dt">distribution =</span> <span class="st">&quot;multinomial&quot;</span>,
+  <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>,
+  <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">128</span>,<span class="dv">64</span>),
+  <span class="dt">epochs =</span> <span class="dv">10</span>
+  )
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=</span><span class="st">                                                                </span><span class="er">|</span><span class="st">   </span><span class="dv">2</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==</span><span class="st">                                                               </span><span class="er">|</span><span class="st">   </span><span class="dv">3</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===</span><span class="st">                                                              </span><span class="er">|</span><span class="st">   </span><span class="dv">5</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====</span><span class="st">                                                             </span><span class="er">|</span><span class="st">   </span><span class="dv">7</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======</span><span class="st">                                                           </span><span class="er">|</span><span class="st">   </span><span class="dv">8</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======</span><span class="st">                                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">10</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========</span><span class="st">                                                         </span><span class="er">|</span><span class="st">  </span><span class="dv">12</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========</span><span class="st">                                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">14</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========</span><span class="st">                                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">15</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========</span><span class="st">                                                      </span><span class="er">|</span><span class="st">  </span><span class="dv">17</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|============</span><span class="st">                                                     </span><span class="er">|</span><span class="st">  </span><span class="dv">19</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============</span><span class="st">                                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============</span><span class="st">                                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">22</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============</span><span class="st">                                                  </span><span class="er">|</span><span class="st">  </span><span class="dv">24</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================</span><span class="st">                                                </span><span class="er">|</span><span class="st">  </span><span class="dv">25</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================</span><span class="st">                                               </span><span class="er">|</span><span class="st">  </span><span class="dv">27</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================</span><span class="st">                                              </span><span class="er">|</span><span class="st">  </span><span class="dv">29</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====================</span><span class="st">                                             </span><span class="er">|</span><span class="st">  </span><span class="dv">31</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================</span><span class="st">                                            </span><span class="er">|</span><span class="st">  </span><span class="dv">32</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================</span><span class="st">                                           </span><span class="er">|</span><span class="st">  </span><span class="dv">34</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================</span><span class="st">                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">36</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================</span><span class="st">                                         </span><span class="er">|</span><span class="st">  </span><span class="dv">37</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================</span><span class="st">                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">39</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================</span><span class="st">                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">41</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|============================</span><span class="st">                                     </span><span class="er">|</span><span class="st">  </span><span class="dv">42</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================</span><span class="st">                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">44</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">46</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============================</span><span class="st">                                  </span><span class="er">|</span><span class="st">  </span><span class="dv">48</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================================</span><span class="st">                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">49</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================</span><span class="st">                                </span><span class="er">|</span><span class="st">  </span><span class="dv">51</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================================</span><span class="st">                               </span><span class="er">|</span><span class="st">  </span><span class="dv">53</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================================</span><span class="st">                              </span><span class="er">|</span><span class="st">  </span><span class="dv">54</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====================================</span><span class="st">                             </span><span class="er">|</span><span class="st">  </span><span class="dv">56</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================================</span><span class="st">                           </span><span class="er">|</span><span class="st">  </span><span class="dv">58</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================================</span><span class="st">                          </span><span class="er">|</span><span class="st">  </span><span class="dv">59</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================================</span><span class="st">                         </span><span class="er">|</span><span class="st">  </span><span class="dv">61</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================================</span><span class="st">                        </span><span class="er">|</span><span class="st">  </span><span class="dv">63</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================================</span><span class="st">                       </span><span class="er">|</span><span class="st">  </span><span class="dv">65</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========================================</span><span class="st">                      </span><span class="er">|</span><span class="st">  </span><span class="dv">66</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|============================================</span><span class="st">                     </span><span class="er">|</span><span class="st">  </span><span class="dv">68</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================</span><span class="st">                    </span><span class="er">|</span><span class="st">  </span><span class="dv">70</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============================================</span><span class="st">                   </span><span class="er">|</span><span class="st">  </span><span class="dv">71</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============================================</span><span class="st">                  </span><span class="er">|</span><span class="st">  </span><span class="dv">73</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================</span><span class="st">                </span><span class="er">|</span><span class="st">  </span><span class="dv">75</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================================================</span><span class="st">               </span><span class="er">|</span><span class="st">  </span><span class="dv">76</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================================================</span><span class="st">              </span><span class="er">|</span><span class="st">  </span><span class="dv">78</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====================================================</span><span class="st">             </span><span class="er">|</span><span class="st">  </span><span class="dv">80</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================================================</span><span class="st">            </span><span class="er">|</span><span class="st">  </span><span class="dv">82</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================================================</span><span class="st">           </span><span class="er">|</span><span class="st">  </span><span class="dv">83</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================================================</span><span class="st">          </span><span class="er">|</span><span class="st">  </span><span class="dv">85</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================================================</span><span class="st">         </span><span class="er">|</span><span class="st">  </span><span class="dv">87</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================================================</span><span class="st">        </span><span class="er">|</span><span class="st">  </span><span class="dv">88</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========================================================</span><span class="st">      </span><span class="er">|</span><span class="st">  </span><span class="dv">90</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|============================================================</span><span class="st">     </span><span class="er">|</span><span class="st">  </span><span class="dv">92</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================================</span><span class="st">    </span><span class="er">|</span><span class="st">  </span><span class="dv">93</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============================================================</span><span class="st">   </span><span class="er">|</span><span class="st">  </span><span class="dv">95</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============================================================</span><span class="st">  </span><span class="er">|</span><span class="st">  </span><span class="dv">97</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================================================================</span><span class="st"> </span><span class="er">|</span><span class="st">  </span><span class="dv">99</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get model performance on a test set</span>
+perf &lt;-<span class="st"> </span><span class="kw">h2o.performance</span>(model, test)
+
+<span class="co"># Or get the preds directly and compute classification accuracy</span>
+preds &lt;-<span class="st"> </span><span class="kw">h2o.predict</span>(model, <span class="dt">newdata =</span> test)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+acc &lt;-<span class="st"> </span><span class="kw">sum</span>(test[,y] <span class="op">==</span><span class="st"> </span>preds<span class="op">$</span>predict)<span class="op">/</span><span class="kw">nrow</span>(test)
+<span class="kw">print</span>(acc)
+## [1] 0.9724</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+</div>
+</div>
+<div id="references-3" class="section level2">
+<h2><span class="header-section-number">5.7</span> References</h2>
+<p>[1] [<a href="http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html" class="uri">http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html</a>](<a href="http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html" class="uri">http://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html</a>)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="generalized-linear-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stacking.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/05-deep-neural-networks.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

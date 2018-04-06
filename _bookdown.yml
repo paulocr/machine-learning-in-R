@@ -1,5 +1,6 @@
-book_filename: "bookdown-demo"
-language:
-  ui:
-    chapter_name: "Chapter "
-delete_merged_file: true
+book_filename: "bookdown-start"
+chapter_name: "Chapter "
+repo: https://github.com/koalaverse/useR!-Machine-Learning-Tutorial
+output_dir: docs
+clean: [packages.bib, bookdown.bbl]
+new_session: yes

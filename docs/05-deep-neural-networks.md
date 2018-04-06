@@ -1,14 +1,6 @@
 # Deep Neural Networks (DNN) {#deep-neural-networks}
 
-```{r setup4, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  fig.align = "center",
-  collapse = TRUE, 
-  message = FALSE,
-  warning = FALSE
-)
-```
+
 
 * * *
 ![](./images/jmsl-7.png "Neural Network")
@@ -187,7 +179,8 @@ with-mxnetr/
 The example below contains the canonical 60k/10k MNIST train/test files as
 opposed to the Kaggle version in the blog post.
 
-```{r   n=4}
+
+```r
 # Install pre-build CPU-based mxnet package (no GPU support)
 # install.packages("drat")
 # drat:::addRepo("dmlc")
@@ -199,15 +192,18 @@ opposed to the Kaggle version in the blog post.
 
 
 
-```{r   n=6, message=FALSE, warning=FALSE}
+
+```r
 library(mxnet)
 ```
 
-```{r   n=7}
+
+```r
 # Data load & preprocessing
 
 ## load training data https://h2o-public-test-data.s3.amazonaws.com/bigdata/laptop/mnist/train.csv.gz
 train <- data.table::fread("data/mnist_train.csv")
+## Read 66.7% of 60000 rowsRead 60000 rows and 785 (of 785) columns from 0.102 GB file in 00:00:03
 
 ## load test data https://h2o-public-test-data.s3.amazonaws.com/bigdata/laptop/mnist/test.csv.gz
 test <- data.table::fread("data/mnist_test.csv")
@@ -230,11 +226,15 @@ test_x <- t(test_x/255)
 
 #see that the number of each digit is fairly even
 table(train_y)
+## train_y
+##    0    1    2    3    4    5    6    7    8    9 
+## 5923 6742 5958 6131 5842 5421 5918 6265 5851 5949
 ```
 
 
 
-```{r   n=8}
+
+```r
 # Configure the structure of the network
 
 # in mxnet use its own data type symbol to configure the network
@@ -259,7 +259,8 @@ fc3 <- mx.symbol.FullyConnected(act2, name = "fc3", num_hidden = 10)
 softmax <- mx.symbol.SoftmaxOutput(fc3, name = "sm")
 ```
 
-```{r   n=9}
+
+```r
 # set which device to use before we start the computation
 # assign cpu to mxnet
 devices <- mx.cpu()
@@ -284,20 +285,26 @@ model <- mx.model.FeedForward.create(
 ```
 
 
-```{r   n=10}
+
+```r
 # make a prediction
 preds <- predict(model, test_x)
 dim(preds)
+## [1]    10 10000
 ## [1]    10 10000
 
 # matrix with 10000 rows and 10 columns containing the classification probabilities from the output layer
 # use max.col to extract the maximum label for each row
 pred_label <- max.col(t(preds)) - 1
 table(pred_label)
+## pred_label
+##    0    1    2    3    4    5    6    7    8    9 
+## 1004 1140 1018 1029  929  880  946 1022  981 1051
 
 # Compute accuracy
 acc <- sum(test_y == pred_label)/length(test_y)
 print(acc)
+## [1] 0.977
 ```
 
 
@@ -338,18 +345,50 @@ distributions, such as Quantile regression (including Laplace).
 - Model export in plain Java code for deployment in production environments.
 - GUI for training & model eval/viz (H2O Flow).
 
-```{r   n=11}
+
+```r
 library(h2o)
 h2o.init(nthreads = -1)  # This means nthreads = num available cores
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpo3M4DD/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpo3M4DD/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: .. Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 643 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 13 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_ygp041 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)
 ```
 
 
 
-```{r   n=22}
+
+```r
 # Data load & preprocessing
 
 train <- h2o.importFile("data/mnist_train.csv")
+##   |                                                                         |                                                                 |   0%  |                                                                         |=================================================                |  75%  |                                                                         |=================================================================| 100%
 test <- h2o.importFile("data/mnist_test.csv")
+##   |                                                                         |                                                                 |   0%  |                                                                         |================                                                 |  25%  |                                                                         |=================================================================| 100%
 
 # Specify the response and predictor columns
 y <- "C785"
@@ -361,7 +400,8 @@ test[,y] <- as.factor(test[,y])
 ```
 
 
-```{r}
+
+```r
 # Train an H2O Deep Learning model
 model <- h2o.deeplearning(
   x = x, 
@@ -373,23 +413,28 @@ model <- h2o.deeplearning(
   hidden = c(128,64),
   epochs = 10
   )
-
+##   |                                                                         |                                                                 |   0%  |                                                                         |=                                                                |   2%  |                                                                         |==                                                               |   3%  |                                                                         |===                                                              |   5%  |                                                                         |====                                                             |   7%  |                                                                         |======                                                           |   8%  |                                                                         |=======                                                          |  10%  |                                                                         |========                                                         |  12%  |                                                                         |=========                                                        |  14%  |                                                                         |==========                                                       |  15%  |                                                                         |===========                                                      |  17%  |                                                                         |============                                                     |  19%  |                                                                         |=============                                                    |  20%  |                                                                         |==============                                                   |  22%  |                                                                         |===============                                                  |  24%  |                                                                         |=================                                                |  25%  |                                                                         |==================                                               |  27%  |                                                                         |===================                                              |  29%  |                                                                         |====================                                             |  31%  |                                                                         |=====================                                            |  32%  |                                                                         |======================                                           |  34%  |                                                                         |=======================                                          |  36%  |                                                                         |========================                                         |  37%  |                                                                         |=========================                                        |  39%  |                                                                         |==========================                                       |  41%  |                                                                         |============================                                     |  42%  |                                                                         |=============================                                    |  44%  |                                                                         |==============================                                   |  46%  |                                                                         |===============================                                  |  48%  |                                                                         |================================                                 |  49%  |                                                                         |=================================                                |  51%  |                                                                         |==================================                               |  53%  |                                                                         |===================================                              |  54%  |                                                                         |====================================                             |  56%  |                                                                         |======================================                           |  58%  |                                                                         |=======================================                          |  59%  |                                                                         |========================================                         |  61%  |                                                                         |=========================================                        |  63%  |                                                                         |==========================================                       |  65%  |                                                                         |===========================================                      |  66%  |                                                                         |============================================                     |  68%  |                                                                         |=============================================                    |  70%  |                                                                         |==============================================                   |  71%  |                                                                         |===============================================                  |  73%  |                                                                         |=================================================                |  75%  |                                                                         |==================================================               |  76%  |                                                                         |===================================================              |  78%  |                                                                         |====================================================             |  80%  |                                                                         |=====================================================            |  82%  |                                                                         |======================================================           |  83%  |                                                                         |=======================================================          |  85%  |                                                                         |========================================================         |  87%  |                                                                         |=========================================================        |  88%  |                                                                         |===========================================================      |  90%  |                                                                         |============================================================     |  92%  |                                                                         |=============================================================    |  93%  |                                                                         |==============================================================   |  95%  |                                                                         |===============================================================  |  97%  |                                                                         |================================================================ |  99%  |                                                                         |=================================================================| 100%
 ```
 
 
-```{r   n=21}
+
+```r
 # Get model performance on a test set
 perf <- h2o.performance(model, test)
 
 # Or get the preds directly and compute classification accuracy
 preds <- h2o.predict(model, newdata = test)
+##   |                                                                         |                                                                 |   0%  |                                                                         |=================================================================| 100%
 acc <- sum(test[,y] == preds$predict)/nrow(test)
 print(acc)
+## [1] 0.9724
 ```
 
-```{r}
+
+```r
 # good practice
 h2o.shutdown(prompt = FALSE)
+## [1] TRUE
 ```
 
 

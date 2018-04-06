@@ -1,15 +1,7 @@
 # Random Forests (RF) {#random-forest}
 
 
-```{r setup1, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  fig.align = "center",
-  collapse = TRUE, 
-  message = FALSE,
-  warning = FALSE
-)
-```
+
 
 
 * * *
@@ -333,7 +325,8 @@ remember).
 slower when the formula interface is used).
 - GPL-2/3 Licensed.
 
-```{r   n=4}
+
+```r
 # randomForest example
 # install.packages("randomForest")
 # install.packages("cvAUC")
@@ -341,7 +334,8 @@ library(randomForest)
 library(cvAUC)
 ```
 
-```{r   n=31}
+
+```r
 # Load binary-response dataset
 train <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv")
 test <- data.table::fread("https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv")
@@ -352,15 +346,23 @@ test <- as.data.frame(test)
 
 # Dimensions
 dim(train)
+## [1] 10000    29
 dim(test)
+## [1] 5000   29
 
 # Columns
 names(train)
+##  [1] "response" "x1"       "x2"       "x3"       "x4"       "x5"      
+##  [7] "x6"       "x7"       "x8"       "x9"       "x10"      "x11"     
+## [13] "x12"      "x13"      "x14"      "x15"      "x16"      "x17"     
+## [19] "x18"      "x19"      "x20"      "x21"      "x22"      "x23"     
+## [25] "x24"      "x25"      "x26"      "x27"      "x28"
 ```
 
 
 
-```{r   n=32}
+
+```r
 # Identity the response column
 ycol <- "response"
 
@@ -372,7 +374,8 @@ train[,ycol] <- as.factor(train[,ycol])
 test[,ycol] <- as.factor(test[,ycol])
 ```
 
-```{r   n=33}
+
+```r
 # Train a default RF model with 500 trees
 set.seed(1)  # For reproducibility
 system.time(
@@ -383,15 +386,19 @@ system.time(
     ntree = 500
     )
   )
+##    user  system elapsed 
+##  18.460   0.052  18.566
 ```
 
-```{r}
+
+```r
 # Generate predictions on test dataset
 preds <- model$test$votes[, 2]
 labels <- test[,ycol]
 
 # Compute AUC on the test set
 cvAUC::AUC(predictions = preds, labels = labels)
+## [1] 0.7834743
 ```
 
 
@@ -404,13 +411,15 @@ Backend: Fortran (wraps the `randomForest` package)
 This is a wrapper for the `randomForest` package that parallelizes the tree
 building.
 
-```{r   n=30, eval=FALSE}
+
+```r
 library(caret)
 library(doParallel)
 library(e1071)
 ```
 
-```{r   n=19, eval=FALSE}
+
+```r
 # set up parallel environment
 cl <- makeCluster(4) 
 registerDoParallel(cl) 
@@ -465,29 +474,69 @@ Mahalova](http://www.slideshare.net/0xdata/rf-brighttalk) and [Jan
 Vitek](http://www.slideshare.net/0xdata/jan-vitek-
 distributedrandomforest522013).
 
-```{r   n=38}
+
+```r
 #install.packages("h2o")
 library(h2o)
 #h2o.shutdown(prompt = FALSE)
 h2o.init(nthreads = -1)  #Start a local H2O cluster using nthreads = num available cores
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpf8Tb8n/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpf8Tb8n/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: ... Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         3 seconds 197 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 9 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_gpo922 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)
 ```
 
 
 
-```{r   n=39}
+
+```r
 # convert data to h2o objects
 train <- as.h2o(train)
+##   |                                                                         |                                                                 |   0%  |                                                                         |=================================================================| 100%
 test <- as.h2o(test)
+##   |                                                                         |                                                                 |   0%  |                                                                         |=================================================================| 100%
 
 # Dimensions
 dim(train)
+## [1] 10000    29
 dim(test)
+## [1] 5000   29
 
 # Columns
 names(train)
+##  [1] "response" "x1"       "x2"       "x3"       "x4"       "x5"      
+##  [7] "x6"       "x7"       "x8"       "x9"       "x10"      "x11"     
+## [13] "x12"      "x13"      "x14"      "x15"      "x16"      "x17"     
+## [19] "x18"      "x19"      "x20"      "x21"      "x22"      "x23"     
+## [25] "x24"      "x25"      "x26"      "x27"      "x28"
 ```
 
-```{r   n=40}
+
+```r
 # Identity the response column
 ycol <- "response"
 
@@ -499,7 +548,8 @@ train[,ycol] <- as.factor(train[,ycol])
 test[,ycol] <- as.factor(test[,ycol])
 ```
 
-```{r   n=41}
+
+```r
 # Train a default RF model with 500 trees
 system.time(
   model <- h2o.randomForest(
@@ -510,20 +560,27 @@ system.time(
     ntrees = 500
     )
   ) 
+##   |                                                                         |                                                                 |   0%  |                                                                         |=                                                                |   2%  |                                                                         |==                                                               |   3%  |                                                                         |===                                                              |   5%  |                                                                         |====                                                             |   7%  |                                                                         |=====                                                            |   8%  |                                                                         |========                                                         |  13%  |                                                                         |============                                                     |  18%  |                                                                         |===============                                                  |  23%  |                                                                         |===================                                              |  29%  |                                                                         |======================                                           |  35%  |                                                                         |==========================                                       |  40%  |                                                                         |==============================                                   |  45%  |                                                                         |=================================                                |  51%  |                                                                         |====================================                             |  56%  |                                                                         |========================================                         |  62%  |                                                                         |===========================================                      |  67%  |                                                                         |===============================================                  |  73%  |                                                                         |===================================================              |  78%  |                                                                         |======================================================           |  84%  |                                                                         |==========================================================       |  90%  |                                                                         |==============================================================   |  95%  |                                                                         |=================================================================| 100%
+##    user  system elapsed 
+##   0.570   0.027  25.513
 ```
 
-```{r}
+
+```r
 # Compute AUC on test dataset
 # H2O computes many model performance metrics automatically, including AUC
 
 perf <- h2o.performance(model = model, newdata = test)
 h2o.auc(perf)
+## [1] 0.785394
 ```
 
 
-```{r}
+
+```r
 # good practice to shut down h2o environment
 h2o.shutdown(prompt = FALSE)
+## [1] TRUE
 ```
 
 

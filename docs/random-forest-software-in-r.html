@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="random-forest.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html"><i class="fa fa-check"></i><b>3</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="3.1" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#randomforest"><i class="fa fa-check"></i><b>3.1</b> randomForest</a></li>
+<li class="chapter" data-level="3.2" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#caret-method-parrf"><i class="fa fa-check"></i><b>3.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="3.3" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#h2o"><i class="fa fa-check"></i><b>3.3</b> h2o</a></li>
+<li class="chapter" data-level="3.4" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#rborist"><i class="fa fa-check"></i><b>3.4</b> Rborist</a></li>
+<li class="chapter" data-level="3.5" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#ranger"><i class="fa fa-check"></i><b>3.5</b> ranger</a></li>
+<li class="chapter" data-level="3.6" data-path="random-forest-software-in-r.html"><a href="random-forest-software-in-r.html#references"><i class="fa fa-check"></i><b>3.6</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="random-forest-software-in-r" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Random Forest Software in R</h1>
+<p>The oldest and most well known implementation of the Random Forest algorithm in R is the <a href="https://cran.r-project.org/web/packages/randomForest/index.html">randomForest</a> package. There are also a number of packages that implement variants of the algorithm, and in the past few years, there have been several “big data” focused implementations contributed to the R ecosystem as well.</p>
+<p>Here is a non-comprehensive list:</p>
+<ul>
+<li><a href="http://www.rdocumentation.org/packages/randomFore%20st/functions/randomForest">randomForest::randomForest</a></li>
+<li><a href="http://www.rdocumentation.org/packages/h2o/functions/h%202o.randomForest">h2o::h2o.randomForest</a></li>
+<li><a href="https://github.com/vertica/DistributedR/b%20lob/master/algorithms/HPdclassifier/R/hpdRF_parallelForest.R">DistributedR::hpdRF_parallelForest</a></li>
+<li><a href="http://www.rdocumentation.org/packages/party/functions/cfores%20t">party::cForest</a>: A random forest variant for response variables measured at arbitrary scales based on conditional inference trees.</li>
+<li><a href="https://cran.r-project.org/web/packages/randomForestSRC/inde%20x.html">randomForestSRC</a> implements a unified treatment of Breiman’s random forests for survival, regression and classification problems.</li>
+<li><a href="https://cran.r-project.org/web/packages/quantregForest/index.%20html">quantregForest</a> can regress quantiles of a numeric response on exploratory variables via a random forest approach.</li>
+<li><a href="https://cran.r-project.org/web/packages/ranger/index.html">ranger</a></li>
+<li><a href="https://cran.r-project.org/web/packages/Rborist/index.html">Rborist</a></li>
+<li>The <a href="https://topepo.github.io/caret/index.html">caret</a> package wraps a number of different Random Forest packages in R (<a href="https://topepo.github.io/caret/Random_Forest.html">full list here</a>):</li>
+<li>Conditional Inference Random Forest (<code>party::cForest</code>)</li>
+<li>Oblique Random Forest (<code>obliqueRF</code>)</li>
+<li>Parallel Random Forest (<code>randomForest</code> + <code>foreach</code>)</li>
+<li>Random Ferns (<code>rFerns</code>)</li>
+<li>Random Forest (<code>randomForest</code>)</li>
+<li>Random Forest (<code>ranger</code>)</li>
+<li>Quantile Random Forest (<code>quantregForest</code>)</li>
+<li>Random Forest by Randomization (<code>extraTrees</code>)</li>
+<li>Random Forest Rule-Based Model (<code>inTrees</code>)</li>
+<li>Random Forest with Additional Feature Selection (<code>Boruta</code>)</li>
+<li>Regularized Random Forest (<code>RRF</code>)</li>
+<li>Rotation Forest (<code>rotationForest</code>)</li>
+<li>Weighted Subspace Random Forest (<code>wsrf</code>)</li>
+<li>The <a href="https://github.com/mlr-org/mlr">mlr</a> package wraps a number of different Random Forest packages in R:</li>
+<li>Conditional Inference Random Forest (<code>party::cForest</code>)</li>
+<li>Rotation Forest (<code>rotationForest</code>)</li>
+<li>Parallel Forest (<code>ParallelForest</code>)</li>
+<li>Survival Forest (<code>randomForestSRC</code>)</li>
+<li>Random Ferns (<code>rFerns</code>)</li>
+<li>Random Forest (<code>randomForest</code>)</li>
+<li>Random Forest (<code>ranger</code>)</li>
+<li>Synthetic Random Forest (<code>randomForestSRC</code>)</li>
+<li>Random Uniform Forest (<code>randomUniformForest</code>)</li>
+</ul>
+<p>Since there are so many different Random Forest implementations available, there have been several benchmarks to compare the performance of popular implementations, including implementations outside of R. A few examples: 1. <a href="http://www.wise.io/tech%20/benchmarking-random-forest-part-1">Benchmarking Random Forest Classification</a> by Erin LeDell, 2013 2. <a href="http://datascience.la%20/benchmarking-random-forest-implementations/">Benchmarking Random Forest Implementations</a> by Szilard Pafka, 2015 3. <a href="http://arxiv.org/pdf/1508.04409v1.pdf">Ranger</a> publication by Marvin N. Wright and Andreas Ziegler, 2015</p>
+<div id="randomforest" class="section level2">
+<h2><span class="header-section-number">3.1</span> randomForest</h2>
+<p>Authors: Fortran original by <a href="http://www.stat.berkeley.edu/~breiman/">Leo Breiman</a> and <a href="http://www.math.usu.edu/~adele/">Adele Cutler</a>, R port by <a href="https://www.linkedin.com/in/andy-liaw-1399347">Andy Liaw</a> and Matthew Wiener.</p>
+<p>Backend: Fortran</p>
+<p>Features: - This package wraps the original Fortran code by Leo Breiman and Adele Culter and is probably the most widely known/used implemenation in R. - Single-threaded. - Although it’s single-threaded, smaller forests can be trained in parallel by writing custom <a href="https://cran.r-project.org/web/packages/foreach/index.html">foreach</a> or <a href="http://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf">parall el</a> code, then combined into a bigger forest using the <a href="htt%20p://www.rdocumentation.org/packages/randomForest/functions/combine">randomForest::combine()</a> function. - Row weights unimplemented (been on the wishlist for as long as I can remember). - Uses CART trees split by Gini Impurity. - Categorical predictors are allowed to have up to 53 categories. - Multinomial response can have no more than 32 categories. - Supports R formula interface (but I’ve read some reports that claim it’s slower when the formula interface is used). - GPL-2/3 Licensed.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># randomForest example</span>
+<span class="co"># install.packages(&quot;randomForest&quot;)</span>
+<span class="co"># install.packages(&quot;cvAUC&quot;)</span>
+<span class="kw">library</span>(randomForest)
+<span class="kw">library</span>(cvAUC)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load binary-response dataset</span>
+train &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv&quot;</span>)
+test &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv&quot;</span>)
+
+<span class="co"># convert to regular data frames</span>
+train &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(train)
+test &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(test)
+
+<span class="co"># Dimensions</span>
+<span class="kw">dim</span>(train)
+## [1] 10000    29
+<span class="kw">dim</span>(test)
+## [1] 5000   29
+
+<span class="co"># Columns</span>
+<span class="kw">names</span>(train)
+##  [1] &quot;response&quot; &quot;x1&quot;       &quot;x2&quot;       &quot;x3&quot;       &quot;x4&quot;       &quot;x5&quot;      
+##  [7] &quot;x6&quot;       &quot;x7&quot;       &quot;x8&quot;       &quot;x9&quot;       &quot;x10&quot;      &quot;x11&quot;     
+## [13] &quot;x12&quot;      &quot;x13&quot;      &quot;x14&quot;      &quot;x15&quot;      &quot;x16&quot;      &quot;x17&quot;     
+## [19] &quot;x18&quot;      &quot;x19&quot;      &quot;x20&quot;      &quot;x21&quot;      &quot;x22&quot;      &quot;x23&quot;     
+## [25] &quot;x24&quot;      &quot;x25&quot;      &quot;x26&quot;      &quot;x27&quot;      &quot;x28&quot;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identity the response column</span>
+ycol &lt;-<span class="st"> &quot;response&quot;</span>
+
+<span class="co"># Identify the predictor columns</span>
+xcols &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), ycol)
+
+<span class="co"># Convert response to factor (required by randomForest)</span>
+train[,ycol] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(train[,ycol])
+test[,ycol] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(test[,ycol])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train a default RF model with 500 trees</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)  <span class="co"># For reproducibility</span>
+<span class="kw">system.time</span>(
+  model &lt;-<span class="st"> </span><span class="kw">randomForest</span>(
+    <span class="dt">x =</span> train[,xcols], 
+    <span class="dt">y =</span> train[,ycol],
+    <span class="dt">xtest =</span> test[,xcols],
+    <span class="dt">ntree =</span> <span class="dv">500</span>
+    )
+  )
+##    user  system elapsed 
+##  18.823   0.055  18.929</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate predictions on test dataset</span>
+preds &lt;-<span class="st"> </span>model<span class="op">$</span>test<span class="op">$</span>votes[, <span class="dv">2</span>]
+labels &lt;-<span class="st"> </span>test[,ycol]
+
+<span class="co"># Compute AUC on the test set</span>
+cvAUC<span class="op">::</span><span class="kw">AUC</span>(<span class="dt">predictions =</span> preds, <span class="dt">labels =</span> labels)
+## [1] 0.7834743</code></pre></div>
+</div>
+<div id="caret-method-parrf" class="section level2">
+<h2><span class="header-section-number">3.2</span> caret method “parRF”</h2>
+<p>Authors: Max Kuhn</p>
+<p>Backend: Fortran (wraps the <code>randomForest</code> package)</p>
+<p>This is a wrapper for the <code>randomForest</code> package that parallelizes the tree building.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(caret)
+<span class="kw">library</span>(doParallel)
+<span class="kw">library</span>(e1071)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set up parallel environment</span>
+cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(<span class="dv">4</span>) 
+<span class="kw">registerDoParallel</span>(cl) 
+
+<span class="co"># Train a &quot;parRF&quot; model using caret</span>
+model &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">train</span>(
+  <span class="dt">x =</span> train[,xcols],
+  <span class="dt">y =</span> train[,ycol],
+  <span class="dt">method =</span> <span class="st">&quot;parRF&quot;</span>,
+  <span class="dt">preProcess =</span> <span class="ot">NULL</span>,
+  <span class="dt">weights =</span> <span class="ot">NULL</span>,
+  <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,
+  <span class="dt">maximize =</span> <span class="ot">TRUE</span>,
+  <span class="dt">trControl =</span> <span class="kw">trainControl</span>(),
+  <span class="dt">tuneGrid =</span> <span class="ot">NULL</span>,
+  <span class="dt">tuneLength =</span> <span class="dv">3</span>
+  )
+
+<span class="co"># good practice to shut down parallel environment</span>
+<span class="kw">stopCluster</span>(cl) </code></pre></div>
+</div>
+<div id="h2o" class="section level2">
+<h2><span class="header-section-number">3.3</span> h2o</h2>
+<p>Authors: <a href="http://www.cs.purdue.edu/homes/jv/">Jan Vitek</a>, <a href="https://www.linkedin.com/in/candel">Arno Candel</a>, H2O.ai contributors</p>
+<p>Backend: Java</p>
+<p>Features:</p>
+<ul>
+<li>Distributed and parallelized computation on either a single node or a multi- node cluster.</li>
+<li>Automatic early stopping based on convergence of user-specied metrics to user- specied relative tolerance.</li>
+<li>Data-distributed, which means the entire dataset does not need to fit into memory on a single node.</li>
+<li>Uses histogram approximations of continuous variables for speedup.</li>
+<li>Uses squared error to determine optimal splits.</li>
+<li>Automatic early stopping based on convergence of user-specied metrics to user- specied relative tolerance.</li>
+<li>Support for exponential families (Poisson, Gamma, Tweedie) and loss functions in addition to binomial (Bernoulli), Gaussian and multinomial distributions, such as Quantile regression (including Laplace).</li>
+<li>Grid search for hyperparameter optimization and model selection.</li>
+<li>Apache 2.0 Licensed.</li>
+<li>Model export in plain Java code for deployment in production environments.</li>
+<li>GUI for training &amp; model eval/viz (H2O Flow).</li>
+</ul>
+<p>Implementation details are presented in slidedecks by <a href="http://www.slideshare.net/0xdata/rf-brighttalk">Michal Mahalova</a> and <a href="http://www.slideshare.net/0xdata/jan-vitek-%20distributedrandomforest522013">Jan Vitek</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;h2o&quot;)</span>
+<span class="kw">library</span>(h2o)
+<span class="co">#h2o.shutdown(prompt = FALSE)</span>
+<span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)  <span class="co">#Start a local H2O cluster using nthreads = num available cores</span>
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpi5nLVM/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpi5nLVM/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: ... Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 844 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 2 hours and 27 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_gpo922 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># convert data to h2o objects</span>
+train &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(train)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+test &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(test)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+
+<span class="co"># Dimensions</span>
+<span class="kw">dim</span>(train)
+## [1] 10000    29
+<span class="kw">dim</span>(test)
+## [1] 5000   29
+
+<span class="co"># Columns</span>
+<span class="kw">names</span>(train)
+##  [1] &quot;response&quot; &quot;x1&quot;       &quot;x2&quot;       &quot;x3&quot;       &quot;x4&quot;       &quot;x5&quot;      
+##  [7] &quot;x6&quot;       &quot;x7&quot;       &quot;x8&quot;       &quot;x9&quot;       &quot;x10&quot;      &quot;x11&quot;     
+## [13] &quot;x12&quot;      &quot;x13&quot;      &quot;x14&quot;      &quot;x15&quot;      &quot;x16&quot;      &quot;x17&quot;     
+## [19] &quot;x18&quot;      &quot;x19&quot;      &quot;x20&quot;      &quot;x21&quot;      &quot;x22&quot;      &quot;x23&quot;     
+## [25] &quot;x24&quot;      &quot;x25&quot;      &quot;x26&quot;      &quot;x27&quot;      &quot;x28&quot;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identity the response column</span>
+ycol &lt;-<span class="st"> &quot;response&quot;</span>
+
+<span class="co"># Identify the predictor columns</span>
+xcols &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), ycol)
+
+<span class="co"># Convert response to factor (required by randomForest)</span>
+train[,ycol] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(train[,ycol])
+test[,ycol] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(test[,ycol])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train a default RF model with 500 trees</span>
+<span class="kw">system.time</span>(
+  model &lt;-<span class="st"> </span><span class="kw">h2o.randomForest</span>(
+    <span class="dt">x =</span> xcols,
+    <span class="dt">y =</span> ycol,
+    <span class="dt">training_frame =</span> train,
+    <span class="dt">seed =</span> <span class="dv">1</span>, <span class="co">#for reproducibility</span>
+    <span class="dt">ntrees =</span> <span class="dv">500</span>
+    )
+  ) 
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=</span><span class="st">                                                                </span><span class="er">|</span><span class="st">   </span><span class="dv">1</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==</span><span class="st">                                                               </span><span class="er">|</span><span class="st">   </span><span class="dv">3</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===</span><span class="st">                                                              </span><span class="er">|</span><span class="st">   </span><span class="dv">5</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====</span><span class="st">                                                            </span><span class="er">|</span><span class="st">   </span><span class="dv">8</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========</span><span class="st">                                                         </span><span class="er">|</span><span class="st">  </span><span class="dv">13</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|============</span><span class="st">                                                     </span><span class="er">|</span><span class="st">  </span><span class="dv">19</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============</span><span class="st">                                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============</span><span class="st">                                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">22</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================</span><span class="st">                                               </span><span class="er">|</span><span class="st">  </span><span class="dv">28</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================</span><span class="st">                                           </span><span class="er">|</span><span class="st">  </span><span class="dv">34</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================</span><span class="st">                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">40</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">46</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================================</span><span class="st">                               </span><span class="er">|</span><span class="st">  </span><span class="dv">52</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================================</span><span class="st">                            </span><span class="er">|</span><span class="st">  </span><span class="dv">57</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================================</span><span class="st">                        </span><span class="er">|</span><span class="st">  </span><span class="dv">63</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================</span><span class="st">                    </span><span class="er">|</span><span class="st">  </span><span class="dv">70</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================</span><span class="st">                </span><span class="er">|</span><span class="st">  </span><span class="dv">76</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================================================</span><span class="st">            </span><span class="er">|</span><span class="st">  </span><span class="dv">82</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================================================</span><span class="st">       </span><span class="er">|</span><span class="st">  </span><span class="dv">89</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================================</span><span class="st">    </span><span class="er">|</span><span class="st">  </span><span class="dv">93</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+##    user  system elapsed 
+##   0.486   0.025  23.149</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Compute AUC on test dataset</span>
+<span class="co"># H2O computes many model performance metrics automatically, including AUC</span>
+
+perf &lt;-<span class="st"> </span><span class="kw">h2o.performance</span>(<span class="dt">model =</span> model, <span class="dt">newdata =</span> test)
+<span class="kw">h2o.auc</span>(perf)
+## [1] 0.785394</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice to shut down h2o environment</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+</div>
+<div id="rborist" class="section level2">
+<h2><span class="header-section-number">3.4</span> Rborist</h2>
+<p>Authors: Mark Seligman</p>
+<p>Backend: C++</p>
+<p>The <a href="https://github.com/suiji/Arborist">Arborist</a> provides a fast, open-source implementation of the Random Forest algorithm. The Arborist achieves its speed through efficient C++ code and parallel, distributed tree construction. This <a href="http://www.rinfinance.com/agenda/2015/talk/MarkSeligman.pdf">slidedeck</a> provides detail about the implementation and vision of the project.</p>
+<p>Features: - Began as proprietary implementation, but was open-sourced and rewritten following dissolution of venture. - Project called “Aborist” but R package is called “Rborist”. A Python interface is in development. - CPU based but a GPU version called Curborist (Cuda Rborist) is in development (unclear if it will be open source). - Unlimited factor cardinality. - Emphasizes multi-core but not multi-node. - Both Python support and GPU support have been “coming soon” since summer 2015, not sure the status of the projects. - GPL-2/3 licensed.</p>
+</div>
+<div id="ranger" class="section level2">
+<h2><span class="header-section-number">3.5</span> ranger</h2>
+<p>Authors: <a href="http://www.imbs-luebeck.de/imbs/node/323">Marvin N. Wright</a> and Andreas Ziegler</p>
+<p>Backend: C++</p>
+<p><a href="http://arxiv.org/pdf/1508.04409v1.pdf">Ranger</a> is a fast <a href="https://github.com/imbs-hl/ranger">implementation</a> of random forest (Breiman 2001) or recursive partitioning, particularly suited for high dimensional data. Classification, regression, probability estimation and survival forests are supported. Classification and regression forests are implemented as in the original Random Forest (Breiman 2001), survival forests as in Random Survival Forests (Ishwaran et al. 2008). For probability estimation forests see Malley et al. (2012).</p>
+<p>Features:</p>
+<ul>
+<li>Multi-threaded.</li>
+<li>Direct support for <a href="https://en.wikipedia.org/wiki/Genome-%20wide_association_study">GWAS</a> (Genome-wide association study) data.</li>
+<li>Excellent speed and support for high-dimensional or wide data.</li>
+<li>Not as fast for “tall &amp; skinny” data (many rows, few columns).</li>
+<li>GPL-3 licensed.</li>
+</ul>
+<p><img src="images/ranger_vs_arborist.png" title="Ranger vs Rborist" alt="Alt text" /> Plot from the <a href="http://arxiv.org/pdf/1508.04409v1.pdf">ranger article</a>.</p>
+</div>
+<div id="references" class="section level2">
+<h2><span class="header-section-number">3.6</span> References</h2>
+<p>[1] [<a href="http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf" class="uri">http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf</a>](<a href="http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf" class="uri">http://www.stat.berkeley.edu/~breiman/randomforest2001.pdf</a>)</p>
+<p>[2] [P. Geurts, D. Ernst., and L. Wehenkel, “Extremely randomized trees”,Machine Learning, 63(1), 3-42,2006.](<a href="http://link.springer.com/article/10.1007%2Fs10994-006-6226-1">http://link.springer.com/article/10.1007%2Fs10994-006-6226-1</a>)</p>
+<p>[3] [<a href="http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf" class="uri">http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf</a>](<a href="http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf" class="uri">http://www.cs.uvm.edu/~icdm/algorithms/10Algorithms-08.pdf</a>)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="random-forest.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/02-random-forest.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

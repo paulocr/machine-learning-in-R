@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="random-forest.html">
+<link rel="next" href="generalized-linear-models.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="gradient-boosting-machines" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Gradient Boosting Machines (GBM)</h1>
+<hr />
+<div class="figure">
+<img src="images/shrubs.jpg" title="GBMs" />
+
+</div>
+<hr />
+<p>Image Source: brucecompany.com</p>
+<div id="introduction-2" class="section level2">
+<h2><span class="header-section-number">3.1</span> Introduction</h2>
+<p><a href="https://en.wikipedia.org/wiki/Gradient_boosting">Gradient boosting</a> is a machine learning technique for regression and classification problems, which produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. It builds the model in an iterative fashion like other boosting methods do, and it generalizes them by allowing optimization of an arbitrary differentiable loss function.</p>
+<p>It is recommended that you read through the accompanying <a href="decision-trees.ipynb">Classification and Regression Trees Tutorial</a> for an overview of decision trees.</p>
+</div>
+<div id="history-1" class="section level2">
+<h2><span class="header-section-number">3.2</span> History</h2>
+<p>Boosting is one of the most powerful learning ideas introduced in the last twenty years. It was originally designed for classification problems, but it can be extended to regression as well. The motivation for boosting was a procedure that combines the outputs of many “weak” classifiers to produce a powerful “committee.” A weak classifier (e.g. decision tree) is one whose error rate is only slightly better than random guessing.</p>
+<p><a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost</a> short for “Adaptive Boosting”, is a machine learning meta-algorithm formulated by <a href="https://en.wikipedia.org/wiki/Yoav_Freund">Yoav Freund</a> and <a href="https://en.wikipedia.org/wiki/Robert_Schapire">Robert Schapire</a> in 1996, which is now considered to be a special case of Gradient Boosting. There are <a href="http://stats.stackexchange.com/questions/164233/intuitive-%20explanations-of-differences-between-gradient-boosting-trees-gbm-ad">some differences</a> between the AdaBoost algorithm and modern Gradient Boosting. In the AdaBoost algorithm, the “shortcomings” of existing weak learners are identified by high-weight data points, however in Gradient Boosting, the shortcomings are identified by gradients.</p>
+<p>The idea of gradient boosting originated in the observation by Leo Breiman that boosting can be interpreted as an optimization algorithm on a suitable cost function. Explicit regression gradient boosting algorithms were subsequently developed by Jerome H. Friedman, simultaneously with the more general functional gradient boosting perspective of Llew Mason, Jonathan Baxter, Peter Bartlett and Marcus Frean. The latter two papers introduced the abstract view of boosting algorithms as iterative functional gradient descent algorithms. That is, algorithms that optimize a cost function over function space by iteratively choosing a function (weak hypothesis) that points in the negative gradient direction. This functional gradient view of boosting has led to the development of boosting algorithms in many areas of machine learning and statistics beyond regression and classification.</p>
+<p>In general, in terms of model performance, we have the following heirarchy:</p>
+<p><span class="math display">\[Boosting &gt; Random \: Forest &gt; Bagging &gt; Single \: Tree\]</span></p>
+</div>
+<div id="gradient-boosting" class="section level2">
+<h2><span class="header-section-number">3.3</span> Gradient Boosting</h2>
+<p><a href="https://en.wikipedia.org/wiki/Gradient_boosting">Gradient boosting</a> is a machine learning technique for regression and classification problems, which produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. It builds the model in a stage-wise fashion like other boosting methods do, and it generalizes them by allowing optimization of an arbitrary differentiable loss function.</p>
+<p>The purpose of boosting is to sequentially apply the weak classification algorithm to repeatedly modified versions of the data, thereby producing a sequence of weak classifiers <span class="math inline">\(G_m(x)\)</span>, <span class="math inline">\(m = 1, 2, ... , M\)</span>.</p>
+</div>
+<div id="stagewise-additive-modeling" class="section level2">
+<h2><span class="header-section-number">3.4</span> Stagewise Additive Modeling</h2>
+<p>Boosting builds an additive model:</p>
+<p><span class="math display">\[F(x) = \sum_{m=1}^M \beta_m b(x; \gamma_m)\]</span></p>
+<p>where <span class="math inline">\(b(x; \gamma_m)\)</span> is a tree and <span class="math inline">\(\gamma_m\)</span> parameterizes the splits. With boosting, the parameters, <span class="math inline">\((\beta_m, \gamma_m)\)</span> are fit in a <em>stagewise</em> fashion. This slows the process down, and overfits less quickly.</p>
+</div>
+<div id="adaboost" class="section level2">
+<h2><span class="header-section-number">3.5</span> AdaBoost</h2>
+<ul>
+<li>AdaBoost builds an additive logistic regression model by stagewise fitting.</li>
+<li>AdaBoost uses an exponential loss function of the form, <span class="math inline">\(L(y, F(x)) = exp(-yF(x))\)</span>, similar to the negative binomial log-likelihood loss.</li>
+<li>The principal attraction of the exponential loss in the context of additive modeling is computational; it leads to the simple modular reweighting</li>
+<li>Instead of fitting trees to residuals, the special form of the exponential loss function in AdaBoost leads to fitting trees to weighted versions of the original data.</li>
+</ul>
+<p><img src="images/boosting_diagram.png" title="Boosting" /> Source: Elements of Statistical Learning</p>
+<p><img src="images/adaboost_m1.png" title="AdaBoost M1" /> Source: Elements of Statistical Learning</p>
+</div>
+<div id="gradient-boosting-algorithm" class="section level2">
+<h2><span class="header-section-number">3.6</span> Gradient Boosting Algorithm</h2>
+<ul>
+<li>The idea of gradient boosting originated in the observation by Leo Breiman that boosting can be interpreted as an optimization algorithm on a suitable cost function.</li>
+<li>Explicit regression gradient boosting algorithms were subsequently developed by Jerome H. Friedman simultaneously with the more general functional gradient boosting perspective of Llew Mason, Jonathan Baxter, Peter Bartlett and Marcus Frean.</li>
+<li>The latter two papers introduced the abstract view of boosting algorithms as iterative functional gradient descent algorithms. That is, algorithms that optimize a cost function over function space by iteratively choosing a function (weak hypothesis) that points in the negative gradient direction.</li>
+<li>This functional gradient view of boosting has led to the development of boosting algorithms in many areas of machine learning and statistics beyond regression and classification.</li>
+</ul>
+<p>Friedman’s Gradient Boosting Algorithm for a generic loss function, <span class="math inline">\(L(y_i, \gamma)\)</span>:</p>
+<p><img src="images/friedman_gbm.png" title="GBM Algorithm" /> Source: Elements of Statistical Learning</p>
+<div id="loss-functions-and-gradients" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Loss Functions and Gradients</h3>
+<p><img src="images/gbm_gradients_loss.png" title="GBM Algorithm" /> Source: Elements of Statistical Learning</p>
+<p>The optimal number of iterations, T, and the learning rate, λ, depend on each other.</p>
+</div>
+</div>
+<div id="stochastic-gbm" class="section level2">
+<h2><span class="header-section-number">3.7</span> Stochastic GBM</h2>
+<p><a href="https://statweb.stanford.edu/~jhf/ftp/stobst.pdf">Stochastic Gradient Boosting</a> (Friedman, 2002) proposed the stochastic gradient boosting algorithm that simply samples uniformly without replacement from the dataset before estimating the next gradient step. He found that this additional step greatly improved performance.</p>
+</div>
+<div id="practical-tips" class="section level2">
+<h2><span class="header-section-number">3.8</span> Practical Tips</h2>
+<ul>
+<li>It’s more common to grow shorter trees (“shrubs” or “stumps”) in GBM than you do in Random Forest.</li>
+<li>It’s useful to try a variety of column sample (and column sample per tree) rates.</li>
+<li>Don’t assume that the set of optimal tuning parameters for one implementation of GBM will carry over and also be optimal in a different GBM implementation.</li>
+</ul>
+</div>
+<div id="resources-2" class="section level2">
+<h2><span class="header-section-number">3.9</span> Resources</h2>
+<ul>
+<li><a href="https:%20//www.youtube.com/watch?v=wPqtzj5VZus&amp;index=16&amp;list=PLNtMya54qvOFQhSZ4IKKXRbMkyL%20Mn0caa">Trevor Hastie - Gradient Boosting &amp; Random Forests at H2O World 2014</a> (YouTube)</li>
+<li><a href="http://www.slideshare.net/0xdata/gbm-27891077">Trevor Hastie - Data Science of GBM (2013)</a> (slides)</li>
+<li><a href="https://www.youtube.com/watch?v=9wn1f-30_ZY">Mark Landry - Gradient Boosting Method and Random Forest at H2O World 2015</a> (YouTube)</li>
+<li><a href="https://www.youtube.com/watch?v=IXZKgIsZRm0">Peter Prettenhofer - Gradient Boosted Regression Trees in scikit-learn at PyData London 2014</a> (YouTube)</li>
+<li><a href="http://journal.frontiersin.org/article/10.3389/fnbot.2013.00021/full">Alexey Natekin1 and Alois Knoll - Gradient boosting machines, a tutorial</a> (blog post)</li>
+</ul>
+<hr />
+</div>
+<div id="gbm-software-in-r" class="section level2">
+<h2><span class="header-section-number">3.10</span> GBM Software in R</h2>
+<p>This is not a comprehensive list of GBM software in R, however, we detail a few of the most popular implementations below: <a href="https://cran.r-project.org/web/packages/gbm/index.html">gbm</a>, <a href="https://cran.r-project.org/web/packages/xgboost/index.html">xgboost</a> and <a href="https://cran.r-project.org/web/packages/gamboostLSS/index.html">h2o</a>.</p>
+<p>The <a href="https://cran.r-project.org/web/views/MachineLearning.html">CRAN Machine Learning Task View</a> lists the following projects as well. The Hinge-loss is optimized by the boosting implementation in package <a href="https://cran.r-project.org/web/packages/bst/index.html">bst</a>. Package <a href="https://cran.r-project.org/web/packages/GAMBoost/index.html">GAMBoost</a> can be used to fit generalized additive models by a boosting algorithm. An extensible boosting framework for generalized linear, additive and nonparametric models is available in package <a href="https://cran.r-project.org/web/packages/mboost/index.html">mboost</a>. Likelihood- based boosting for Cox models is implemented in <a href="https://cran.r-project.org/web/packages/CoxBoost/index.html">CoxBoost</a> and for mixed models in <a href="https://cran.r-project.org/web/packages/GMMBoost/index.html">GMMBoost</a>. GAMLSS models can be fitted using boosting by <a href="https://cran.r-project.org/web/packages/gamboostLSS/index.html">gamboostLSS</a>.</p>
+<div id="gbm" class="section level3">
+<h3><span class="header-section-number">3.10.1</span> gbm</h3>
+<p>Authors: Originally written by Greg Ridgeway, added to by various authors, currently maintained by Harry Southworth</p>
+<p>Backend: C++</p>
+<p>The <a href="https://github.com/gbm-developers/gbm">gbm</a> R package is an implementation of extensions to Freund and Schapire’s AdaBoost algorithm and Friedman’s gradient boosting machine. This is the original R implementation of GBM. A presentation is available <a href="https://www.slideshare.net/mark_landry/gbm-package-in-r">here</a> by Mark Landry.</p>
+<p>Features:</p>
+<ul>
+<li>Stochastic GBM.</li>
+<li>Supports up to 1024 factor levels.</li>
+<li>Supports Classification and regression trees.</li>
+<li>Includes regression methods for:</li>
+<li>least squares</li>
+<li>absolute loss</li>
+<li>t-distribution loss</li>
+<li>quantile regression</li>
+<li>logistic</li>
+<li>multinomial logistic</li>
+<li>Poisson</li>
+<li>Cox proportional hazards partial likelihood</li>
+<li>AdaBoost exponential loss</li>
+<li>Huberized hinge loss</li>
+<li>Learning to Rank measures (<a href="https://www.microsoft.com/en-%20us/research/wp-content/uploads/2016/02/tr-2008-109.pdf">LambdaMart</a>)</li>
+<li>Out-of-bag estimator for the optimal number of iterations is provided.</li>
+<li>Easy to overfit since early stopping functionality is not automated in this package.</li>
+<li>If internal cross-validation is used, this can be parallelized to all cores on the machine.</li>
+<li>Currently undergoing a major refactoring &amp; rewrite (and has been for some time).</li>
+<li>GPL-2/3 License.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;gbm&quot;)</span>
+<span class="co">#install.packages(&quot;cvAUC&quot;)</span>
+<span class="kw">library</span>(gbm)
+<span class="kw">library</span>(cvAUC)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load 2-class HIGGS dataset</span>
+train &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv&quot;</span>)
+test &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+model &lt;-<span class="st"> </span><span class="kw">gbm</span>(
+  <span class="dt">formula =</span> response <span class="op">~</span><span class="st"> </span>.,
+  <span class="dt">distribution =</span> <span class="st">&quot;bernoulli&quot;</span>,
+  <span class="dt">data =</span> train,
+  <span class="dt">n.trees =</span> <span class="dv">70</span>,
+  <span class="dt">interaction.depth =</span> <span class="dv">5</span>,
+  <span class="dt">shrinkage =</span> <span class="fl">0.3</span>,
+  <span class="dt">bag.fraction =</span> <span class="fl">0.5</span>,
+  <span class="dt">train.fraction =</span> <span class="fl">1.0</span>,
+  <span class="dt">n.cores =</span> <span class="ot">NULL</span> <span class="co"># will use all cores by default</span>
+  )  </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(model)
+## gbm(formula = response ~ ., distribution = &quot;bernoulli&quot;, data = train, 
+##     n.trees = 70, interaction.depth = 5, shrinkage = 0.3, bag.fraction = 0.5, 
+##     train.fraction = 1, n.cores = NULL)
+## A gradient boosted model with bernoulli loss function.
+## 70 iterations were performed.
+## There were 28 predictors of which 28 had non-zero influence.</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate predictions on test dataset</span>
+preds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, <span class="dt">newdata =</span> test, <span class="dt">n.trees =</span> <span class="dv">70</span>)
+labels &lt;-<span class="st"> </span>test[,<span class="st">&quot;response&quot;</span>]
+
+<span class="co"># Compute AUC on the test set</span>
+cvAUC<span class="op">::</span><span class="kw">AUC</span>(<span class="dt">predictions =</span> preds, <span class="dt">labels =</span> labels)
+## [1] 0.7741609</code></pre></div>
+</div>
+<div id="xgboost" class="section level3">
+<h3><span class="header-section-number">3.10.2</span> xgboost</h3>
+<p>Authors: Tianqi Chen, Tong He, Michael Benesty</p>
+<p>Backend: C++</p>
+<p>The <a href="https://cran.r-project.org/web/packages/xgboost/index.html">xgboost</a> R package provides an R API to “Extreme Gradient Boosting”, which is an efficient implementation of gradient boosting framework. <a href="http://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-%20tuning-xgboost-with-codes-python/">Parameter tuning guide</a> and more resources <a href="https://github.com/dmlc/xgboost/tree/master/demo">here</a>. The xgboost package is quite popular on <a href="http://blog.kaggle.com/tag/xgboost/">Kaggle</a> for data mining competitions.</p>
+<p>Features:</p>
+<ul>
+<li>Stochastic GBM with column and row sampling (per split and per tree) for better generalization.</li>
+<li>Includes efficient linear model solver and tree learning algorithms.</li>
+<li>Parallel computation on a single machine.</li>
+<li>Supports various objective functions, including regression, classification and ranking.</li>
+<li>The package is made to be extensible, so that users are also allowed to define their own objectives easily.</li>
+<li>Apache 2.0 License.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;xgboost&quot;)</span>
+<span class="co">#install.packages(&quot;cvAUC&quot;)</span>
+<span class="kw">library</span>(xgboost)
+<span class="kw">library</span>(Matrix)
+<span class="kw">library</span>(cvAUC)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># convert data.table to data frames</span>
+train &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(train)
+test &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(test)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set seed because we column-sample</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+
+y &lt;-<span class="st"> &quot;response&quot;</span>
+train.mx &lt;-<span class="st"> </span><span class="kw">sparse.model.matrix</span>(response <span class="op">~</span><span class="st"> </span>., train)[,<span class="op">-</span><span class="dv">1</span>]
+test.mx &lt;-<span class="st"> </span><span class="kw">sparse.model.matrix</span>(response <span class="op">~</span><span class="st"> </span>., test)[,<span class="op">-</span><span class="dv">1</span>]
+dtrain &lt;-<span class="st"> </span><span class="kw">xgb.DMatrix</span>(train.mx, <span class="dt">label =</span> train[,y])
+dtest &lt;-<span class="st"> </span><span class="kw">xgb.DMatrix</span>(test.mx, <span class="dt">label =</span> test[,y])
+
+train.gdbt &lt;-<span class="st"> </span><span class="kw">xgb.train</span>(
+  <span class="dt">params =</span> <span class="kw">list</span>(
+    <span class="dt">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>,
+    <span class="co">#num_class = 2,</span>
+    <span class="co">#eval_metric = &quot;mlogloss&quot;,</span>
+    <span class="dt">eta =</span> <span class="fl">0.3</span>,
+    <span class="dt">max_depth =</span> <span class="dv">5</span>,
+    <span class="dt">subsample =</span> <span class="dv">1</span>,
+    <span class="dt">colsample_bytree =</span> <span class="fl">0.5</span>), 
+  <span class="dt">data =</span> dtrain, 
+  <span class="dt">nrounds =</span> <span class="dv">70</span>, 
+  <span class="dt">watchlist =</span> <span class="kw">list</span>(<span class="dt">train =</span> dtrain, <span class="dt">test =</span> dtest),
+  <span class="dt">verbose =</span> <span class="ot">FALSE</span>   <span class="co"># turn on to see modelling progress</span>
+  )</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate predictions on test dataset</span>
+preds &lt;-<span class="st"> </span><span class="kw">predict</span>(train.gdbt, <span class="dt">newdata =</span> dtest)
+labels &lt;-<span class="st"> </span>test[,y]
+
+<span class="co"># Compute AUC on the test set</span>
+cvAUC<span class="op">::</span><span class="kw">AUC</span>(<span class="dt">predictions =</span> preds, <span class="dt">labels =</span> labels)
+## [1] 0.6367853</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Advanced functionality of xgboost</span>
+<span class="co">#install.packages(&quot;Ckmeans.1d.dp&quot;)</span>
+<span class="kw">library</span>(Ckmeans.1d.dp)
+
+<span class="co"># Compute feature importance matrix</span>
+names &lt;-<span class="st"> </span><span class="kw">dimnames</span>(<span class="kw">data.matrix</span>(train[,<span class="op">-</span><span class="dv">1</span>]))[[<span class="dv">2</span>]]
+importance_matrix &lt;-<span class="st"> </span><span class="kw">xgb.importance</span>(names, <span class="dt">model =</span> train.gdbt)
+
+<span class="co"># Plot feature importance</span>
+<span class="kw">xgb.plot.importance</span>(importance_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</code></pre></div>
+<p><img src="03-gradient-boosting-machines_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="h2o-1" class="section level3">
+<h3><span class="header-section-number">3.10.3</span> h2o</h3>
+<p>Authors: <a href="https://www.linkedin.com/in/candel">Arno Candel</a>, <a href="http://www.cliffc.org/blog/">Cliff Click</a>, H2O.ai contributors</p>
+<p>Backend: Java</p>
+<p><a href="https://github.com/h2oai/h2o-3/blob/master%20/h2o-docs/src/product/tutorials/gbm/gbmTuning.Rmd">H2O GBM Tuning guide by Arno Candel</a> and <a href="http://docs.h2o.ai/h2o/latest-stable/h2o-%20docs/booklets/GBMBooklet.pdf">H2O GBM Vignette</a>.</p>
+<p>Features:</p>
+<ul>
+<li>Distributed and parallelized computation on either a single node or a multi- node cluster.</li>
+<li>Automatic early stopping based on convergence of user-specied metrics to user- specied relative tolerance.</li>
+<li>Stochastic GBM with column and row sampling (per split and per tree) for better generalization.</li>
+<li>Support for exponential families (Poisson, Gamma, Tweedie) and loss functions in addition to binomial (Bernoulli), Gaussian and multinomial distributions, such as Quantile regression (including Laplace).</li>
+<li>Grid search for hyperparameter optimization and model selection.</li>
+<li>Data-distributed, which means the entire dataset does not need to fit into memory on a single node, hence scales to any size training set.</li>
+<li>Uses histogram approximations of continuous variables for speedup.</li>
+<li>Uses dynamic binning - bin limits are reset at each tree level based on the split bins’ min and max values discovered during the last pass.</li>
+<li>Uses squared error to determine optimal splits.</li>
+<li>Distributed implementation details outlined in a <a href="http://blog.h2o.ai/2013/10/building-distributed-gbm-h2o/">blog post</a> by Cliff Click.</li>
+<li>Unlimited factor levels.</li>
+<li>Multiclass trees (one for each class) built in parallel with each other.</li>
+<li>Apache 2.0 Licensed.</li>
+<li>Model export in plain Java code for deployment in production environments.</li>
+<li>GUI for training &amp; model eval/viz (H2O Flow).</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;h2o&quot;)</span>
+<span class="kw">library</span>(h2o)
+<span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)  <span class="co">#Start a local H2O cluster using nthreads = num available cores</span>
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//RtmpjhXrun/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//RtmpjhXrun/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: ... Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         3 seconds 235 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 9 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_ukx197 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load 10-class MNIST dataset</span>
+train &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv&quot;</span>)
+test &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv&quot;</span>)
+<span class="kw">print</span>(<span class="kw">dim</span>(train))
+## [1] 10000    29
+<span class="kw">print</span>(<span class="kw">dim</span>(test))
+## [1] 5000   29</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identity the response column</span>
+y &lt;-<span class="st"> &quot;response&quot;</span>
+
+<span class="co"># Identify the predictor columns</span>
+x &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), y)
+
+<span class="co"># Convert response to factor</span>
+train[,y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(train[,y])
+test[,y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(test[,y])
+
+<span class="co"># convert train and test data frames to h2o objects</span>
+train.h2o &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(train)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+test.h2o &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(test)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train an H2O GBM model</span>
+model &lt;-<span class="st"> </span><span class="kw">h2o.gbm</span>(
+  <span class="dt">x =</span> x,
+  <span class="dt">y =</span> y,
+  <span class="dt">training_frame =</span> train.h2o,
+  <span class="dt">ntrees =</span> <span class="dv">70</span>,
+  <span class="dt">learn_rate =</span> <span class="fl">0.3</span>,
+  <span class="dt">sample_rate =</span> <span class="fl">1.0</span>,
+  <span class="dt">max_depth =</span> <span class="dv">5</span>,
+  <span class="dt">col_sample_rate_per_tree =</span> <span class="fl">0.5</span>,
+  <span class="dt">seed =</span> <span class="dv">1</span>
+  )
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====</span><span class="st">                                                             </span><span class="er">|</span><span class="st">   </span><span class="dv">6</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========</span><span class="st">                                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">16</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============</span><span class="st">                                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============</span><span class="st">                                                  </span><span class="er">|</span><span class="st">  </span><span class="dv">23</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================================================</span><span class="st">         </span><span class="er">|</span><span class="st">  </span><span class="dv">86</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get model performance on a test set</span>
+perf &lt;-<span class="st"> </span><span class="kw">h2o.performance</span>(model, test.h2o)
+<span class="kw">print</span>(perf)
+## H2OBinomialMetrics: gbm
+## 
+## MSE:  0.1938163
+## RMSE:  0.4402457
+## LogLoss:  0.5701889
+## Mean Per-Class Error:  0.3250041
+## AUC:  0.7735961
+## Gini:  0.5471923
+## 
+## Confusion Matrix (vertical: actual; across: predicted) for F1-optimal threshold:
+##           0    1    Error        Rate
+## 0      1112 1203 0.519654  =1203/2315
+## 1       350 2335 0.130354   =350/2685
+## Totals 1462 3538 0.310600  =1553/5000
+## 
+## Maximum Metrics: Maximum metrics at their respective thresholds
+##                         metric threshold    value idx
+## 1                       max f1  0.345501 0.750442 273
+## 2                       max f2  0.114664 0.861856 363
+## 3                 max f0point5  0.582133 0.733454 171
+## 4                 max accuracy  0.429572 0.704600 237
+## 5                max precision  0.948823 0.962963  13
+## 6                   max recall  0.018449 1.000000 397
+## 7              max specificity  0.995085 0.999568   0
+## 8             max absolute_mcc  0.582133 0.407274 171
+## 9   max min_per_class_accuracy  0.514547 0.702808 200
+## 10 max mean_per_class_accuracy  0.514547 0.702987 200
+## 
+## Gains/Lift Table: Extract with `h2o.gainsLift(&lt;model&gt;, &lt;data&gt;)` or `h2o.gainsLift(&lt;model&gt;, valid=&lt;T/F&gt;, xval=&lt;T/F&gt;)`</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># To retreive individual metrics</span>
+<span class="kw">h2o.auc</span>(perf)
+## [1] 0.7735961</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Print confusion matrix</span>
+<span class="kw">h2o.confusionMatrix</span>(perf)
+## Confusion Matrix (vertical: actual; across: predicted)  for max f1 @ threshold = 0.345501053865514:
+##           0    1    Error        Rate
+## 0      1112 1203 0.519654  =1203/2315
+## 1       350 2335 0.130354   =350/2685
+## Totals 1462 3538 0.310600  =1553/5000</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plot scoring history over time</span>
+<span class="kw">plot</span>(model)</code></pre></div>
+<p><img src="03-gradient-boosting-machines_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Retreive feature importance</span>
+vi &lt;-<span class="st"> </span><span class="kw">h2o.varimp</span>(model)
+vi[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,]
+## Variable Importances: 
+##    variable relative_importance scaled_importance percentage
+## 1       x26          541.335571          1.000000   0.200106
+## 2       x28          229.342468          0.423660   0.084777
+## 3       x25          202.556091          0.374178   0.074875
+## 4        x6          158.774506          0.293301   0.058691
+## 5       x23          154.050354          0.284575   0.056945
+## 6       x27          150.640320          0.278275   0.055684
+## 7        x4          137.782974          0.254524   0.050932
+## 8       x10          111.809761          0.206544   0.041331
+## 9        x1          105.712791          0.195281   0.039077
+## 10      x22           98.462402          0.181888   0.036397</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plot feature importance</span>
+<span class="kw">barplot</span>(
+  vi<span class="op">$</span>scaled_importance,
+  <span class="dt">names.arg =</span> vi<span class="op">$</span>variable,
+  <span class="dt">space =</span> <span class="dv">1</span>,
+  <span class="dt">las =</span> <span class="dv">2</span>,
+  <span class="dt">main =</span> <span class="st">&quot;Variable Importance: H2O GBM&quot;</span>
+  )</code></pre></div>
+<p><img src="03-gradient-boosting-machines_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Note that all models, data and model metrics can be viewed via the <a href="http://127.0.0.1:54321/flow/index.html">H2O Flow GUI</a>, which should already be running since you started the H2O cluster with <code>h2o.init()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Early stopping example</span>
+<span class="co"># Keep in mind that when you use early stopping, you should pass a validation set</span>
+<span class="co"># Since the validation set is used to detmine the stopping point, a separate test set should be used for model eval</span>
+
+<span class="co"># fit &lt;- h2o.gbm(</span>
+<span class="co">#   x = x,</span>
+<span class="co">#   y = y,</span>
+<span class="co">#   training_frame = train,</span>
+<span class="co">#   model_id = &quot;gbm_fit3&quot;,</span>
+<span class="co">#   validation_frame = valid,  #only used if stopping_rounds &gt; 0</span>
+<span class="co">#   ntrees = 500,</span>
+<span class="co">#   score_tree_interval = 5,      #used for early stopping</span>
+<span class="co">#   stopping_rounds = 3,          #used for early stopping</span>
+<span class="co">#   stopping_metric = &quot;misclassification&quot;, #used for early stopping</span>
+<span class="co">#   stopping_tolerance = 0.0005,  #used for early stopping</span>
+<span class="co">#   seed = 1</span>
+<span class="co">#   )</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># GBM hyperparamters</span>
+gbm_params &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">learn_rate =</span> <span class="kw">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>),
+  <span class="dt">max_depth =</span> <span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">10</span>, <span class="dv">1</span>),
+  <span class="dt">sample_rate =</span> <span class="kw">seq</span>(<span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">0.1</span>),
+  <span class="dt">col_sample_rate =</span> <span class="kw">seq</span>(<span class="fl">0.1</span>, <span class="fl">1.0</span>, <span class="fl">0.1</span>)
+  )
+
+search_criteria &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">strategy =</span> <span class="st">&quot;RandomDiscrete&quot;</span>, 
+  <span class="dt">max_models =</span> <span class="dv">20</span>
+  )
+
+<span class="co"># Train and validate a grid of GBMs</span>
+gbm_grid &lt;-<span class="st"> </span><span class="kw">h2o.grid</span>(
+  <span class="st">&quot;gbm&quot;</span>, <span class="dt">x =</span> x, <span class="dt">y =</span> y,
+  <span class="dt">grid_id =</span> <span class="st">&quot;gbm_grid&quot;</span>,
+  <span class="dt">training_frame =</span> train.h2o,
+  <span class="dt">validation_frame =</span> test.h2o,  <span class="co">#test frame will only be used to calculate metrics</span>
+  <span class="dt">ntrees =</span> <span class="dv">70</span>,
+  <span class="dt">seed =</span> <span class="dv">1</span>,
+  <span class="dt">hyper_params =</span> gbm_params,
+  <span class="dt">search_criteria =</span> search_criteria
+  )
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=</span><span class="st">                                                                </span><span class="er">|</span><span class="st">   </span><span class="dv">1</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==</span><span class="st">                                                               </span><span class="er">|</span><span class="st">   </span><span class="dv">3</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===</span><span class="st">                                                              </span><span class="er">|</span><span class="st">   </span><span class="dv">4</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====</span><span class="st">                                                             </span><span class="er">|</span><span class="st">   </span><span class="dv">6</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====</span><span class="st">                                                            </span><span class="er">|</span><span class="st">   </span><span class="dv">8</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======</span><span class="st">                                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">10</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========</span><span class="st">                                                         </span><span class="er">|</span><span class="st">  </span><span class="dv">12</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========</span><span class="st">                                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">14</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========</span><span class="st">                                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">16</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============</span><span class="st">                                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">19</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============</span><span class="st">                                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">22</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============</span><span class="st">                                                  </span><span class="er">|</span><span class="st">  </span><span class="dv">23</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================</span><span class="st">                                                </span><span class="er">|</span><span class="st">  </span><span class="dv">26</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================</span><span class="st">                                              </span><span class="er">|</span><span class="st">  </span><span class="dv">29</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================</span><span class="st">                                            </span><span class="er">|</span><span class="st">  </span><span class="dv">33</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================</span><span class="st">                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">36</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================</span><span class="st">                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">38</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================</span><span class="st">                                       </span><span class="er">|</span><span class="st">  </span><span class="dv">40</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========================</span><span class="st">                                      </span><span class="er">|</span><span class="st">  </span><span class="dv">42</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================</span><span class="st">                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">44</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============================</span><span class="st">                                  </span><span class="er">|</span><span class="st">  </span><span class="dv">47</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================================</span><span class="st">                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================================</span><span class="st">                              </span><span class="er">|</span><span class="st">  </span><span class="dv">53</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|====================================</span><span class="st">                             </span><span class="er">|</span><span class="st">  </span><span class="dv">56</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================================</span><span class="st">                           </span><span class="er">|</span><span class="st">  </span><span class="dv">58</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================================</span><span class="st">                         </span><span class="er">|</span><span class="st">  </span><span class="dv">61</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================================</span><span class="st">                        </span><span class="er">|</span><span class="st">  </span><span class="dv">63</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==========================================</span><span class="st">                       </span><span class="er">|</span><span class="st">  </span><span class="dv">65</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========================================</span><span class="st">                      </span><span class="er">|</span><span class="st">  </span><span class="dv">67</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================</span><span class="st">                    </span><span class="er">|</span><span class="st">  </span><span class="dv">70</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==============================================</span><span class="st">                   </span><span class="er">|</span><span class="st">  </span><span class="dv">71</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================================================</span><span class="st">                 </span><span class="er">|</span><span class="st">  </span><span class="dv">73</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================</span><span class="st">                </span><span class="er">|</span><span class="st">  </span><span class="dv">75</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|==================================================</span><span class="st">               </span><span class="er">|</span><span class="st">  </span><span class="dv">78</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=====================================================</span><span class="st">            </span><span class="er">|</span><span class="st">  </span><span class="dv">81</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================================================</span><span class="st">          </span><span class="er">|</span><span class="st">  </span><span class="dv">85</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=========================================================</span><span class="st">        </span><span class="er">|</span><span class="st">  </span><span class="dv">87</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===========================================================</span><span class="st">      </span><span class="er">|</span><span class="st">  </span><span class="dv">91</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============================================================</span><span class="st">    </span><span class="er">|</span><span class="st">  </span><span class="dv">94</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===============================================================</span><span class="st">  </span><span class="er">|</span><span class="st">  </span><span class="dv">97</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+
+gbm_gridperf &lt;-<span class="st"> </span><span class="kw">h2o.getGrid</span>(
+  <span class="dt">grid_id =</span> <span class="st">&quot;gbm_grid&quot;</span>, 
+  <span class="dt">sort_by =</span> <span class="st">&quot;auc&quot;</span>, 
+  <span class="dt">decreasing =</span> <span class="ot">TRUE</span>
+  )
+
+<span class="kw">print</span>(gbm_gridperf)
+## H2O Grid Details
+## ================
+## 
+## Grid ID: gbm_grid 
+## Used hyper parameters: 
+##   -  col_sample_rate 
+##   -  learn_rate 
+##   -  max_depth 
+##   -  sample_rate 
+## Number of models: 20 
+## Number of failed models: 0 
+## 
+## Hyper-Parameter Search Summary: ordered by decreasing auc
+##    col_sample_rate learn_rate max_depth sample_rate         model_ids
+## 1              0.7       0.07         6         0.5  gbm_grid_model_0
+## 2              0.5       0.08         9         1.0  gbm_grid_model_4
+## 3              0.3       0.07         9         1.0  gbm_grid_model_2
+## 4              0.9       0.05         6         0.9 gbm_grid_model_12
+## 5              1.0       0.04         8         0.8 gbm_grid_model_14
+## 6              0.5       0.05         5         0.8 gbm_grid_model_11
+## 7              0.3       0.01         8         1.0  gbm_grid_model_8
+## 8              0.6        0.1         3         0.5 gbm_grid_model_16
+## 9              0.6       0.04         4         1.0  gbm_grid_model_1
+## 10             1.0       0.03         5         1.0  gbm_grid_model_7
+## 11             0.3       0.01         6         1.0 gbm_grid_model_13
+## 12             0.9       0.03         3         0.6 gbm_grid_model_19
+## 13             0.4       0.08         2         0.8  gbm_grid_model_9
+## 14             0.6       0.04         2         0.9  gbm_grid_model_6
+## 15             0.2       0.06         2         0.6  gbm_grid_model_3
+## 16             0.1       0.04         3         0.5 gbm_grid_model_18
+## 17             0.1       0.08         2         1.0 gbm_grid_model_15
+## 18             0.1       0.03         3         0.9 gbm_grid_model_17
+## 19             0.4       0.02         2         0.6  gbm_grid_model_5
+## 20             0.3       0.01         2         0.9 gbm_grid_model_10
+##                   auc
+## 1  0.7839301615647285
+## 2  0.7838318632833396
+## 3  0.7832302488426625
+## 4  0.7830467640801027
+## 5  0.7826461704292708
+## 6  0.7791593164166978
+## 7  0.7779804610044604
+## 8  0.7740917262931815
+## 9  0.7724465573480378
+## 10 0.7719307729124687
+## 11  0.766567885742325
+## 12 0.7575386013811632
+## 13 0.7557383431671836
+## 14 0.7433997369595907
+## 15 0.7429429958452486
+## 16 0.7402734976732588
+## 17 0.7367849544103511
+## 18 0.7363177560320314
+## 19 0.7226789097095696
+## 20 0.7201266937751125</code></pre></div>
+<p>The grid search helped a lot. The first model we trained only had a 0.774 test set AUC, but the top GBM in our grid has a test set AUC of 0.786. More information about grid search is available in the <a href="https://github.com/h2oai/h2o-tutorials/blob/master/h2o-open-%20tour-2016/chicago/grid-search-model-selection.R">H2O grid search R tutorial</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice to shut down h2o environment</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+</div>
+</div>
+<div id="references-1" class="section level2">
+<h2><span class="header-section-number">3.11</span> References</h2>
+<p>[1] [Friedman, Jerome H. Greedy function approximation: A gradient boostingmachine. Ann. Statist. 29 (2001), no. 5, 1189–1232. <a href="doi:10.1214/aos/1013203451.http://projecteuclid.org/euclid.aos/1013203451" class="uri">doi:10.1214/aos/1013203451.http://projecteuclid.org/euclid.aos/1013203451</a>.](<a href="http://projecteuclid.org/DPubS?verb=Display&amp;version=1.0&amp;service=UI&amp;handle=euclid.aos/1013203451&amp;page=record" class="uri">http://projecteuclid.org/DPubS?verb=Display&amp;version=1.0&amp;service=UI&amp;handle=euclid.aos/1013203451&amp;page=record</a>)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="random-forest.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generalized-linear-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-gradient-boosting-machines.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

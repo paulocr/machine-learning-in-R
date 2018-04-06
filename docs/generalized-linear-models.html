@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="gradient-boosting-machines.html">
+<link rel="next" href="deep-neural-networks.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="generalized-linear-models" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Generalized Linear Models (GLM)</h1>
+<hr />
+<div class="figure">
+<img src="images/linear_regression.png" title="Linear Regression Model" />
+
+</div>
+<hr />
+<p>Image Source: Wikipedia</p>
+<div id="introduction-3" class="section level2">
+<h2><span class="header-section-number">4.1</span> Introduction</h2>
+<p><a href="https://en.wikipedia.org/wiki/Linear_regression">Linear Models</a> are one of the oldest and most well known statistical prediction algorithms which nowdays is often categorized as a “machine learning algorithm.” <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">Generalized LinearModels</a> (GLMs) are are a framework for modeling a response variable <span class="math inline">\(y\)</span> that is bounded or discrete. Generalized linear models allow for an arbitrary link function <span class="math inline">\(g\)</span> that relates the mean of the response variable to the predictors, i.e. <span class="math inline">\(E(y) = g(β′x)\)</span>. The link function is often related to the distribution of the response, and in particular it typically has the effect of transforming between, <span class="math inline">\((-\infty ,\infty )\)</span>, the range of the linear predictor, and the range of the response variable (e.g. <span class="math inline">\([0,1]\)</span>). [1]</p>
+<p>Therefore, GLMs allow for response variables that have error distribution models other than a normal distribution. Some common examples of GLMs are:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Poisson_regression">Poisson regression</a> for count data.</li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression</a> and <a href="https://en.wikipedia.org/wiki/Probit_regression">probit regression</a> for binary data.</li>
+<li><a href="https://en.wikipedia.org/wiki/Multinomial_logistic_regression">Multinomial logistic regression</a> and <a href="https://en.wikipedia.org/wiki/Multinomial_probit">multinomial probit</a> regression for categorical data.</li>
+<li><a href="https://en.wikipedia.org/wiki/Ordered_probit">Ordered probit</a> regression for ordinal data.</li>
+</ul>
+</div>
+<div id="linear-models" class="section level2">
+<h2><span class="header-section-number">4.2</span> Linear Models</h2>
+<p>In a linear model, given a vector of inputs, <span class="math inline">\(X^T = (X_1, X_2, ..., X_p)\)</span>, we predict the output <span class="math inline">\(Y\)</span> via the model:</p>
+<p><span class="math display">\[\hat{Y} = \hat{\beta}_0 + \sum_{j=1}^p X_j \hat{\beta}_j\]</span></p>
+<p>The term <span class="math inline">\(\hat{\beta}_0\)</span> is the intercept, also known as the <em>bias</em> in machine learning. Often it is convenient to include the constant variable <span class="math inline">\(1\)</span> in <span class="math inline">\(X\)</span>, include <span class="math inline">\(\beta_0\)</span> in the vector of coefficients <span class="math inline">\(\hat{\beta}\)</span>, and then write the linear model in vector form as an inner product,</p>
+<p><span class="math display">\[\hat{Y} = X^T\hat{\beta},\]</span></p>
+<p>where <span class="math inline">\(X^T\)</span> denotes the transpose of the design matrix. We will review the case where <span class="math inline">\(Y\)</span> is a scalar, however, in general <span class="math inline">\(Y\)</span> can have more than one dimension. Viewed as a function over the <span class="math inline">\(p\)</span>-dimensional input space, <span class="math inline">\(f(X) = X^T\beta\)</span> is linear, and the <a href="https://en.wikipedia.org/wiki/Gradient">gradient</a>, <span class="math inline">\(f′(X) = \beta\)</span>, is a vector in input space that points in the steepest uphill direction.</p>
+<div id="ordinary-least-squares-ols" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Ordinary Least Squares (OLS)</h3>
+<p>There are many different methods to fitting a linear model, but the most simple and popular method is <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares">Ordinary LeastSquares</a> (OLS). The OLS method minimizes the <a href="https://en.wikipedia.org/wiki/Residual_sum_of_squares">residual sum ofsquares</a> (RSS), and leads to a closed-form expression for the estimated value of the unknown parameter <span class="math inline">\(\beta\)</span>.</p>
+<p><span class="math display">\[RSS(\beta) = \sum_{i=1}^n (y_i - x_i^T\beta)^2\]</span></p>
+<p><span class="math inline">\(RSS(\beta)\)</span> is a quadradic function of the parameters, and hence its minimum always exists, but may not be unique. The solution is easiest to characterize in matrix notation:</p>
+<p><span class="math display">\[RSS(\beta) = (\boldsymbol{y} - \boldsymbol{X}\beta)^T(\boldsymbol{y} -
+\boldsymbol{X}\beta)\]</span></p>
+<p>where <span class="math inline">\(\boldsymbol{X}\)</span> is an <span class="math inline">\(n \times p\)</span> matrix with each row an input vector, and <span class="math inline">\(\boldsymbol{y}\)</span> is a vector of length <span class="math inline">\(n\)</span> representing the response in the training set. Differentiating with respect to <span class="math inline">\(\beta\)</span>, we get the <em>normal equations</em>,</p>
+<p><span class="math display">\[\boldsymbol{X}^T(\boldsymbol{y} - \boldsymbol{X}\beta) = 0\]</span></p>
+<p>If <span class="math inline">\(\boldsymbol{X}^T\boldsymbol{X}\)</span> is <a href="https://en.wikipedia.org/wiki/Invertible_matrix">nonsingular</a>, then the unique solution is given by:</p>
+<p><span class="math display">\[\hat{\beta} =
+(\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{y}\]</span></p>
+<p>The fitted value at the <span class="math inline">\(i^{th}\)</span> input, <span class="math inline">\(x_i\)</span> is <span class="math inline">\(\hat{y}_i = \hat{y}(x_i) = x_i^T\hat{\beta}\)</span>. To solve this equation for <span class="math inline">\(\beta\)</span>, we must invert a matrix, <span class="math inline">\(\boldsymbol{X}^T\boldsymbol{X}\)</span>, however it can be computationally expensive to invert this matrix directly. There are computational shortcuts for solving the normal equations available via <a href="https://en.wikipedia.org/wiki/QR_decomposition">QR</a> or <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky</a> decomposition. When dealing with large training sets, it is useful to have an understanding of the underlying computational methods in the software that you are using. Some GLM software implementations may not utilize all available computational shortcuts, costing you extra time to train your GLMs, or require you to upgrade the memory on your machine.</p>
+</div>
+</div>
+<div id="regularization" class="section level2">
+<h2><span class="header-section-number">4.3</span> Regularization</h2>
+<p><a href="http://web.stanford.edu/~hastie/Papers/glmpath.pdf" class="uri">http://web.stanford.edu/~hastie/Papers/glmpath.pdf</a></p>
+<div id="ridge-regression" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> Ridge Regression</h3>
+<p>Consider a sample consisting of <span class="math inline">\(n\)</span> cases, each of which consists of <span class="math inline">\(p\)</span> covariates and a single outcome. Let <span class="math inline">\(y_i\)</span> be the outcome and <span class="math inline">\(X_i := ( x_1 , x_2 , … , x_p)^T\)</span>.</p>
+<p>Then the objective of Ridge is to solve:</p>
+<p><span class="math display">\[{\displaystyle \min _{\beta }\left\{{\frac {1}{N}}\sum
+_{i=1}^{N}\left(y_{i}-\beta_0 - \sum_{j=1}^p x_{ij}\beta_j
+\right)^{2}\right\}{\text{ subject to }}\sum _{j=1}^{p}\beta _{j}^2 \leq t.}\]</span></p>
+<p>Here <span class="math inline">\(t\)</span> is a prespecified free parameter that determines the amount of regularization. Ridge is also called <span class="math inline">\(\ell_2\)</span> regularization.</p>
+</div>
+<div id="lasso-regression" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Lasso Regression</h3>
+<p><a href="https://en.wikipedia.org/wiki/Lasso_(statistics)">Lasso</a> (least absolute shrinkage and selection operator) (also Lasso or LASSO) is a regression analysis method that performs both variable selection and regularization in order to enhance the prediction accuracy and interpretability of the statistical model it produces.</p>
+<ul>
+<li>It was <a href="http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf">introduced by Robert Tibshirani in 1996</a> based on Leo Breiman’s Nonnegative Garrote.</li>
+<li>Lasso conveniently performs coefficient shrinkage comparable to the ridge regression as well as variable selection by reducing coefficients to zero.</li>
+<li>By sacrificing a small amount of bias in the predicted response variable in order to decrease variance, the lasso achieves improved predictive accuracy compared with ordinary least squares (OLS) models, particularly with data containing highly correlated predictor variables or in over determined data where <span class="math inline">\(p&gt;n\)</span>.</li>
+</ul>
+<p>Then the objective of Lasso is to solve:</p>
+<p><span class="math display">\[{\displaystyle \min _{\beta }\left\{{\frac {1}{N}}\sum
+_{i=1}^{N}\left(y_{i}-\beta_0 - \sum_{j=1}^p x_{ij}\beta_j
+\right)^{2}\right\}{\text{ subject to }}\sum _{j=1}^{p}|\beta _{j}| \leq t.}\]</span></p>
+<p>Here <span class="math inline">\(t\)</span> is a prespecified free parameter that determines the amount of regularization. Lasso is also called <span class="math inline">\(\ell_1\)</span> regularization.</p>
+</div>
+<div id="elastic-net" class="section level3">
+<h3><span class="header-section-number">4.3.3</span> Elastic Net</h3>
+<p><a href="https://en.wikipedia.org/wiki/Elastic_net_regularization">Elastic Net regularization</a> is a simple blend of Lasso and Ridge regularization. In software, this is typically controlled by an <code>alpha</code> parameter in between 0 and 1, where:</p>
+<ul>
+<li><code>alpha = 0.0</code> is Ridge regression</li>
+<li><code>alpha = 0.5</code> is a 50/50 blend of Ridge/Lasso regression</li>
+<li><code>alpha = 1.0</code> is Lasso regression</li>
+</ul>
+</div>
+</div>
+<div id="other-solvers" class="section level2">
+<h2><span class="header-section-number">4.4</span> Other Solvers</h2>
+<p>GLM models are trained by finding the set of parameters that maximizes the likelihood of the data. For the Gaussian family, maximum likelihood consists of minimizing the mean squared error. This has an analytical solution and can be solved with a standard method of least squares. This is also applicable when the <span class="math inline">\(\ell_2\)</span> penalty is added to the optimization. For all other families and when the <span class="math inline">\(\ell_1\)</span> penalty is included, the maximum likelihood problem has no analytical solution. Therefore an iterative method such as IRLSM, L-BFGS, the Newton method, or gradient descent, must be used.</p>
+<div id="iteratively-re-weighted-least-squares-irls" class="section level3">
+<h3><span class="header-section-number">4.4.1</span> Iteratively Re-weighted Least Squares (IRLS)</h3>
+<p>The <a href="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">IRLS</a> method is used to solve certain optimization problems with objective functions of the form:</p>
+<p><span class="math display">\[{\underset  {{\boldsymbol  \beta }}{\operatorname {arg\,min}}}\sum
+_{{i=1}}^{n}{\big |}y_{i}-f_{i}({\boldsymbol  \beta }){\big |}^{p},\]</span></p>
+<p>by an iterative method in which each step involves solving a weighted least squares problem of the form:</p>
+<p><span class="math display">\[{\boldsymbol  \beta }^{{(t+1)}}={\underset  {{\boldsymbol  \beta
+}}{\operatorname {arg\,min}}}\sum _{{i=1}}^{n}w_{i}({\boldsymbol  \beta
+}^{{(t)}}){\big |}y_{i}-f_{i}({\boldsymbol  \beta }){\big |}^{2}.\]</span></p>
+<p>IRLS is used to find the <a href="https://en.wikipedia.org/wiki/Maximum_likelihood">maximum likelihood</a> estimates of a generalized linear model as a way of mitigating the influence of outliers in an otherwise normally-distributed data set. For example, by minimizing the least absolute error rather than the least square error.</p>
+<p>One of the advantages of IRLS over <a href="https://en.wikipedia.org/wiki/Linear_programming">linear programming</a> and <a href="https://en.wikipedia.org/wiki/Convex_programming">convex programming</a> is that it can be used with <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton">Gauss-Newton</a> and <a href="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt">Levenberg-Marquardt</a> numerical algorithms.</p>
+<p>The IRL1 algorithm solves a sequence of non-smooth weighted <span class="math inline">\(\ell_1\)</span>-minimization problems, and hence can be seen as the non-smooth counterpart to the IRLS algorithm.</p>
+</div>
+<div id="iteratively-re-weighted-least-squares-with-admm" class="section level3">
+<h3><span class="header-section-number">4.4.2</span> Iteratively Re-weighted Least Squares with ADMM</h3>
+<p>The IRLS method with <a href="http://web.stanford.edu/~boyd/admm.html">alternating direction method of multipliers</a> (ADMM) inner solver as described in <a href="http://web.stanford.edu/~boyd/papers/admm_distr_stats.html">Distributed Optimization and Statistical Learning via the Alternating Direction Method of Multipliers</a> by Boyd et. al to deal with the <span class="math inline">\(\ell_1\)</span> penalty. ADMM is an algorithm that solves convex optimization problems by breaking them into smaller pieces, each of which are then easier to handle. Every iteration of the algorithm consists of following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Generate weighted least squares problem based on previous solution, i.e. vector of weights w and response z.</li>
+<li>Compute the weighted <a href="https://en.wikipedia.org/wiki/Gramian_matrix">Gram matrix</a> XT WX and XT z vector</li>
+<li>Decompose the Gram matrix (<a href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a>) and apply ADMM solver to solve the <span class="math inline">\(\ell_1\)</span> penalized least squares problem.</li>
+</ol>
+<p>In the <a href="http://docs.h2o.ai/h2o/latest-stable/h2o-%20docs/booklets/GLMBooklet.pdf">H2O GLM</a> implementation, steps 1 and 2 are performed distributively, and Step 3 is computed in parallel on a single node. The Gram matrix appraoch is very efficient for tall and narrow datasets when running lamnda search with a sparse solution.</p>
+</div>
+<div id="cyclical-coordinate-descent" class="section level3">
+<h3><span class="header-section-number">4.4.3</span> Cyclical Coordinate Descent</h3>
+<p>The IRLS method can also use cyclical coordinate descent in it’s inner loop (as opposed to ADMM). The <a href="http://web.stanford.edu/~hastie/glmnet/glmnet_beta.html">glmnet</a> package uses <a href="http://web.stanford.edu/~hastie/Papers/glmnet.pdf">cyclical coordinate descent</a> which successively optimizes the objective function over each parameter with others fixed, and cycles repeatedly until convergence.</p>
+<p>Cyclical coordinate descent methods are a natural approach for solving convex problems with <span class="math inline">\(\ell_1\)</span> or <span class="math inline">\(\ell_2\)</span> constraints, or mixtures of the two (elastic net). Each coordinate-descent step is fast, with an explicit formula for each coordinate-wise minimization. The method also exploits the sparsity of the model, spending much of its time evaluating only inner products for variables with non-zero coefficients.</p>
+</div>
+<div id="l-bfgs" class="section level3">
+<h3><span class="header-section-number">4.4.4</span> L-BFGS</h3>
+<p><a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">Limited-memory BFGS</a> (L-BFGS) is an optimization algorithm in the family of <a href="https://en.wikipedia.org/wiki/Quasi-Newton_method">quasi-Newton methods</a> that approximates the <a href="https://en.wikipedia.org/wiki/BFGS_method">Broyden–Fletcher–Goldfarb–Shanno</a> (BFGS) algorithm using a limited amount of computer memory. Due to its resulting linear memory requirement, the L-BFGS method is particularly well suited for optimization problems with a large number of variables. The method is popular among “big data” GLM implementations such as <a href="http://www.rdocumentation.org/packages/h2o/functions/h2o.glm">h2o::h2o.glm()</a> (one of two available solvers) and <a href="https://spark.apache.org/docs/latest/api/R/index.html">SparkR::glm()</a>. The <a href="http://sepwww.stanford.edu/data/media/public/docs/sep117/an%20toine1/paper_html/node12.html#lbfgsb">L-BFGS-B algorithm</a> is an extension of the L-BFGS algorithm to handle simple bounds on the model.</p>
+</div>
+</div>
+<div id="data-preprocessing" class="section level2">
+<h2><span class="header-section-number">4.5</span> Data Preprocessing</h2>
+<p>In order for the coefficients to be easily interpretable, the features must be centered and scaled (aka “normalized”). Many software packages will allow the direct input of categorical/factor columns in the training frame, however internally any categorical columns will be expaded into binary indicator variables. The caret package offers a handy utility function, <a href="http://www.rdocumentation.org/packages/caret/functions/dummyVars">caret::dummyVars ()</a>, for dummy/indicator expansion if you need to do this manually.</p>
+<p>Missing data will need to be imputed, otherwise in many GLM packages, those rows will simply be omitted from the training set at train time. For example, in the <code>stats::glm()</code> function there is an <code>na.action</code> argument which allows the user to do one of the three options:</p>
+<ul>
+<li>na.omit and na.exclude: observations are removed if they contain any missing values; if na.exclude is used some functions will pad residuals and predictions to the correct length by inserting NAs for omitted cases.</li>
+<li>na.pass: keep all data, including NAs</li>
+<li>na.fail: returns the object only if it contains no missing values</li>
+</ul>
+<p>Other GLM implementations such as <code>h2o::glm()</code> will impute the mean automatically (in both training and test data), unless specified by the user.</p>
+<hr />
+</div>
+<div id="glm-software-in-r" class="section level2">
+<h2><span class="header-section-number">4.6</span> GLM Software in R</h2>
+<p>There is an implementation of the standard GLM (no regularization) in the built- in “stats” package in R called <a href="http://www.rdocumentation.org/packages/stats/functions/glm">glm</a>.</p>
+<div id="glm" class="section level3">
+<h3><span class="header-section-number">4.6.1</span> glm</h3>
+<p>Authors: The original R implementation of glm was written by Simon Davies working for Ross Ihaka at the University of Auckland, but has since been extensively re-written by members of the R Core team. The design was inspired by the S function of the same name described in Hastie &amp; Pregibon (1992).</p>
+<p>Backend: Fortran</p>
+<div id="example-linear-regression-with-glm" class="section level4">
+<h4><span class="header-section-number">4.6.1.1</span> Example Linear Regression with glm()</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;caret&quot;)</span>
+<span class="kw">library</span>(caret)
+<span class="kw">data</span>(<span class="st">&quot;Sacramento&quot;</span>)
+
+<span class="co"># Split the data into a 70/25% train/test sets</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+idxs &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> Sacramento<span class="op">$</span>price, <span class="dt">p =</span> <span class="fl">0.75</span>)[[<span class="dv">1</span>]]
+train &lt;-<span class="st"> </span>Sacramento[idxs,]
+test &lt;-<span class="st"> </span>Sacramento[<span class="op">-</span>idxs,]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit the GLM</span>
+fit &lt;-<span class="st"> </span><span class="kw">glm</span>(
+  price <span class="op">~</span><span class="st"> </span>.,
+  <span class="dt">data =</span> train,
+  <span class="dt">family =</span> <span class="kw">gaussian</span>()
+  )
+
+<span class="kw">summary</span>(fit)
+## 
+## Call:
+## glm(formula = price ~ ., family = gaussian(), data = train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -269404   -39233    -6677    27418   279476  
+## 
+## Coefficients: (32 not defined because of singularities)
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          7.434e+06  1.931e+07   0.385 0.700365    
+## cityAUBURN           1.450e+05  7.163e+04   2.024 0.043348 *  
+## cityCAMERON_PARK     3.497e+04  6.341e+04   0.551 0.581536    
+## cityCARMICHAEL       8.019e+04  2.699e+04   2.971 0.003078 ** 
+## cityCITRUS_HEIGHTS  -8.352e+03  2.222e+04  -0.376 0.707161    
+## cityCOOL             1.300e+05  1.015e+05   1.281 0.200691    
+## cityEL_DORADO        3.534e+04  1.061e+05   0.333 0.739141    
+## cityEL_DORADO_HILLS  1.243e+05  5.417e+04   2.295 0.022047 *  
+## cityELK_GROVE       -6.302e+04  5.984e+04  -1.053 0.292688    
+## cityELVERTA         -5.559e+04  5.066e+04  -1.097 0.272929    
+## cityFAIR_OAKS        6.136e+04  3.307e+04   1.855 0.064008 .  
+## cityFOLSOM           1.056e+05  4.168e+04   2.533 0.011540 *  
+## cityFORESTHILL       7.605e+04  1.283e+05   0.593 0.553518    
+## cityGALT            -9.711e+04  8.547e+04  -1.136 0.256354    
+## cityGOLD_RIVER       3.459e+04  6.240e+04   0.554 0.579555    
+## cityGRANITE_BAY      3.217e+05  7.939e+04   4.053 5.70e-05 ***
+## cityGREENWOOD        7.445e+04  1.119e+05   0.665 0.506249    
+## cityLINCOLN          3.605e+04  3.989e+04   0.904 0.366484    
+## cityLOOMIS           3.754e+05  6.367e+04   5.896 6.08e-09 ***
+## cityMATHER          -8.306e+04  7.679e+04  -1.082 0.279856    
+## cityMEADOW_VISTA     1.221e+05  1.060e+05   1.153 0.249537    
+## cityNORTH_HIGHLANDS -3.655e+04  2.425e+04  -1.507 0.132220    
+## cityORANGEVALE       5.875e+04  3.518e+04   1.670 0.095465 .  
+## cityPLACERVILLE      1.271e+05  9.188e+04   1.384 0.166998    
+## cityPOLLOCK_PINES    3.648e+04  1.291e+05   0.283 0.777580    
+## cityRANCHO_CORDOVA  -6.894e+04  4.502e+04  -1.531 0.126222    
+## cityRANCHO_MURIETA  -1.675e+05  8.849e+04  -1.893 0.058780 .  
+## cityRIO_LINDA       -2.221e+04  3.001e+04  -0.740 0.459428    
+## cityROCKLIN          9.179e+04  3.562e+04   2.577 0.010205 *  
+## cityROSEVILLE        9.536e+04  2.678e+04   3.560 0.000398 ***
+## citySACRAMENTO       1.203e+05  4.113e+04   2.926 0.003561 ** 
+## cityWALNUT_GROVE     4.904e+04  1.173e+05   0.418 0.676124    
+## cityWEST_SACRAMENTO -7.501e+04  6.405e+04  -1.171 0.242019    
+## cityWILTON           1.265e+05  7.234e+04   1.749 0.080744 .  
+## zipz95608                   NA         NA      NA       NA    
+## zipz95610            7.732e+03  3.056e+04   0.253 0.800363    
+## zipz95614                   NA         NA      NA       NA    
+## zipz95621                   NA         NA      NA       NA    
+## zipz95623                   NA         NA      NA       NA    
+## zipz95624           -1.452e+03  2.038e+04  -0.071 0.943237    
+## zipz95626                   NA         NA      NA       NA    
+## zipz95628                   NA         NA      NA       NA    
+## zipz95630                   NA         NA      NA       NA    
+## zipz95631                   NA         NA      NA       NA    
+## zipz95632                   NA         NA      NA       NA    
+## zipz95635                   NA         NA      NA       NA    
+## zipz95648                   NA         NA      NA       NA    
+## zipz95650                   NA         NA      NA       NA    
+## zipz95655                   NA         NA      NA       NA    
+## zipz95660                   NA         NA      NA       NA    
+## zipz95661            2.926e+04  3.994e+04   0.733 0.464062    
+## zipz95662                   NA         NA      NA       NA    
+## zipz95667                   NA         NA      NA       NA    
+## zipz95670            5.343e+04  3.267e+04   1.635 0.102495    
+## zipz95673                   NA         NA      NA       NA    
+## zipz95677            1.607e+04  4.510e+04   0.356 0.721739    
+## zipz95678           -4.077e+04  2.838e+04  -1.437 0.151329    
+## zipz95682                   NA         NA      NA       NA    
+## zipz95683                   NA         NA      NA       NA    
+## zipz95690                   NA         NA      NA       NA    
+## zipz95691                   NA         NA      NA       NA    
+## zipz95693                   NA         NA      NA       NA    
+## zipz95722                   NA         NA      NA       NA    
+## zipz95726                   NA         NA      NA       NA    
+## zipz95742                   NA         NA      NA       NA    
+## zipz95746                   NA         NA      NA       NA    
+## zipz95747                   NA         NA      NA       NA    
+## zipz95757            1.339e+04  1.874e+04   0.715 0.475149    
+## zipz95758                   NA         NA      NA       NA    
+## zipz95762                   NA         NA      NA       NA    
+## zipz95765                   NA         NA      NA       NA    
+## zipz95811            1.067e+05  7.624e+04   1.400 0.162053    
+## zipz95814           -7.275e+04  6.049e+04  -1.203 0.229549    
+## zipz95815           -1.940e+05  3.691e+04  -5.256 2.02e-07 ***
+## zipz95816           -2.631e+03  4.872e+04  -0.054 0.956956    
+## zipz95817           -1.662e+05  4.612e+04  -3.605 0.000337 ***
+## zipz95818           -5.284e+04  4.452e+04  -1.187 0.235783    
+## zipz95819            1.074e+05  5.104e+04   2.104 0.035800 *  
+## zipz95820           -1.712e+05  3.770e+04  -4.540 6.73e-06 ***
+## zipz95821           -9.943e+04  4.344e+04  -2.289 0.022420 *  
+## zipz95822           -1.762e+05  4.333e+04  -4.066 5.39e-05 ***
+## zipz95823           -2.001e+05  4.157e+04  -4.813 1.86e-06 ***
+## zipz95824           -2.056e+05  4.097e+04  -5.019 6.77e-07 ***
+## zipz95825           -1.386e+05  3.719e+04  -3.727 0.000212 ***
+## zipz95826           -1.435e+05  3.811e+04  -3.765 0.000182 ***
+## zipz95827           -1.880e+05  4.005e+04  -4.694 3.30e-06 ***
+## zipz95828           -2.005e+05  3.935e+04  -5.096 4.60e-07 ***
+## zipz95829           -1.802e+05  4.471e+04  -4.030 6.25e-05 ***
+## zipz95831           -1.137e+05  5.317e+04  -2.138 0.032914 *  
+## zipz95832           -2.242e+05  4.891e+04  -4.584 5.52e-06 ***
+## zipz95833           -1.549e+05  4.048e+04  -3.827 0.000143 ***
+## zipz95834           -1.510e+05  4.150e+04  -3.639 0.000297 ***
+## zipz95835           -1.202e+05  4.195e+04  -2.865 0.004309 ** 
+## zipz95838           -1.729e+05  3.648e+04  -4.741 2.64e-06 ***
+## zipz95841           -7.757e+04  5.190e+04  -1.495 0.135538    
+## zipz95842           -1.651e+05  3.921e+04  -4.210 2.93e-05 ***
+## zipz95843                   NA         NA      NA       NA    
+## zipz95864                   NA         NA      NA       NA    
+## beds                -1.336e+04  5.016e+03  -2.664 0.007926 ** 
+## baths                1.314e+04  6.323e+03   2.078 0.038099 *  
+## sqft                 1.148e+02  7.457e+00  15.388  &lt; 2e-16 ***
+## typeMulti_Family     3.034e+04  2.731e+04   1.111 0.266933    
+## typeResidential      4.665e+04  1.298e+04   3.594 0.000351 ***
+## latitude            -2.121e+05  1.895e+05  -1.120 0.263319    
+## longitude           -6.519e+03  1.547e+05  -0.042 0.966399    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 4622177625)
+## 
+##     Null deviance: 1.2350e+13  on 699  degrees of freedom
+## Residual deviance: 2.8981e+12  on 627  degrees of freedom
+## AIC: 17635
+## 
+## Number of Fisher Scoring iterations: 2</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Predict on the test set</span>
+pred &lt;-<span class="st"> </span><span class="kw">predict</span>(fit, <span class="dt">newdata =</span> test)
+## Error in model.frame.default(Terms, newdata, na.action = na.action, xlev = object$xlevels): factor city has new levels DIAMOND_SPRINGS, GARDEN_VALLEY, PENRYN</code></pre></div>
+<p>Above we have a slight issue. The <code>city</code> column has new factor levels in the test set that were not present in the training set. Even though the <code>train</code> and <code>test</code> data frames originated from a single data frame, <code>Sacramento</code>, and therefore have identical factor levels, we still run into this problem. Let’s take a closer look at the factor levels to see what’s going on:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(train)
+## &#39;data.frame&#39;:    700 obs. of  9 variables:
+##  $ city     : Factor w/ 37 levels &quot;ANTELOPE&quot;,&quot;AUBURN&quot;,..: 34 34 34 34 34 29 31 34 34 34 ...
+##  $ zip      : Factor w/ 68 levels &quot;z95603&quot;,&quot;z95608&quot;,..: 52 44 44 53 65 24 25 44 51 66 ...
+##  $ beds     : int  3 2 2 2 3 2 3 1 3 2 ...
+##  $ baths    : num  1 1 1 1 1 2 2 1 1 2 ...
+##  $ sqft     : int  1167 796 852 797 1122 941 1146 871 1020 1022 ...
+##  $ type     : Factor w/ 3 levels &quot;Condo&quot;,&quot;Multi_Family&quot;,..: 3 3 3 3 1 1 3 3 3 3 ...
+##  $ price    : int  68212 68880 69307 81900 89921 94905 98937 106852 107502 108750 ...
+##  $ latitude : num  38.5 38.6 38.6 38.5 38.7 ...
+##  $ longitude: num  -121 -121 -121 -121 -121 ...</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(test)
+## &#39;data.frame&#39;:    232 obs. of  9 variables:
+##  $ city     : Factor w/ 37 levels &quot;ANTELOPE&quot;,&quot;AUBURN&quot;,..: 34 34 34 34 34 1 34 24 11 10 ...
+##  $ zip      : Factor w/ 68 levels &quot;z95603&quot;,&quot;z95608&quot;,..: 64 66 49 64 52 67 57 19 9 8 ...
+##  $ beds     : int  2 3 3 3 3 3 3 3 3 3 ...
+##  $ baths    : num  1 2 1 2 2 2 2 2 2 2 ...
+##  $ sqft     : int  836 1104 1177 909 1289 1088 1248 1152 1116 1056 ...
+##  $ type     : Factor w/ 3 levels &quot;Condo&quot;,&quot;Multi_Family&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ price    : int  59222 90895 91002 100309 106250 126640 132000 134555 138750 156896 ...
+##  $ latitude : num  38.6 38.7 38.5 38.6 38.5 ...
+##  $ longitude: num  -121 -121 -121 -121 -121 ...</code></pre></div>
+<p>Although <code>train</code> and <code>test</code> have identical structure, not all the levels are represented in the training data. To validate this, let’s take a look at the actual unique levels that were used in the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the number of levels in the model features</span>
+<span class="kw">sapply</span>(fit<span class="op">$</span>xlevels, <span class="cf">function</span>(x) <span class="kw">print</span>(<span class="kw">length</span>(x)))
+## [1] 34
+## [1] 65
+## [1] 3
+## city  zip type 
+##   34   65    3</code></pre></div>
+<p>We can manually fix this by updating the <code>xlevels</code> element of the model. We have the same issue with <code>zip</code>, so we should go ahead and manually update that as well.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Update factor levels so that prediction works</span>
+fit<span class="op">$</span>xlevels[[<span class="st">&quot;city&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">union</span>(fit<span class="op">$</span>xlevels[[<span class="st">&quot;city&quot;</span>]], <span class="kw">levels</span>(test<span class="op">$</span>city))
+fit<span class="op">$</span>xlevels[[<span class="st">&quot;zip&quot;</span>]] &lt;-<span class="st"> </span><span class="kw">union</span>(fit<span class="op">$</span>xlevels[[<span class="st">&quot;zip&quot;</span>]], <span class="kw">levels</span>(test<span class="op">$</span>zip))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Predict on the test set</span>
+pred &lt;-<span class="st"> </span><span class="kw">predict</span>(fit, <span class="dt">newdata =</span> test)
+<span class="kw">summary</span>(fit)
+## 
+## Call:
+## glm(formula = price ~ ., family = gaussian(), data = train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -269404   -39233    -6677    27418   279476  
+## 
+## Coefficients: (32 not defined because of singularities)
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          7.434e+06  1.931e+07   0.385 0.700365    
+## cityAUBURN           1.450e+05  7.163e+04   2.024 0.043348 *  
+## cityCAMERON_PARK     3.497e+04  6.341e+04   0.551 0.581536    
+## cityCARMICHAEL       8.019e+04  2.699e+04   2.971 0.003078 ** 
+## cityCITRUS_HEIGHTS  -8.352e+03  2.222e+04  -0.376 0.707161    
+## cityCOOL             1.300e+05  1.015e+05   1.281 0.200691    
+## cityEL_DORADO        3.534e+04  1.061e+05   0.333 0.739141    
+## cityEL_DORADO_HILLS  1.243e+05  5.417e+04   2.295 0.022047 *  
+## cityELK_GROVE       -6.302e+04  5.984e+04  -1.053 0.292688    
+## cityELVERTA         -5.559e+04  5.066e+04  -1.097 0.272929    
+## cityFAIR_OAKS        6.136e+04  3.307e+04   1.855 0.064008 .  
+## cityFOLSOM           1.056e+05  4.168e+04   2.533 0.011540 *  
+## cityFORESTHILL       7.605e+04  1.283e+05   0.593 0.553518    
+## cityGALT            -9.711e+04  8.547e+04  -1.136 0.256354    
+## cityGOLD_RIVER       3.459e+04  6.240e+04   0.554 0.579555    
+## cityGRANITE_BAY      3.217e+05  7.939e+04   4.053 5.70e-05 ***
+## cityGREENWOOD        7.445e+04  1.119e+05   0.665 0.506249    
+## cityLINCOLN          3.605e+04  3.989e+04   0.904 0.366484    
+## cityLOOMIS           3.754e+05  6.367e+04   5.896 6.08e-09 ***
+## cityMATHER          -8.306e+04  7.679e+04  -1.082 0.279856    
+## cityMEADOW_VISTA     1.221e+05  1.060e+05   1.153 0.249537    
+## cityNORTH_HIGHLANDS -3.655e+04  2.425e+04  -1.507 0.132220    
+## cityORANGEVALE       5.875e+04  3.518e+04   1.670 0.095465 .  
+## cityPLACERVILLE      1.271e+05  9.188e+04   1.384 0.166998    
+## cityPOLLOCK_PINES    3.648e+04  1.291e+05   0.283 0.777580    
+## cityRANCHO_CORDOVA  -6.894e+04  4.502e+04  -1.531 0.126222    
+## cityRANCHO_MURIETA  -1.675e+05  8.849e+04  -1.893 0.058780 .  
+## cityRIO_LINDA       -2.221e+04  3.001e+04  -0.740 0.459428    
+## cityROCKLIN          9.179e+04  3.562e+04   2.577 0.010205 *  
+## cityROSEVILLE        9.536e+04  2.678e+04   3.560 0.000398 ***
+## citySACRAMENTO       1.203e+05  4.113e+04   2.926 0.003561 ** 
+## cityWALNUT_GROVE     4.904e+04  1.173e+05   0.418 0.676124    
+## cityWEST_SACRAMENTO -7.501e+04  6.405e+04  -1.171 0.242019    
+## cityWILTON           1.265e+05  7.234e+04   1.749 0.080744 .  
+## zipz95608                   NA         NA      NA       NA    
+## zipz95610            7.732e+03  3.056e+04   0.253 0.800363    
+## zipz95614                   NA         NA      NA       NA    
+## zipz95621                   NA         NA      NA       NA    
+## zipz95623                   NA         NA      NA       NA    
+## zipz95624           -1.452e+03  2.038e+04  -0.071 0.943237    
+## zipz95626                   NA         NA      NA       NA    
+## zipz95628                   NA         NA      NA       NA    
+## zipz95630                   NA         NA      NA       NA    
+## zipz95631                   NA         NA      NA       NA    
+## zipz95632                   NA         NA      NA       NA    
+## zipz95635                   NA         NA      NA       NA    
+## zipz95648                   NA         NA      NA       NA    
+## zipz95650                   NA         NA      NA       NA    
+## zipz95655                   NA         NA      NA       NA    
+## zipz95660                   NA         NA      NA       NA    
+## zipz95661            2.926e+04  3.994e+04   0.733 0.464062    
+## zipz95662                   NA         NA      NA       NA    
+## zipz95667                   NA         NA      NA       NA    
+## zipz95670            5.343e+04  3.267e+04   1.635 0.102495    
+## zipz95673                   NA         NA      NA       NA    
+## zipz95677            1.607e+04  4.510e+04   0.356 0.721739    
+## zipz95678           -4.077e+04  2.838e+04  -1.437 0.151329    
+## zipz95682                   NA         NA      NA       NA    
+## zipz95683                   NA         NA      NA       NA    
+## zipz95690                   NA         NA      NA       NA    
+## zipz95691                   NA         NA      NA       NA    
+## zipz95693                   NA         NA      NA       NA    
+## zipz95722                   NA         NA      NA       NA    
+## zipz95726                   NA         NA      NA       NA    
+## zipz95742                   NA         NA      NA       NA    
+## zipz95746                   NA         NA      NA       NA    
+## zipz95747                   NA         NA      NA       NA    
+## zipz95757            1.339e+04  1.874e+04   0.715 0.475149    
+## zipz95758                   NA         NA      NA       NA    
+## zipz95762                   NA         NA      NA       NA    
+## zipz95765                   NA         NA      NA       NA    
+## zipz95811            1.067e+05  7.624e+04   1.400 0.162053    
+## zipz95814           -7.275e+04  6.049e+04  -1.203 0.229549    
+## zipz95815           -1.940e+05  3.691e+04  -5.256 2.02e-07 ***
+## zipz95816           -2.631e+03  4.872e+04  -0.054 0.956956    
+## zipz95817           -1.662e+05  4.612e+04  -3.605 0.000337 ***
+## zipz95818           -5.284e+04  4.452e+04  -1.187 0.235783    
+## zipz95819            1.074e+05  5.104e+04   2.104 0.035800 *  
+## zipz95820           -1.712e+05  3.770e+04  -4.540 6.73e-06 ***
+## zipz95821           -9.943e+04  4.344e+04  -2.289 0.022420 *  
+## zipz95822           -1.762e+05  4.333e+04  -4.066 5.39e-05 ***
+## zipz95823           -2.001e+05  4.157e+04  -4.813 1.86e-06 ***
+## zipz95824           -2.056e+05  4.097e+04  -5.019 6.77e-07 ***
+## zipz95825           -1.386e+05  3.719e+04  -3.727 0.000212 ***
+## zipz95826           -1.435e+05  3.811e+04  -3.765 0.000182 ***
+## zipz95827           -1.880e+05  4.005e+04  -4.694 3.30e-06 ***
+## zipz95828           -2.005e+05  3.935e+04  -5.096 4.60e-07 ***
+## zipz95829           -1.802e+05  4.471e+04  -4.030 6.25e-05 ***
+## zipz95831           -1.137e+05  5.317e+04  -2.138 0.032914 *  
+## zipz95832           -2.242e+05  4.891e+04  -4.584 5.52e-06 ***
+## zipz95833           -1.549e+05  4.048e+04  -3.827 0.000143 ***
+## zipz95834           -1.510e+05  4.150e+04  -3.639 0.000297 ***
+## zipz95835           -1.202e+05  4.195e+04  -2.865 0.004309 ** 
+## zipz95838           -1.729e+05  3.648e+04  -4.741 2.64e-06 ***
+## zipz95841           -7.757e+04  5.190e+04  -1.495 0.135538    
+## zipz95842           -1.651e+05  3.921e+04  -4.210 2.93e-05 ***
+## zipz95843                   NA         NA      NA       NA    
+## zipz95864                   NA         NA      NA       NA    
+## beds                -1.336e+04  5.016e+03  -2.664 0.007926 ** 
+## baths                1.314e+04  6.323e+03   2.078 0.038099 *  
+## sqft                 1.148e+02  7.457e+00  15.388  &lt; 2e-16 ***
+## typeMulti_Family     3.034e+04  2.731e+04   1.111 0.266933    
+## typeResidential      4.665e+04  1.298e+04   3.594 0.000351 ***
+## latitude            -2.121e+05  1.895e+05  -1.120 0.263319    
+## longitude           -6.519e+03  1.547e+05  -0.042 0.966399    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 4622177625)
+## 
+##     Null deviance: 1.2350e+13  on 699  degrees of freedom
+## Residual deviance: 2.8981e+12  on 627  degrees of freedom
+## AIC: 17635
+## 
+## Number of Fisher Scoring iterations: 2</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Compute model performance on the test set</span>
+
+caret<span class="op">::</span><span class="kw">R2</span>(<span class="dt">pred =</span> pred, <span class="dt">obs =</span> test<span class="op">$</span>price)
+## [1] 0.03715124
+caret<span class="op">::</span><span class="kw">RMSE</span>(<span class="dt">pred =</span> pred, <span class="dt">obs =</span> test<span class="op">$</span>price)
+## [1] 7173982</code></pre></div>
+</div>
+</div>
+<div id="glm-in-caret" class="section level3">
+<h3><span class="header-section-number">4.6.2</span> GLM in caret</h3>
+<p>Now let’s run the same model using caret’s glm method to get a sense of how much easier it is to use.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train a caret glm model</span>
+fit &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">train</span>(
+  <span class="dt">form =</span> price <span class="op">~</span><span class="st"> </span>., 
+  <span class="dt">data =</span> train, 
+  <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;none&quot;</span>),
+  <span class="dt">method =</span> <span class="st">&quot;glm&quot;</span>, 
+  <span class="dt">family =</span> <span class="kw">gaussian</span>()
+  )
+
+<span class="kw">summary</span>(fit<span class="op">$</span>finalModel)
+## 
+## Call:
+## NULL
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -269404   -39233    -6677    27418   279476  
+## 
+## Coefficients: (38 not defined because of singularities)
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          7.434e+06  1.931e+07   0.385 0.700365    
+## cityAUBURN           1.450e+05  7.163e+04   2.024 0.043348 *  
+## cityCAMERON_PARK     3.497e+04  6.341e+04   0.551 0.581536    
+## cityCARMICHAEL       8.019e+04  2.699e+04   2.971 0.003078 ** 
+## cityCITRUS_HEIGHTS  -8.352e+03  2.222e+04  -0.376 0.707161    
+## cityCOOL             1.300e+05  1.015e+05   1.281 0.200691    
+## cityDIAMOND_SPRINGS         NA         NA      NA       NA    
+## cityEL_DORADO        3.534e+04  1.061e+05   0.333 0.739141    
+## cityEL_DORADO_HILLS  1.243e+05  5.417e+04   2.295 0.022047 *  
+## cityELK_GROVE       -6.302e+04  5.984e+04  -1.053 0.292688    
+## cityELVERTA         -5.559e+04  5.066e+04  -1.097 0.272929    
+## cityFAIR_OAKS        6.136e+04  3.307e+04   1.855 0.064008 .  
+## cityFOLSOM           1.056e+05  4.168e+04   2.533 0.011540 *  
+## cityFORESTHILL       7.605e+04  1.283e+05   0.593 0.553518    
+## cityGALT            -9.711e+04  8.547e+04  -1.136 0.256354    
+## cityGARDEN_VALLEY           NA         NA      NA       NA    
+## cityGOLD_RIVER       3.459e+04  6.240e+04   0.554 0.579555    
+## cityGRANITE_BAY      3.217e+05  7.939e+04   4.053 5.70e-05 ***
+## cityGREENWOOD        7.445e+04  1.119e+05   0.665 0.506249    
+## cityLINCOLN          3.605e+04  3.989e+04   0.904 0.366484    
+## cityLOOMIS           3.754e+05  6.367e+04   5.896 6.08e-09 ***
+## cityMATHER          -8.306e+04  7.679e+04  -1.082 0.279856    
+## cityMEADOW_VISTA     1.221e+05  1.060e+05   1.153 0.249537    
+## cityNORTH_HIGHLANDS -3.655e+04  2.425e+04  -1.507 0.132220    
+## cityORANGEVALE       5.875e+04  3.518e+04   1.670 0.095465 .  
+## cityPENRYN                  NA         NA      NA       NA    
+## cityPLACERVILLE      1.271e+05  9.188e+04   1.384 0.166998    
+## cityPOLLOCK_PINES    3.648e+04  1.291e+05   0.283 0.777580    
+## cityRANCHO_CORDOVA  -6.894e+04  4.502e+04  -1.531 0.126222    
+## cityRANCHO_MURIETA  -1.675e+05  8.849e+04  -1.893 0.058780 .  
+## cityRIO_LINDA       -2.221e+04  3.001e+04  -0.740 0.459428    
+## cityROCKLIN          9.179e+04  3.562e+04   2.577 0.010205 *  
+## cityROSEVILLE        9.536e+04  2.678e+04   3.560 0.000398 ***
+## citySACRAMENTO       1.203e+05  4.113e+04   2.926 0.003561 ** 
+## cityWALNUT_GROVE     4.904e+04  1.173e+05   0.418 0.676124    
+## cityWEST_SACRAMENTO -7.501e+04  6.405e+04  -1.171 0.242019    
+## cityWILTON           1.265e+05  7.234e+04   1.749 0.080744 .  
+## zipz95608                   NA         NA      NA       NA    
+## zipz95610            7.732e+03  3.056e+04   0.253 0.800363    
+## zipz95614                   NA         NA      NA       NA    
+## zipz95619                   NA         NA      NA       NA    
+## zipz95621                   NA         NA      NA       NA    
+## zipz95623                   NA         NA      NA       NA    
+## zipz95624           -1.452e+03  2.038e+04  -0.071 0.943237    
+## zipz95626                   NA         NA      NA       NA    
+## zipz95628                   NA         NA      NA       NA    
+## zipz95630                   NA         NA      NA       NA    
+## zipz95631                   NA         NA      NA       NA    
+## zipz95632                   NA         NA      NA       NA    
+## zipz95633                   NA         NA      NA       NA    
+## zipz95635                   NA         NA      NA       NA    
+## zipz95648                   NA         NA      NA       NA    
+## zipz95650                   NA         NA      NA       NA    
+## zipz95655                   NA         NA      NA       NA    
+## zipz95660                   NA         NA      NA       NA    
+## zipz95661            2.926e+04  3.994e+04   0.733 0.464062    
+## zipz95662                   NA         NA      NA       NA    
+## zipz95663                   NA         NA      NA       NA    
+## zipz95667                   NA         NA      NA       NA    
+## zipz95670            5.343e+04  3.267e+04   1.635 0.102495    
+## zipz95673                   NA         NA      NA       NA    
+## zipz95677            1.607e+04  4.510e+04   0.356 0.721739    
+## zipz95678           -4.077e+04  2.838e+04  -1.437 0.151329    
+## zipz95682                   NA         NA      NA       NA    
+## zipz95683                   NA         NA      NA       NA    
+## zipz95690                   NA         NA      NA       NA    
+## zipz95691                   NA         NA      NA       NA    
+## zipz95693                   NA         NA      NA       NA    
+## zipz95722                   NA         NA      NA       NA    
+## zipz95726                   NA         NA      NA       NA    
+## zipz95742                   NA         NA      NA       NA    
+## zipz95746                   NA         NA      NA       NA    
+## zipz95747                   NA         NA      NA       NA    
+## zipz95757            1.339e+04  1.874e+04   0.715 0.475149    
+## zipz95758                   NA         NA      NA       NA    
+## zipz95762                   NA         NA      NA       NA    
+## zipz95765                   NA         NA      NA       NA    
+## zipz95811            1.067e+05  7.624e+04   1.400 0.162053    
+## zipz95814           -7.275e+04  6.049e+04  -1.203 0.229549    
+## zipz95815           -1.940e+05  3.691e+04  -5.256 2.02e-07 ***
+## zipz95816           -2.631e+03  4.872e+04  -0.054 0.956956    
+## zipz95817           -1.662e+05  4.612e+04  -3.605 0.000337 ***
+## zipz95818           -5.284e+04  4.452e+04  -1.187 0.235783    
+## zipz95819            1.074e+05  5.104e+04   2.104 0.035800 *  
+## zipz95820           -1.712e+05  3.770e+04  -4.540 6.73e-06 ***
+## zipz95821           -9.943e+04  4.344e+04  -2.289 0.022420 *  
+## zipz95822           -1.762e+05  4.333e+04  -4.066 5.39e-05 ***
+## zipz95823           -2.001e+05  4.157e+04  -4.813 1.86e-06 ***
+## zipz95824           -2.056e+05  4.097e+04  -5.019 6.77e-07 ***
+## zipz95825           -1.386e+05  3.719e+04  -3.727 0.000212 ***
+## zipz95826           -1.435e+05  3.811e+04  -3.765 0.000182 ***
+## zipz95827           -1.880e+05  4.005e+04  -4.694 3.30e-06 ***
+## zipz95828           -2.005e+05  3.935e+04  -5.096 4.60e-07 ***
+## zipz95829           -1.802e+05  4.471e+04  -4.030 6.25e-05 ***
+## zipz95831           -1.137e+05  5.317e+04  -2.138 0.032914 *  
+## zipz95832           -2.242e+05  4.891e+04  -4.584 5.52e-06 ***
+## zipz95833           -1.549e+05  4.048e+04  -3.827 0.000143 ***
+## zipz95834           -1.510e+05  4.150e+04  -3.639 0.000297 ***
+## zipz95835           -1.202e+05  4.195e+04  -2.865 0.004309 ** 
+## zipz95838           -1.729e+05  3.648e+04  -4.741 2.64e-06 ***
+## zipz95841           -7.757e+04  5.190e+04  -1.495 0.135538    
+## zipz95842           -1.651e+05  3.921e+04  -4.210 2.93e-05 ***
+## zipz95843                   NA         NA      NA       NA    
+## zipz95864                   NA         NA      NA       NA    
+## beds                -1.336e+04  5.016e+03  -2.664 0.007926 ** 
+## baths                1.314e+04  6.323e+03   2.078 0.038099 *  
+## sqft                 1.148e+02  7.457e+00  15.388  &lt; 2e-16 ***
+## typeMulti_Family     3.034e+04  2.731e+04   1.111 0.266933    
+## typeResidential      4.665e+04  1.298e+04   3.594 0.000351 ***
+## latitude            -2.121e+05  1.895e+05  -1.120 0.263319    
+## longitude           -6.519e+03  1.547e+05  -0.042 0.966399    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 4622177625)
+## 
+##     Null deviance: 1.2350e+13  on 699  degrees of freedom
+## Residual deviance: 2.8981e+12  on 627  degrees of freedom
+## AIC: 17635
+## 
+## Number of Fisher Scoring iterations: 2</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Predict on the test set</span>
+pred &lt;-<span class="st"> </span><span class="kw">predict</span>(fit, <span class="dt">newdata =</span> test)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Compute model performance on the test set</span>
+
+caret<span class="op">::</span><span class="kw">R2</span>(<span class="dt">pred =</span> pred, <span class="dt">obs =</span> test<span class="op">$</span>price)
+## [1] 0.7338893
+caret<span class="op">::</span><span class="kw">RMSE</span>(<span class="dt">pred =</span> pred, <span class="dt">obs =</span> test<span class="op">$</span>price)
+## [1] 66030.84</code></pre></div>
+<p>Ok, this looks much better. And we didn’t have to deal with the missing factor levels! :-)</p>
+</div>
+<div id="h2o-2" class="section level3">
+<h3><span class="header-section-number">4.6.3</span> h2o</h3>
+<p>Authors: Tomas Nykodym, H2O.ai contributors</p>
+<p>Backend: Java</p>
+<p>The <a href="https://cran.r-project.org/web/packages/h2o/index.html">h2o</a> package offers a data-distributed implementation of Generalized Linear Models. A “data- distribtued” version uses distributed data frames, so that the whole design matrix does not need to fit into memory at once. The h2o package fits both regularized and non-regularized GLMs. The implementation details are documented <a href="http://docs.h2o.ai/h2o/latest-stable/h2o-docs/booklets/GLMBooklet.pdf">here</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># h2o.glm example</span>
+<span class="co">#install.packages(&quot;h2o&quot;)</span>
+<span class="kw">library</span>(h2o)
+
+<span class="co"># Start a local H2O cluster using nthreads = num available cores</span>
+<span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpdbn9Q6/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpdbn9Q6/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: .. Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 560 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 11 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_otb722 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)</code></pre></div>
+<p>Typically one would load a dataset in parallel from disk using the <code>h2o.importFile()</code> function, however for the purposes of this tutorial, we are going to use a tiny built-in R dataset, so we can send that data to the H2O cluster (from R memory) using the <code>as.h2o()</code> function. We would also use the <code>h2o.splitFrame()</code> function to split the data instead of the <code>caret::createDataPartition()</code>, but for an apples-to-apples comparison with the methods above, it’s good to use the same exact train and test split, generated the same way as above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load Sacramento dataset</span>
+<span class="kw">library</span>(caret)
+<span class="kw">data</span>(<span class="st">&quot;Sacramento&quot;</span>)
+
+<span class="co"># Convert the data into an H2OFrame</span>
+sac &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(Sacramento)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+
+<span class="co"># Split the data into a 70/25% train/test sets</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+idxs &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> Sacramento<span class="op">$</span>price, <span class="dt">p =</span> <span class="fl">0.75</span>)[[<span class="dv">1</span>]]
+train &lt;-<span class="st"> </span>sac[idxs,]
+test &lt;-<span class="st"> </span>sac[<span class="op">-</span>idxs,]
+
+<span class="co"># Dimensions</span>
+<span class="kw">dim</span>(train)
+## [1] 700   9
+<span class="kw">dim</span>(test)
+## [1] 232   9
+
+<span class="co"># Columns</span>
+<span class="kw">names</span>(train)
+## [1] &quot;city&quot;      &quot;zip&quot;       &quot;beds&quot;      &quot;baths&quot;     &quot;sqft&quot;      &quot;type&quot;     
+## [7] &quot;price&quot;     &quot;latitude&quot;  &quot;longitude&quot;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identify the predictor columns</span>
+xcols &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), <span class="st">&quot;price&quot;</span>)
+
+<span class="co"># Train a default GLM model with no regularization</span>
+<span class="kw">system.time</span>(
+  fit &lt;-<span class="st"> </span><span class="kw">h2o.glm</span>(
+    <span class="dt">x =</span> xcols,
+    <span class="dt">y =</span> <span class="st">&quot;price&quot;</span>,
+    <span class="dt">training_frame =</span> train,
+    <span class="dt">family =</span> <span class="st">&quot;gaussian&quot;</span>,
+    <span class="dt">lambda =</span> <span class="dv">0</span>  <span class="co">#lambda = 0 means no regularization</span>
+    )   
+  )  
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===</span><span class="st">                                                              </span><span class="er">|</span><span class="st">   </span><span class="dv">4</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+##    user  system elapsed 
+##   0.290   0.009   1.552</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(fit)
+## Model Details:
+## ==============
+## 
+## H2ORegressionModel: glm
+## Model Key:  GLM_model_R_1522981615658_1 
+## GLM Model: summary
+##     family     link regularization number_of_predictors_total
+## 1 gaussian identity           None                        110
+##   number_of_active_predictors number_of_iterations  training_frame
+## 1                         104                    1 RTMP_sid_b826_2
+## 
+## H2ORegressionMetrics: glm
+## ** Reported on training data. **
+## 
+## MSE:  4140191405
+## RMSE:  64344.32
+## MAE:  46055.84
+## RMSLE:  0.2853132
+## Mean Residual Deviance :  4140191405
+## R^2 :  0.7653286
+## Null Deviance :1.234975e+13
+## Null D.o.F. :699
+## Residual Deviance :2.898134e+12
+## Residual D.o.F. :595
+## AIC :17699.32
+## 
+## 
+## 
+## 
+## 
+## Scoring History: 
+##             timestamp   duration iterations negative_log_likelihood
+## 1 2018-04-05 22:27:00  0.000 sec          0    12349752226576.09961
+##           objective
+## 1 17642503180.82300
+## 
+## Variable Importances: (Extract with `h2o.varimp`) 
+## =================================================
+## 
+## Standardized Coefficient Magnitudes: standardized coefficient magnitudes
+##         names  coefficients sign
+## 1  zip.z95819 226542.703922  POS
+## 2  zip.z95811 224933.815960  POS
+## 3  zip.z95650 161683.933044  POS
+## 4 city.LOOMIS 161683.933044  POS
+## 5  zip.z95746 134784.591570  POS
+## 
+## ---
+##                    names coefficients sign
+## 105           zip.z95619     0.000000  POS
+## 106           zip.z95633     0.000000  POS
+## 107           zip.z95663     0.000000  POS
+## 108 city.DIAMOND_SPRINGS     0.000000  POS
+## 109   city.GARDEN_VALLEY     0.000000  POS
+## 110          city.PENRYN     0.000000  POS</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># H2O computes many model performance metrics automatically, accessible by utility functions</span>
+
+perf &lt;-<span class="st"> </span><span class="kw">h2o.performance</span>(<span class="dt">model =</span> fit, <span class="dt">newdata =</span> test)
+<span class="kw">h2o.r2</span>(perf)
+## [1] 0.7377706
+<span class="kw">sqrt</span>(<span class="kw">h2o.mse</span>(perf))
+## [1] 64293.34</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+</div>
+<div id="speedglm" class="section level3">
+<h3><span class="header-section-number">4.6.4</span> speedglm</h3>
+<p>Also worth metioning is the <a href="https://cran.r-project.org/web/packages/speedglm/index.html">speedglm</a> package, which fits Linear and Generalized Linear Models to large data sets. This is particularly useful if R is linked against an optimized <a href="https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms">BLAS</a>. For data sets of size greater of R memory, the fitting is performed by an iterative algorithm.</p>
+</div>
+</div>
+<div id="regularized-glm-in-r" class="section level2">
+<h2><span class="header-section-number">4.7</span> Regularized GLM in R</h2>
+<p>Ok, so let’s assume that we have wide, sparse, collinear or big data. If your training set falls into any of those categories, it might be a good idea to use a regularlized GLM.</p>
+<div id="glmnet" class="section level3">
+<h3><span class="header-section-number">4.7.1</span> glmnet</h3>
+<p>Authors: <a href="https://statweb.stanford.edu/~jhf/">Jerome Friedman</a>, <a href="http://web.stanford.edu/~hastie/">Trevor Hastie</a>, <a href="http://faculty.washington.edu/nrsimon/">Noah Simon</a>, <a href="http://statweb.stanford.edu/~tibs/">Rob Tibshirani</a></p>
+<p>Backend: <a href="https://en.wikipedia.org/wiki/Mortran">Mortran</a> (extension of Fortran used for scientific computation)</p>
+<p><a href="http://web.stanford.edu/~hastie/glmnet/glmnet_beta.html">glmnet</a> is a package that fits a generalized linear model via penalized maximum likelihood. The regularization path is computed for the lasso or elastic-net penalty at a grid of values for the regularization parameter lambda. The algorithm is extremely fast, and can exploit sparsity in the input matrix <span class="math inline">\(\boldsymbol{X}\)</span>.</p>
+<p>Features:</p>
+<ul>
+<li>The code can handle sparse input-matrix formats, as well as range constraints on coefficients.</li>
+<li>Glmnet also makes use of the strong rules for efficient restriction of the active set.</li>
+<li>The core of Glmnet is a set of fortran subroutines, which make for very fast execution.</li>
+<li>The algorithms use coordinate descent with warm starts and active set iterations.</li>
+<li>Supports the following distributions: <code>&quot;gaussian&quot;,&quot;binomial&quot;,&quot;poisson&quot;,&quot;multinomial&quot;,&quot;cox&quot;,&quot;mgaussian&quot;</code></li>
+<li>Supports standardization and offsets.</li>
+</ul>
+<p>The Glmnet package is a fast implementation, but it requires some extra processing up-front to your data if it’s not already represented as a numeric matrix. For example, if you have categorical data or missing data, you need to deal with that yourself.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;glmnet&quot;)</span>
+<span class="co">#install.packages(&quot;Cairo&quot;)  #for plotting lasso coefficients in Jupyter notebook</span>
+<span class="kw">library</span>(glmnet)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;QuickStartExample&quot;</span>)  <span class="co">#loads &#39;x&#39; and &#39;y&#39;</span>
+<span class="kw">str</span>(x)
+##  num [1:100, 1:20] 0.274 2.245 -0.125 -0.544 -1.459 ...
+<span class="kw">class</span>(x)
+## [1] &quot;matrix&quot;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">glmnet</span>(x, y)</code></pre></div>
+<p>We can visualize the coefficients by executing the <code>plot</code> function. Each curve corresponds to a variable. It shows the path of its coefficient against the <span class="math inline">\(\ell_1\)</span>-norm of the whole coefficient vector at as <span class="math inline">\(\lambda\)</span> varies. The axis above indicates the number of nonzero coefficients at the current <span class="math inline">\(\lambda\)</span>, which is the effective degrees of freedom for the lasso.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit)</code></pre></div>
+<p><img src="04-generalized-linear-models_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Simulate a binary response dataset</span>
+<span class="kw">library</span>(caret)
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+df &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">twoClassSim</span>(
+  <span class="dt">n =</span> <span class="dv">100000</span>,
+  <span class="dt">linearVars =</span> <span class="dv">10</span>, 
+  <span class="dt">noiseVars =</span> <span class="dv">50</span>, 
+  <span class="dt">corrVars =</span> <span class="dv">50</span>
+  )
+
+<span class="kw">dim</span>(df)
+## [1] 100000    116</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identify the response &amp; predictor columns</span>
+ycol &lt;-<span class="st"> &quot;Class&quot;</span>
+xcols &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(df), ycol)
+df[,ycol] &lt;-<span class="st"> </span><span class="kw">ifelse</span>(df[,ycol]<span class="op">==</span><span class="st">&quot;Class1&quot;</span>, <span class="dv">0</span>, <span class="dv">1</span>)
+
+<span class="co"># Split the data into a 70/25% train/test sets</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+idxs &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> df[,ycol], <span class="dt">p =</span> <span class="fl">0.75</span>)[[<span class="dv">1</span>]]
+train &lt;-<span class="st"> </span>df[idxs,]
+test &lt;-<span class="st"> </span>df[<span class="op">-</span>idxs,]
+train_y &lt;-<span class="st"> </span>df[idxs, ycol]
+test_y &lt;-<span class="st"> </span>df[<span class="op">-</span>idxs, ycol]
+train_x &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~-</span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>., train[, xcols])
+test_x &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~-</span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>., test[, xcols])
+
+
+<span class="co"># Dimensions</span>
+<span class="kw">dim</span>(train_x)
+## [1] 75000   115
+<span class="kw">length</span>(train_y)
+## [1] 75000
+<span class="kw">dim</span>(test_x)
+## [1] 25000   115
+<span class="kw">length</span>(test_y)
+## [1] 25000</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(test_y)
+## [1] 0 1 1 0 0 0</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train a Lasso GLM</span>
+<span class="kw">system.time</span>(
+  cvfit &lt;-<span class="st"> </span><span class="kw">cv.glmnet</span>(
+    <span class="dt">x =</span> train_x,
+    <span class="dt">y =</span> train_y,
+    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">1.0</span>     <span class="co"># alpha = 1 means lasso by default</span>
+    )
+  )  
+##    user  system elapsed 
+##  56.088   1.165  57.369</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">preds &lt;-<span class="st"> </span><span class="kw">predict</span>(
+  cvfit<span class="op">$</span>glmnet.fit,
+  <span class="dt">newx =</span> test_x, 
+  <span class="dt">s =</span> cvfit<span class="op">$</span>lambda.min, 
+  <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>
+  )
+
+<span class="kw">head</span>(preds)
+##            1
+## 2  0.3136236
+## 14 0.6544411
+## 15 0.9269314
+## 21 0.1027764
+## 29 0.6640567
+## 30 0.5079524</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;cvAUC&quot;)</span>
+<span class="kw">library</span>(cvAUC)
+
+cvAUC<span class="op">::</span><span class="kw">AUC</span>(<span class="dt">predictions =</span> preds, <span class="dt">labels =</span> test_y)
+## [1] 0.9082888</code></pre></div>
+</div>
+<div id="h2o-3" class="section level3">
+<h3><span class="header-section-number">4.7.2</span> h2o</h3>
+<p>Introduced in the previous section, the h2o package can perform unregularized or regularized regression. By default, <code>h2o.glm</code> will perform an Elastic Net regression. Similar to the <code>glmnet</code> function, you can adjust the Elastic Net penalty through the <code>alpha</code> parameter (<code>alpha = 1.0</code> is Lasso and <code>alpha = 0.0</code> is Ridge).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Simulate a binary response dataset</span>
+<span class="kw">library</span>(caret)
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+df &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">twoClassSim</span>(
+  <span class="dt">n =</span> <span class="dv">100000</span>,
+  <span class="dt">linearVars =</span> <span class="dv">10</span>, 
+  <span class="dt">noiseVars =</span> <span class="dv">50</span>, 
+  <span class="dt">corrVars =</span> <span class="dv">50</span>
+  )
+
+<span class="kw">dim</span>(df)
+## [1] 100000    116</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert the data into an H2OFrame</span>
+<span class="kw">library</span>(h2o)
+
+<span class="co"># initialize h2o instance</span>
+<span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpdbn9Q6/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//Rtmpdbn9Q6/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: ... Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 823 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 12 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_qca880 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)
+
+<span class="co"># Convert the data into an H2OFrame</span>
+hf &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(df)
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Identify the response &amp; predictor columns</span>
+ycol &lt;-<span class="st"> &quot;Class&quot;</span>
+xcols &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(hf), ycol)
+
+<span class="co"># Convert the 0/1 binary response to a factor </span>
+hf[,ycol] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(hf[,ycol])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(hf)
+## [1] 100000    116</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Split the data into a 70/25% train/test sets</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+idxs &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> df[,ycol], <span class="dt">p =</span> <span class="fl">0.75</span>)[[<span class="dv">1</span>]]
+train &lt;-<span class="st"> </span>hf[idxs,]
+test &lt;-<span class="st"> </span>hf[<span class="op">-</span>idxs,]
+
+<span class="co"># Dimensions</span>
+<span class="kw">dim</span>(train)
+## [1] 75001   116
+<span class="kw">dim</span>(test)
+## [1] 24999   116</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Train a Lasso GLM</span>
+<span class="kw">system.time</span>(
+  fit &lt;-<span class="st"> </span><span class="kw">h2o.glm</span>(
+    <span class="dt">x =</span> xcols,
+    <span class="dt">y =</span> ycol,
+    <span class="dt">training_frame =</span> train,
+    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,
+    <span class="dt">lambda_search =</span> <span class="ot">TRUE</span>,  <span class="co"># compute lasso path</span>
+    <span class="dt">alpha =</span> <span class="dv">1</span>  <span class="co"># alpha = 1 means lasso, same as glmnet above</span>
+    )
+  ) 
+## 
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===</span><span class="st">                                                              </span><span class="er">|</span><span class="st">   </span><span class="dv">4</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=============</span><span class="st">                                                    </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=======================</span><span class="st">                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">36</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|================================</span><span class="st">                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">49</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|===================================</span><span class="st">                              </span><span class="er">|</span><span class="st">  </span><span class="dv">54</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|======================================</span><span class="st">                           </span><span class="er">|</span><span class="st">  </span><span class="dv">58</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|========================================</span><span class="st">                         </span><span class="er">|</span><span class="st">  </span><span class="dv">61</span>%
+  <span class="op">|</span><span class="st">                                                                       </span>
+<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
+##    user  system elapsed 
+##   0.449   0.013   8.846</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Compute AUC on test dataset</span>
+<span class="co"># H2O computes many model performance metrics automatically, including AUC</span>
+
+perf &lt;-<span class="st"> </span><span class="kw">h2o.performance</span>(
+  <span class="dt">model =</span> fit,
+  <span class="dt">newdata =</span> test
+  )
+
+<span class="kw">h2o.auc</span>(perf)
+## [1] 0.911921</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+</div>
+</div>
+<div id="references-2" class="section level2">
+<h2><span class="header-section-number">4.8</span> References</h2>
+<p>[1] [<a href="https://en.wikipedia.org/wiki/Linear_regression#Generalized\_linear\_models" class="uri">https://en.wikipedia.org/wiki/Linear_regression#Generalized\_linear\_models</a>](<a href="https://en.wikipedia.org/wiki/Linear_regression#Generalized_linear_models" class="uri">https://en.wikipedia.org/wiki/Linear_regression#Generalized_linear_models</a>)</p>
+<p>[2] [<a href="https://en.wikipedia.org/wiki/Generalized\_linear\_model" class="uri">https://en.wikipedia.org/wiki/Generalized\_linear\_model</a>](<a href="https://en.wikipedia.org/wiki/Generalized_linear_model" class="uri">https://en.wikipedia.org/wiki/Generalized_linear_model</a>)</p>
+<p>[3] [Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J.Royal. Statist. Soc B., Vol. 58, No. 1, pages 267-288).](<a href="http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf">http://www-stat.stanford.edu/%7Etibs/lasso/lasso.pdf</a>)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="gradient-boosting-machines.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="deep-neural-networks.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04-generalized-linear-models.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

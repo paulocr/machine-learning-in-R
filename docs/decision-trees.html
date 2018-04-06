@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="random-forest.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="decision-trees" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Classification and Regression Trees (CART)</h1>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
+<img src="images/dt.png" alt="Decision Tree visualization by Tony Chu and Stephanie Yee." width="100%" />
+<p class="caption">
+Figure .: Decision Tree visualization by Tony Chu and Stephanie Yee.
+</p>
+</div>
+<div id="introduction" class="section level2">
+<h2><span class="header-section-number">1.1</span> Introduction</h2>
+<p>Classification and regression trees (CART) are a non-parametric <a href="https://en.wikipedia.org/wiki/Decision_tree_learning">decision tree learning</a> technique that produces either classification or regression trees, depending on whether the dependent variable is categorical or numeric, respectively. CART is both a generic term to describe tree algorithms and also a specific name for Breiman’s original algorithm for constructing classification and regression trees.</p>
+<ul>
+<li><strong>Decision Tree:</strong> A tree-shaped graph or model of decisions used to determine a course of action or show a statistical probability.</li>
+<li><strong>Classification Tree:</strong> A decision tree that performs classification (predicts a categorical response).</li>
+<li><strong>Regression Tree:</strong> A decision tree that performs regression (predicts a numeric response).</li>
+<li><strong>Split Point:</strong> A split point occurs at each node of the tree where a decision is made (e.g. x &gt; 7 vs. x ≤ 7).</li>
+<li><strong>Terminal Node:</strong> A terminal node is a node which has no descendants (child nodes). Also called a “leaf node.”</li>
+</ul>
+</div>
+<div id="properties-of-trees" class="section level2">
+<h2><span class="header-section-number">1.2</span> Properties of Trees</h2>
+<ul>
+<li>Can handle huge datasets.</li>
+<li>Can handle <em>mixed</em> predictors implicitly – numeric and categorical.</li>
+<li>Easily ignore redundant variables.</li>
+<li>Handle missing data elegantly through <em>surrogate splits</em>.</li>
+<li>Small trees are easy to interpret.</li>
+<li>Large trees are hard to interpret.</li>
+<li>Prediction performance is often poor (high variance).</li>
+</ul>
+</div>
+<div id="tree-algorithms" class="section level2">
+<h2><span class="header-section-number">1.3</span> Tree Algorithms</h2>
+<p>There are a handful of different tree algorithms in addition to Breiman’s original CART algorithm. Namely, <a href="https://en.wikipedia.org/wiki/ID3_algorithm">ID3</a>, <a href="https://en.wikipedia.org/wiki/C4.5_algorithm">C4.5</a> and <a href="https://en.wikipedia.org/wiki/C4.5_algorithm#Improvements_in_C5.0.2FSee5_algorithm">C5.0</a>, all created by <a href="https://en.wikipedia.org/wiki/Ross_Quinlan">Ross Quinlan</a>. C5.0 is an improvement over C4.5, however, the C4.5 algorithm is still quite popular since the multi-threaded version of C5.0 is proprietary (although the single threaded is released as GPL).</p>
+</div>
+<div id="cart-vs-c4.5" class="section level2">
+<h2><span class="header-section-number">1.4</span> CART vs C4.5</h2>
+<p>Here are some of the differences between CART and C4.5:</p>
+<ul>
+<li>Tests in CART are always binary, but C4.5 allows two or more outcomes.</li>
+<li>CART uses the Gini diversity index to rank tests, whereas C4.5 uses information-based criteria.</li>
+<li>CART prunes trees using a cost-complexity model whose parameters are estimated by cross-validation; C4.5 uses a single-pass algorithm derived from binomial confidence limits.</li>
+<li>With respect to missing data, CART looks for surrogate tests that approximate the outcomes when the tested attribute has an unknown value, but C4.5 apportions the case probabilistically among the outcomes.</li>
+</ul>
+<p>Decision trees are formed by a collection of rules based on variables in the modeling data set:</p>
+<ol style="list-style-type: decimal">
+<li>Rules based on variables’ values are selected to get the best split to differentiate observations based on the dependent variable.</li>
+<li>Once a rule is selected and splits a node into two, the same process is applied to each “child” node (i.e. it is a recursive procedure).</li>
+<li>Splitting stops when CART detects no further gain can be made, or some pre-set stopping rules are met. (Alternatively, the data are split as much as possible and then the tree is later pruned.)</li>
+</ol>
+<p>Each branch of the tree ends in a terminal node. Each observation falls into one and exactly one terminal node, and each terminal node is uniquely defined by a set of rules.</p>
+</div>
+<div id="splitting-criterion-best-split" class="section level2">
+<h2><span class="header-section-number">1.5</span> Splitting Criterion &amp; Best Split</h2>
+<p>The original CART algorithm uses the Gini Impurity, whereas ID3, C4.5 and C5.0 use Entropy or Information Gain (related to Entropy).</p>
+<div id="gini-impurity" class="section level3">
+<h3><span class="header-section-number">1.5.1</span> Gini Impurity</h3>
+<p>Used by the CART algorithm, <a href="https://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity">Gini Impurity</a> is a measure of how often a randomly chosen element from the set would be incorrectly labeled if it was randomly labeled according to the distribution of labels in the subset. Gini impurity can be computed by summing the probability <span class="math inline">\(f_i\)</span> of each item being chosen times the probability <span class="math inline">\(1 − f_i\)</span> of a mistake in categorizing that item. It reaches its minimum (zero) when all cases in the node fall into a single target category.</p>
+<p>To compute Gini impurity for a set of m items, suppose <span class="math inline">\(i ∈ {1, 2, ..., m}\)</span>, and let <span class="math inline">\(f_i\)</span> be the fraction of items labeled with value <span class="math inline">\(i\)</span> in the set.</p>
+<p><span class="math display">\[ I_{G}(f)=\sum _{i=1}^{m}f_{i}(1-f_{i})=\sum _{i=1}^{m}(f_{i}-{f_{i}}^{2})=\sum _{i=1}^{m}f_{i}-\sum _{i=1}^{m}{f_{i}}^{2}=1-\sum _{i=1}^{m}{f_{i}}^{2}=\sum _{i\neq k}f_{i}f_{k}\]</span></p>
+</div>
+<div id="entropy" class="section level3">
+<h3><span class="header-section-number">1.5.2</span> Entropy</h3>
+<p><a href="https://en.wikipedia.org/wiki/ID3_algorithm#Entropy">Entropy</a>, <span class="math inline">\(H(S)\)</span>, is a measure of the amount of uncertainty in the (data) set <span class="math inline">\(S\)</span> (i.e. entropy characterizes the (data) set <span class="math inline">\(S\)</span>).</p>
+<p><span class="math display">\[ H(S)=-\sum _{{x\in X}}p(x)\log _{{2}}p(x) \]</span></p>
+<p>Where, - <span class="math inline">\(S\)</span> is the current (data) set for which entropy is being calculated (changes every iteration of the ID3 algorithm) - <span class="math inline">\(X\)</span> is set of classes in <span class="math inline">\(S\)</span> - <span class="math inline">\(p(x)\)</span> is the ratio of the number of elements in class <span class="math inline">\(x\)</span> to the number of elements in set <span class="math inline">\(S\)</span></p>
+<p>When <span class="math inline">\(H(S)=0\)</span>, the set <span class="math inline">\(S\)</span> is perfectly classified (i.e. all elements in <span class="math inline">\(S\)</span> are of the same class).</p>
+<p>In ID3, entropy is calculated for each remaining attribute. The attribute with the smallest entropy is used to split the set <span class="math inline">\(S\)</span> on this iteration. The higher the entropy, the higher the potential to improve the classification here.</p>
+</div>
+<div id="information-gain" class="section level3">
+<h3><span class="header-section-number">1.5.3</span> Information gain</h3>
+<p>Information gain <span class="math inline">\(IG(A)\)</span> is the measure of the difference in entropy from before to after the set <span class="math inline">\(S\)</span> is split on an attribute <span class="math inline">\(A\)</span>: in other words, how much uncertainty in <span class="math inline">\(S\)</span> was reduced after splitting set <span class="math inline">\(S\)</span> on attribute <span class="math inline">\(A\)</span>.</p>
+<p><span class="math display">\[ IG(A,S)=H(S)-\sum _{{t\in T}}p(t)H(t)\]</span></p>
+<p>Where, - <span class="math inline">\(H(S)\)</span> is the entropy of set <span class="math inline">\(S\)</span> - <span class="math inline">\(T\)</span> is the set of subsets created from splitting set <span class="math inline">\(S\)</span> by attribute <span class="math inline">\(A\)</span> such that <span class="math inline">\(S=\bigcup _{{t\in T}}t\)</span> - <span class="math inline">\(p(t)\)</span> is the ratio of the number of elements in <span class="math inline">\(t\)</span> to the number of elements in set <span class="math inline">\(S\)</span> - <span class="math inline">\(H(t)\)</span> is the entropy of subset <span class="math inline">\(t\)</span></p>
+<p>In ID3, information gain can be calculated (instead of entropy) for each remaining attribute. The attribute with the <em>largest</em> information gain is used to split the set <span class="math inline">\(S\)</span> on this iteration.</p>
+</div>
+</div>
+<div id="decision-boundary" class="section level2">
+<h2><span class="header-section-number">1.6</span> Decision Boundary</h2>
+<p>This is an example of a decision boundary in two dimensions of a (binary) classification tree. The black circle is the Bayes Optimal decision boundary and the blue square-ish boundary is learned by the classification tree.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
+<img src="images/boundary_dt.png" alt="Source: Elements of Statistical Learning." width="100%" />
+<p class="caption">
+Figure 1.1: Source: Elements of Statistical Learning.
+</p>
+</div>
+</div>
+<div id="missing-data-1" class="section level2">
+<h2><span class="header-section-number">1.7</span> Missing Data</h2>
+<p>CART is an algorithm that deals effectively with missing values through <em>surrogate splits</em>.</p>
+</div>
+<div id="visualizing-decision-trees" class="section level2">
+<h2><span class="header-section-number">1.8</span> Visualizing Decision Trees</h2>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-3"></span>
+<img src="images/r2d3_visual_ml.png" alt="Source: Elements of Statistical Learning." width="100%" />
+<p class="caption">
+Figure 1.2: Source: Elements of Statistical Learning.
+</p>
+</div>
+<p><a href="https://twitter.com/tonyhschu">Tony Chu</a> and <a href="https://twitter.com/stephaniejyee">Stephanie Yee</a> designed an award-winning visualization of how decision trees work called “A Visual Introduction to Machine Learning.” Their interactive D3 visualization is available <a href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/">here</a>.</p>
+</div>
+<div id="cart-software-in-r" class="section level2">
+<h2><span class="header-section-number">1.9</span> CART Software in R</h2>
+<p>Since it’s more common in machine learning to use trees in an ensemble, we’ll skip the code tutorial for CART in R. For reference, trees can be grown using the <a href="https://cran.r-project.org/web/packages/rpart/index.html">rpart</a> package, among others.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="random-forest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/01-decision-trees.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

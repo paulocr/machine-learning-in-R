@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+
+<link rel="next" href="decision-trees.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">useR! Machine Learning Tutorial</h1>
+<h4 class="author"><em>Erin LeDell</em></h4>
+<h4 class="date"><em>2018-04-05</em></h4>
+</div>
+<div id="preface" class="section level1 unnumbered">
+<h1>Preface</h1>
+<div class="figure"><span id="fig:unnamed-chunk-1"></span>
+<img src="images/user2016.png" alt="UseR 2016" width="100%" />
+<p class="caption">
+Figure .: UseR 2016
+</p>
+</div>
+<p>useR! 2016 Tutorial: <a href="http://user2016.org/tutorials/10.html">Machine Learning Algorithmic Deep Dive</a></p>
+<div id="overview" class="section level2 unnumbered">
+<h2>Overview</h2>
+<p>This tutorial contains training modules for six popular <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine learning</a> methods:</p>
+<ul>
+<li>Classification and Regression Trees (CART)</li>
+<li>Random Forests (RF)](random-forest)</li>
+<li>Gradient Boosting Machines (GBM)</li>
+<li>Generalized Linear Models (GLM)</li>
+<li>Deep Neural Networks (DNN)</li>
+<li>Stacking / Super Learner (SL)</li>
+</ul>
+<p>Here are some practical, related topics we will cover for each algorithm:</p>
+<ul>
+<li>Dimensionality Issues</li>
+<li>Sparsity</li>
+<li>Normalization</li>
+<li>Categorical Data</li>
+<li>Missing Data</li>
+<li>Class Imbalance</li>
+<li>Overfitting</li>
+<li>Software</li>
+<li>Scalability</li>
+</ul>
+<p>Instructions for how to install the necessary software for this tutorial is available <a href="tutorial-installation.md">here</a>. Data for the tutorial can be downloaded…</p>
+</div>
+<div id="dimensionality-issues" class="section level2 unnumbered">
+<h2>Dimensionality Issues</h2>
+<p>Certain algorithms don’t scale well when there are millions of features. For example, decision trees require computing some sort of metric (to determine the splits) on all the feature values (or some fraction of the values as in Random Forest and Stochastic GBM). Therefore, computation time is linear in the number of features. Other algorithms, such as GLM, scale much better to high-dimensional (n &lt;&lt; p) and wide data with appropriate regularization (e.g. Lasso, Elastic Net, Ridge).</p>
+</div>
+<div id="sparsity" class="section level2 unnumbered">
+<h2>Sparsity</h2>
+<p>Algorithms can deal with data sparsity (where many of the feature values are zero) in different ways. In some algorithms there are ways to speed up the computations if sparsity is present, so it’s good to know if these shortcuts are available.</p>
+</div>
+<div id="normalization" class="section level2 unnumbered">
+<h2>Normalization</h2>
+<p>Some algorithms such as Deep Neural Nets and GLMs require that data be normalized for effective interpretation of the models. Tree-based algorithms (Decision Trees, Random Forest, Gradient Boosting Machines) do not require normalization. Tree-based methods only use information about whether a value is greater than or less than a certain value (e.g. x &gt; 7 vs. x ≤ 7), the values themselves do not matter.</p>
+</div>
+<div id="categorical-data" class="section level2 unnumbered">
+<h2>Categorical Data</h2>
+<p>Algorithms handle categorical data differently. Some algorithms such as GLM and Deep Neural Nets require that a categorical variable be expanded into a set of indicator variables, prior to training. With tree-based methods and software that supports it, there are ways to get around this requirement, which allows the algorithm to handle the categorical features directly. It is important to be cognizant of the cardinality of your categorical features before training, as additional pre-processing (collapsing categories, etc) may be beneficial with high-cardinality features.</p>
+</div>
+<div id="missing-data" class="section level2 unnumbered">
+<h2>Missing Data</h2>
+<p>Assuming the features are missing completely at random, there are a number of ways of handling missing data:</p>
+<ol style="list-style-type: decimal">
+<li>Discard observations with any missing values.</li>
+<li>Rely on the learning algorithm to deal with missing values in its training phase.</li>
+<li>Impute all missing values before training.</li>
+</ol>
+<p>For most learning methods, the imputation approach (3) is necessary. The simplest tactic is to impute the missing value with the mean or median of the nonmissing values for that feature. If the features have at least some moderate degree of dependence, one can do better by estimating a predictive model for each feature given the other features and then imputing each missing value by its prediction from the model.</p>
+<p>Some software packages handle missing data automatically, although many don’t, so it’s important to be aware if any pre-processing is required by the user.</p>
+</div>
+<div id="class-imbalance" class="section level2 unnumbered">
+<h2>Class Imbalance</h2>
+<p>Algorithms that optimize a metric such as accuracy may fail to perform well on training sets that contain a significant degree of class imbalance. Certain algorithms, such as GBM, allow the user to optimize a performance metric of choice, which is useful when you have a highly imbalanced training set.</p>
+</div>
+<div id="overfitting" class="section level2 unnumbered">
+<h2>Overfitting</h2>
+<p>It is always good to pay attention to the potential of overfitting, but certain algorithms and certain implementations are more prone to this issue. For example, when using Deep Neural Nets and Gradient Boosting Machines, it’s always a good idea to check for overfitting.</p>
+</div>
+<div id="software" class="section level2 unnumbered">
+<h2>Software</h2>
+<p>For each algorithm, we will provide examples of open source R packages that implement the algorithm. All implementations are different, so we will provide information on how each of the implementations differ.</p>
+</div>
+<div id="scalability" class="section level2 unnumbered">
+<h2>Scalability</h2>
+<p>We will address scalability issues inherent to the algorithm and discuss algorithmic or technological solutions to scalability concerns for “big data.”</p>
+</div>
+<div id="resources" class="section level2 unnumbered">
+<h2>Resources</h2>
+<p>Where to learn more?</p>
+<ul>
+<li><a href="http://www-bcf.usc.edu/~gareth/ISL/">An Introduction to Statistical Learning with Applications in R</a> by Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani</li>
+<li><a href="http://statweb.stanford.edu/~tibs/ElemStatLearn/">The Elements of Statistical Learning</a> by Trevor Hastie, Rob Tibshirani and Jerome Friedman</li>
+<li><a href="http://www.win-vector.com/blog/practical-data-science-with-r/">Practical Data Science with R</a> by John Mount and Nina Zumel</li>
+<li><a href="http://appliedpredictivemodeling.com/">Applied Predictive Modeling</a> by Max Kuhn and Kjell Johnson</li>
+<li><a href="http://www.dataschool.io/15-hours-of-expert-machine-learning-videos/">15 hours of expert videos</a> by Trevor Hastie and Rob Tibshirani</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="decision-trees.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/index.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>useR! Machine Learning Tutorial</title>
+  <meta name="description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive.">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="useR! Machine Learning Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="useR! Machine Learning Tutorial" />
+  
+  <meta name="twitter:description" content="useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive." />
+  
+
+<meta name="author" content="Erin LeDell">
+
+
+<meta name="date" content="2018-04-05">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="deep-neural-networks.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">UseR! Machine Learning Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overview"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#dimensionality-issues"><i class="fa fa-check"></i>Dimensionality Issues</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sparsity"><i class="fa fa-check"></i>Sparsity</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#normalization"><i class="fa fa-check"></i>Normalization</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-data"><i class="fa fa-check"></i>Categorical Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#class-imbalance"><i class="fa fa-check"></i>Class Imbalance</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#overfitting"><i class="fa fa-check"></i>Overfitting</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#software"><i class="fa fa-check"></i>Software</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#scalability"><i class="fa fa-check"></i>Scalability</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#resources"><i class="fa fa-check"></i>Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>1</b> Classification and Regression Trees (CART)</a><ul>
+<li class="chapter" data-level="1.1" data-path="decision-trees.html"><a href="decision-trees.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="decision-trees.html"><a href="decision-trees.html#properties-of-trees"><i class="fa fa-check"></i><b>1.2</b> Properties of Trees</a></li>
+<li class="chapter" data-level="1.3" data-path="decision-trees.html"><a href="decision-trees.html#tree-algorithms"><i class="fa fa-check"></i><b>1.3</b> Tree Algorithms</a></li>
+<li class="chapter" data-level="1.4" data-path="decision-trees.html"><a href="decision-trees.html#cart-vs-c4.5"><i class="fa fa-check"></i><b>1.4</b> CART vs C4.5</a></li>
+<li class="chapter" data-level="1.5" data-path="decision-trees.html"><a href="decision-trees.html#splitting-criterion-best-split"><i class="fa fa-check"></i><b>1.5</b> Splitting Criterion &amp; Best Split</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="decision-trees.html"><a href="decision-trees.html#gini-impurity"><i class="fa fa-check"></i><b>1.5.1</b> Gini Impurity</a></li>
+<li class="chapter" data-level="1.5.2" data-path="decision-trees.html"><a href="decision-trees.html#entropy"><i class="fa fa-check"></i><b>1.5.2</b> Entropy</a></li>
+<li class="chapter" data-level="1.5.3" data-path="decision-trees.html"><a href="decision-trees.html#information-gain"><i class="fa fa-check"></i><b>1.5.3</b> Information gain</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="decision-trees.html"><a href="decision-trees.html#decision-boundary"><i class="fa fa-check"></i><b>1.6</b> Decision Boundary</a></li>
+<li class="chapter" data-level="1.7" data-path="decision-trees.html"><a href="decision-trees.html#missing-data-1"><i class="fa fa-check"></i><b>1.7</b> Missing Data</a></li>
+<li class="chapter" data-level="1.8" data-path="decision-trees.html"><a href="decision-trees.html#visualizing-decision-trees"><i class="fa fa-check"></i><b>1.8</b> Visualizing Decision Trees</a></li>
+<li class="chapter" data-level="1.9" data-path="decision-trees.html"><a href="decision-trees.html#cart-software-in-r"><i class="fa fa-check"></i><b>1.9</b> CART Software in R</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-forest.html"><a href="random-forest.html"><i class="fa fa-check"></i><b>2</b> Random Forests (RF)</a><ul>
+<li class="chapter" data-level="2.1" data-path="random-forest.html"><a href="random-forest.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="random-forest.html"><a href="random-forest.html#history"><i class="fa fa-check"></i><b>2.2</b> History</a></li>
+<li class="chapter" data-level="2.3" data-path="random-forest.html"><a href="random-forest.html#bagging"><i class="fa fa-check"></i><b>2.3</b> Bagging</a></li>
+<li class="chapter" data-level="2.4" data-path="random-forest.html"><a href="random-forest.html#random-forest-algorithm"><i class="fa fa-check"></i><b>2.4</b> Random Forest Algorithm</a></li>
+<li class="chapter" data-level="2.5" data-path="random-forest.html"><a href="random-forest.html#decision-boundary-1"><i class="fa fa-check"></i><b>2.5</b> Decision Boundary</a></li>
+<li class="chapter" data-level="2.6" data-path="random-forest.html"><a href="random-forest.html#random-forest-by-randomization-aka-extra-trees"><i class="fa fa-check"></i><b>2.6</b> Random Forest by Randomization (aka “Extra-Trees”)</a></li>
+<li class="chapter" data-level="2.7" data-path="random-forest.html"><a href="random-forest.html#out-of-bag-oob-estimates"><i class="fa fa-check"></i><b>2.7</b> Out-of-Bag (OOB) Estimates</a></li>
+<li class="chapter" data-level="2.8" data-path="random-forest.html"><a href="random-forest.html#variable-importance"><i class="fa fa-check"></i><b>2.8</b> Variable Importance</a></li>
+<li class="chapter" data-level="2.9" data-path="random-forest.html"><a href="random-forest.html#overfitting-1"><i class="fa fa-check"></i><b>2.9</b> Overfitting</a></li>
+<li class="chapter" data-level="2.10" data-path="random-forest.html"><a href="random-forest.html#missing-data-2"><i class="fa fa-check"></i><b>2.10</b> Missing Data</a></li>
+<li class="chapter" data-level="2.11" data-path="random-forest.html"><a href="random-forest.html#practical-uses"><i class="fa fa-check"></i><b>2.11</b> Practical Uses</a></li>
+<li class="chapter" data-level="2.12" data-path="random-forest.html"><a href="random-forest.html#resources-1"><i class="fa fa-check"></i><b>2.12</b> Resources</a></li>
+<li class="chapter" data-level="2.13" data-path="random-forest.html"><a href="random-forest.html#random-forest-software-in-r"><i class="fa fa-check"></i><b>2.13</b> Random Forest Software in R</a><ul>
+<li class="chapter" data-level="2.13.1" data-path="random-forest.html"><a href="random-forest.html#randomforest"><i class="fa fa-check"></i><b>2.13.1</b> randomForest</a></li>
+<li class="chapter" data-level="2.13.2" data-path="random-forest.html"><a href="random-forest.html#caret-method-parrf"><i class="fa fa-check"></i><b>2.13.2</b> caret method “parRF”</a></li>
+<li class="chapter" data-level="2.13.3" data-path="random-forest.html"><a href="random-forest.html#h2o"><i class="fa fa-check"></i><b>2.13.3</b> h2o</a></li>
+<li class="chapter" data-level="2.13.4" data-path="random-forest.html"><a href="random-forest.html#rborist"><i class="fa fa-check"></i><b>2.13.4</b> Rborist</a></li>
+<li class="chapter" data-level="2.13.5" data-path="random-forest.html"><a href="random-forest.html#ranger"><i class="fa fa-check"></i><b>2.13.5</b> ranger</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="random-forest.html"><a href="random-forest.html#references"><i class="fa fa-check"></i><b>2.14</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html"><i class="fa fa-check"></i><b>3</b> Gradient Boosting Machines (GBM)</a><ul>
+<li class="chapter" data-level="3.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#history-1"><i class="fa fa-check"></i><b>3.2</b> History</a></li>
+<li class="chapter" data-level="3.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting"><i class="fa fa-check"></i><b>3.3</b> Gradient Boosting</a></li>
+<li class="chapter" data-level="3.4" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stagewise-additive-modeling"><i class="fa fa-check"></i><b>3.4</b> Stagewise Additive Modeling</a></li>
+<li class="chapter" data-level="3.5" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#adaboost"><i class="fa fa-check"></i><b>3.5</b> AdaBoost</a></li>
+<li class="chapter" data-level="3.6" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gradient-boosting-algorithm"><i class="fa fa-check"></i><b>3.6</b> Gradient Boosting Algorithm</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#loss-functions-and-gradients"><i class="fa fa-check"></i><b>3.6.1</b> Loss Functions and Gradients</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#stochastic-gbm"><i class="fa fa-check"></i><b>3.7</b> Stochastic GBM</a></li>
+<li class="chapter" data-level="3.8" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#practical-tips"><i class="fa fa-check"></i><b>3.8</b> Practical Tips</a></li>
+<li class="chapter" data-level="3.9" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#resources-2"><i class="fa fa-check"></i><b>3.9</b> Resources</a></li>
+<li class="chapter" data-level="3.10" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm-software-in-r"><i class="fa fa-check"></i><b>3.10</b> GBM Software in R</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#gbm"><i class="fa fa-check"></i><b>3.10.1</b> gbm</a></li>
+<li class="chapter" data-level="3.10.2" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#xgboost"><i class="fa fa-check"></i><b>3.10.2</b> xgboost</a></li>
+<li class="chapter" data-level="3.10.3" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#h2o-1"><i class="fa fa-check"></i><b>3.10.3</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="3.11" data-path="gradient-boosting-machines.html"><a href="gradient-boosting-machines.html#references-1"><i class="fa fa-check"></i><b>3.11</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models (GLM)</a><ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#linear-models"><i class="fa fa-check"></i><b>4.2</b> Linear Models</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ordinary-least-squares-ols"><i class="fa fa-check"></i><b>4.2.1</b> Ordinary Least Squares (OLS)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularization"><i class="fa fa-check"></i><b>4.3</b> Regularization</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#ridge-regression"><i class="fa fa-check"></i><b>4.3.1</b> Ridge Regression</a></li>
+<li class="chapter" data-level="4.3.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#lasso-regression"><i class="fa fa-check"></i><b>4.3.2</b> Lasso Regression</a></li>
+<li class="chapter" data-level="4.3.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#elastic-net"><i class="fa fa-check"></i><b>4.3.3</b> Elastic Net</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#other-solvers"><i class="fa fa-check"></i><b>4.4</b> Other Solvers</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-irls"><i class="fa fa-check"></i><b>4.4.1</b> Iteratively Re-weighted Least Squares (IRLS)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#iteratively-re-weighted-least-squares-with-admm"><i class="fa fa-check"></i><b>4.4.2</b> Iteratively Re-weighted Least Squares with ADMM</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#cyclical-coordinate-descent"><i class="fa fa-check"></i><b>4.4.3</b> Cyclical Coordinate Descent</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#l-bfgs"><i class="fa fa-check"></i><b>4.4.4</b> L-BFGS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#data-preprocessing"><i class="fa fa-check"></i><b>4.5</b> Data Preprocessing</a></li>
+<li class="chapter" data-level="4.6" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-software-in-r"><i class="fa fa-check"></i><b>4.6</b> GLM Software in R</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm"><i class="fa fa-check"></i><b>4.6.1</b> glm</a></li>
+<li class="chapter" data-level="4.6.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glm-in-caret"><i class="fa fa-check"></i><b>4.6.2</b> GLM in caret</a></li>
+<li class="chapter" data-level="4.6.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-2"><i class="fa fa-check"></i><b>4.6.3</b> h2o</a></li>
+<li class="chapter" data-level="4.6.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#speedglm"><i class="fa fa-check"></i><b>4.6.4</b> speedglm</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#regularized-glm-in-r"><i class="fa fa-check"></i><b>4.7</b> Regularized GLM in R</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#glmnet"><i class="fa fa-check"></i><b>4.7.1</b> glmnet</a></li>
+<li class="chapter" data-level="4.7.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#h2o-3"><i class="fa fa-check"></i><b>4.7.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#references-2"><i class="fa fa-check"></i><b>4.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html"><i class="fa fa-check"></i><b>5</b> Deep Neural Networks (DNN)</a><ul>
+<li class="chapter" data-level="5.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#history-2"><i class="fa fa-check"></i><b>5.2</b> History</a></li>
+<li class="chapter" data-level="5.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#backpropagation"><i class="fa fa-check"></i><b>5.3</b> Backpropagation</a></li>
+<li class="chapter" data-level="5.4" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#architectures"><i class="fa fa-check"></i><b>5.4</b> Architectures</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#multilayer-perceptron-mlp"><i class="fa fa-check"></i><b>5.4.1</b> Multilayer Perceptron (MLP)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#recurrent"><i class="fa fa-check"></i><b>5.4.2</b> Recurrent</a></li>
+<li class="chapter" data-level="5.4.3" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#convolutional"><i class="fa fa-check"></i><b>5.4.3</b> Convolutional</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#visualizing-neural-nets"><i class="fa fa-check"></i><b>5.5</b> Visualizing Neural Nets</a></li>
+<li class="chapter" data-level="5.6" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#deep-learning-software-in-r"><i class="fa fa-check"></i><b>5.6</b> Deep Learning Software in R</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#mxnet"><i class="fa fa-check"></i><b>5.6.1</b> MXNet</a></li>
+<li class="chapter" data-level="5.6.2" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#h2o-4"><i class="fa fa-check"></i><b>5.6.2</b> h2o</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="deep-neural-networks.html"><a href="deep-neural-networks.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stacking.html"><a href="stacking.html"><i class="fa fa-check"></i><b>6</b> Stacking</a><ul>
+<li class="chapter" data-level="6.1" data-path="stacking.html"><a href="stacking.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="stacking.html"><a href="stacking.html#background"><i class="fa fa-check"></i><b>6.2</b> Background</a></li>
+<li class="chapter" data-level="6.3" data-path="stacking.html"><a href="stacking.html#common-types-of-ensemble-methods"><i class="fa fa-check"></i><b>6.3</b> Common Types of Ensemble Methods</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="stacking.html"><a href="stacking.html#bagging-1"><i class="fa fa-check"></i><b>6.3.1</b> Bagging</a></li>
+<li class="chapter" data-level="6.3.2" data-path="stacking.html"><a href="stacking.html#boosting"><i class="fa fa-check"></i><b>6.3.2</b> Boosting</a></li>
+<li class="chapter" data-level="6.3.3" data-path="stacking.html"><a href="stacking.html#stacking"><i class="fa fa-check"></i><b>6.3.3</b> Stacking</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="stacking.html"><a href="stacking.html#the-super-learner-algorithm"><i class="fa fa-check"></i><b>6.4</b> The Super Learner Algorithm</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="stacking.html"><a href="stacking.html#set-up-the-ensemble"><i class="fa fa-check"></i><b>6.4.1</b> 1. Set up the ensemble</a></li>
+<li class="chapter" data-level="6.4.2" data-path="stacking.html"><a href="stacking.html#train-the-ensemble"><i class="fa fa-check"></i><b>6.4.2</b> 2. Train the ensemble</a></li>
+<li class="chapter" data-level="6.4.3" data-path="stacking.html"><a href="stacking.html#predict-on-new-data"><i class="fa fa-check"></i><b>6.4.3</b> 3. Predict on new data</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="stacking.html"><a href="stacking.html#stacking-software-in-r"><i class="fa fa-check"></i><b>6.5</b> Stacking Software in R</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="stacking.html"><a href="stacking.html#superlearner"><i class="fa fa-check"></i><b>6.5.1</b> SuperLearner</a></li>
+<li class="chapter" data-level="6.5.2" data-path="stacking.html"><a href="stacking.html#subsemble"><i class="fa fa-check"></i><b>6.5.2</b> subsemble</a></li>
+<li class="chapter" data-level="6.5.3" data-path="stacking.html"><a href="stacking.html#h2o-ensemble"><i class="fa fa-check"></i><b>6.5.3</b> H2O Ensemble</a></li>
+<li class="chapter" data-level="6.5.4" data-path="stacking.html"><a href="stacking.html#higgs-demo"><i class="fa fa-check"></i><b>6.5.4</b> Higgs Demo</a></li>
+<li class="chapter" data-level="6.5.5" data-path="stacking.html"><a href="stacking.html#stacking-existing-model-sets"><i class="fa fa-check"></i><b>6.5.5</b> Stacking Existing Model Sets</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">useR! Machine Learning Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="stacking" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Stacking</h1>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
+<img src="images/h2oEnsemble.png" alt="Super Learner." width="100%" />
+<p class="caption">
+Figure .: Super Learner.
+</p>
+</div>
+<div id="introduction-5" class="section level2">
+<h2><span class="header-section-number">6.1</span> Introduction</h2>
+<p><a href="https://en.wikipedia.org/wiki/Ensemble_learning#Stacking">Stacking</a> (sometimes called “stacked generalization”) involves training a learning algorithm to combine the predictions of several other learning algorithms. First, all of the other algorithms are trained using the available data, then a combiner algorithm, the <em>metalearner</em>, is trained to make a final prediction using all the predictions of the other algorithms as additional inputs. If an arbitrary metalearning algorithm is used, then stacking can theoretically represent any of the ensemble techniques described in this article, although in practice, a single-layer <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a> model is often used for metalearning.</p>
+<p>Stacking typically yields performance better than any single one of the trained models in the ensemble.</p>
+</div>
+<div id="background" class="section level2">
+<h2><span class="header-section-number">6.2</span> Background</h2>
+<p><a href="https://en.wikipedia.org/wiki/Leo_Breiman">Leo Breiman</a>, known for his work on classification and regression trees and the creator of the Random Forest algorithm, formalized stacking in his 1996 paper, <a href="http://statistics.berkeley.edu/sites/default/files/tech-reports/367.pdf">“Stacked Regressions”</a>. Although the idea originated with David Wolpert in 1992 under the name “Stacked Generalization”, the modern form of stacking that uses internal k-fold cross-validation was Dr. Breiman’s contribution.</p>
+<p>However, it wasn’t until 2007 that the <a href="http://dx.doi.org/10.2202/1544-6115.1309">theoretical background</a> for stacking was developed, which is when the algorithm took on the name, “Super Learner”. Until this time, the mathematical reasons for why stacking worked were unknown and stacking was considered a “black art.” The Super Learner algorithm learns the optimal combination of the base learner fits. In an article titled, “Super Learner”, by Mark van der Laan et al., proved that the Super Learner ensemble represents an asymptotically optimal system for learning.</p>
+</div>
+<div id="common-types-of-ensemble-methods" class="section level2">
+<h2><span class="header-section-number">6.3</span> Common Types of Ensemble Methods</h2>
+<p>In statistics and machine learning, ensemble methods use multiple learning algorithms to obtain better predictive performance than could be obtained by any of the constituent algorithms.</p>
+<div id="bagging-1" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> Bagging</h3>
+<ul>
+<li>Reduces variance and increases accuracy</li>
+<li>Robust against outliers or noisy data</li>
+<li>Often used with Decision Trees (i.e. Random Forest)</li>
+</ul>
+</div>
+<div id="boosting" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> Boosting</h3>
+<ul>
+<li>Also reduces variance and increases accuracy</li>
+<li>Not robust against outliers or noisy data</li>
+<li>Flexible - can be used with any loss function</li>
+</ul>
+</div>
+<div id="stacking" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> Stacking</h3>
+<ul>
+<li>Used to ensemble a diverse group of strong learners</li>
+<li>Involves training a second-level machine learning algorithm called a “metalearner” to learn the optimal combination of the base learners</li>
+</ul>
+</div>
+</div>
+<div id="the-super-learner-algorithm" class="section level2">
+<h2><span class="header-section-number">6.4</span> The Super Learner Algorithm</h2>
+<p>A common task in machine learning is to perform model selection by specifying a number of models with different parameters. An example of this is Grid Search. The first phase of the Super Learner algorithm is computationally equivalent to performing model selection via cross-validation. The latter phase of the Super Learner algorithm (the metalearning step) is just training another single model (no cross-validation) on the <em>level one</em> data.</p>
+<div id="set-up-the-ensemble" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> 1. Set up the ensemble</h3>
+<ul>
+<li>Specify a list of <span class="math inline">\(L\)</span> base algorithms (with a specific set of model parameters). These are also called <em>base learners</em>.</li>
+<li>Specify a metalearning algorithm (just another algorithm).</li>
+</ul>
+</div>
+<div id="train-the-ensemble" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> 2. Train the ensemble</h3>
+<div id="cross-validate-base-learners" class="section level4">
+<h4><span class="header-section-number">6.4.2.1</span> Cross-validate Base Learners</h4>
+<ul>
+<li>Perform k-fold cross-validation on each of these learners and collect the cross-validated predicted values from each of the <span class="math inline">\(L\)</span> algorithms.</li>
+<li>The <span class="math inline">\(N\)</span> cross-validated predicted values from each of the <span class="math inline">\(L\)</span> algorithms can be combined to form a new <span class="math inline">\(N \times L\)</span> matrix. This matrix, along wtih the original response vector, is called the “level-one” data.</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
+<img src="images/stacking_cv.png" alt="Stacking." width="70%" />
+<p class="caption">
+Figure 1.1: Stacking.
+</p>
+</div>
+</div>
+<div id="metalearning" class="section level4">
+<h4><span class="header-section-number">6.4.2.2</span> Metalearning</h4>
+<ul>
+<li>Train the metalearning algorithm on the level-one data.</li>
+<li>Train each of the <span class="math inline">\(L\)</span> base algorithms on the full training set.</li>
+<li>The “ensemble model” consists of the <span class="math inline">\(L\)</span> base learning models and the metalearning model, which can then be used to generate predictions on a test set.</li>
+</ul>
+</div>
+</div>
+<div id="predict-on-new-data" class="section level3">
+<h3><span class="header-section-number">6.4.3</span> 3. Predict on new data</h3>
+<ul>
+<li>To generate ensemble predictions, first generate predictions from the base learners.</li>
+<li>Feed those predictions into the metalearner model to generate the ensemble prediction.</li>
+</ul>
+</div>
+</div>
+<div id="stacking-software-in-r" class="section level2">
+<h2><span class="header-section-number">6.5</span> Stacking Software in R</h2>
+<p>Stacking is a broad class of algorithms that involves training a second-level “metalearner” to ensemble a group of base learners. The three packages in the R ecosystem which implement the Super Learner algorithm (stacking on cross-validated predictions) are <a href="https://github.com/ecpolley/SuperLearner">SuperLearner</a>, <a href="https://github.com/ledell/subsemble">subsemble</a> and <a href="https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble">h2oEnsemble</a>.</p>
+<p>Among ensemble software in R, there is also <a href="https://github.com/zachmayer/caretEnsemble">caretEnsemble</a>, but it implements a boostrapped (rather than cross-validated) version of stacking via the <code>caretStack()</code> function. The bootstrapped version will train faster since bootrapping (with a train/test) is a fraction of the work as k-fold cross-validation, however the the ensemble performance suffers as a result of this shortcut.</p>
+<div id="superlearner" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> SuperLearner</h3>
+<p>Authors: Eric Polley, Erin LeDell, Mark van der Laan</p>
+<p>Backend: R with constituent algorithms written in a variety of languages</p>
+<p>The original Super Learner implemenation is the <a href="https://github.com/ecpolley/SuperLearner">SuperLearner</a> R package (2010).</p>
+<p>Features:</p>
+<ul>
+<li>Implements the Super Learner prediction method (stacking) and contains a library of prediction algorithms to be used in the Super Learner.</li>
+<li>Provides a clean interface to 30+ algorithms in R and defines a consistent API for extensibility.</li>
+<li>GPL-3 Licensed.</li>
+</ul>
+</div>
+<div id="subsemble" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> subsemble</h3>
+<p>Authors: Erin LeDell, Stephanie Sapp</p>
+<p>Backend: R with constituent algorithms written in a variety of languages</p>
+<p><a href="https://github.com/ledell/subsemble">Subsemble</a> is a general subset ensemble prediction method, which can be used for small, moderate, or large datasets. Subsemble partitions the full dataset into subsets of observations, fits a specified underlying algorithm on each subset, and uses a unique form of k-fold cross-validation to output a prediction function that combines the subset-specific fits. An oracle result provides a theoretical performance guarantee for Subsemble.</p>
+<p>Features:</p>
+<ul>
+<li>Implements the Subsemble Algorithm.</li>
+<li>Implements the Super Learner Algorithm (stacking).</li>
+<li>Uses the SuperLearner wrapper interface for defining base learners and metalearners.</li>
+<li>Multicore and multi-node cluster support via the <a href="https://cran.r-project.org/web/packages/snow/index.html">snow</a> R package.</li>
+<li>Improved parallelization over the SuperLearner package.</li>
+<li>Apache 2.0 Licensed.</li>
+</ul>
+</div>
+<div id="h2o-ensemble" class="section level3">
+<h3><span class="header-section-number">6.5.3</span> H2O Ensemble</h3>
+<p>Authors: Erin LeDell</p>
+<p>Backend: Java</p>
+<p>H2O Ensemble has been implemented as a stand-alone R package called <a href="https://github.com/h2oai/h2o-3/tree/master/h2o-r/ensemble">h2oEnsemble</a>. The package is an extension to the <a href="https://cran.r-project.org/web/packages/h2o/index.html">h2o</a> R package that allows the user to train an ensemble in the H2O cluster using any of the supervised machine learning algorithms H2O.</p>
+<p>Features:</p>
+<ul>
+<li>Uses data-distributed and parallelized Java-based algorithms for the ensemble.</li>
+<li>All training and data processing are performed in the high-performance H2O cluster rather than in R memory.</li>
+<li>Supports regression and binary classification.</li>
+<li>Multi-class support in development.</li>
+<li>Code refactor underway (moving from a separate R package into H2O “proper”) so that the H2O Ensemble interface can be exposed in Python and Scala.</li>
+<li>Apache 2.0 Licensed.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install h2oEnsemble from GitHub</span>
+<span class="kw">install.packages</span>(<span class="st">&quot;https://h2o-release.s3.amazonaws.com/h2o-ensemble/R/h2oEnsemble_0.2.1.tar.gz&quot;</span>, <span class="dt">repos =</span> <span class="ot">NULL</span>)
+<span class="kw">library</span>(h2oEnsemble)</code></pre></div>
+</div>
+<div id="higgs-demo" class="section level3">
+<h3><span class="header-section-number">6.5.4</span> Higgs Demo</h3>
+<p>This is an example of binary classification using the <code>h2o.ensemble</code> function, which is available in <strong>h2oEnsemble</strong>. This demo uses a subset of the <a href="https://archive.ics.uci.edu/ml/datasets/HIGGS">HIGGS dataset</a>, which has 28 numeric features and a binary response. The machine learning task in this example is to distinguish between a signal process which produces Higgs bosons (Y = 1) and a background process which does not (Y = 0). The dataset contains approximately the same number of positive vs negative examples. In other words, this is a balanced, rather than imbalanced, dataset.</p>
+<p>If run from plain R, execute R in the directory of this script. If run from RStudio, be sure to setwd() to the location of this script. h2o.init() starts H2O in R’s current working directory. h2o.importFile() looks for files from the perspective of where H2O was started.</p>
+<div id="start-h2o-cluster" class="section level4">
+<h4><span class="header-section-number">6.5.4.1</span> Start H2O Cluster</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">h2o.init</span>(<span class="dt">nthreads =</span> <span class="op">-</span><span class="dv">1</span>)  <span class="co"># Start an H2O cluster with nthreads = num cores on your machine</span>
+## 
+## H2O is not running yet, starting it now...
+## 
+## Note:  In case of errors look at the following log files:
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//RtmpLAu9RE/h2o_bradboehmke_started_from_r.out
+##     /var/folders/ws/qs4y2bnx1xs_4y9t0zbdjsvh0000gn/T//RtmpLAu9RE/h2o_bradboehmke_started_from_r.err
+## 
+## 
+## Starting H2O JVM and connecting: .. Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         2 seconds 526 milliseconds 
+##     H2O cluster timezone:       America/New_York 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.18.0.4 
+##     H2O cluster version age:    28 days, 3 hours and 15 minutes  
+##     H2O cluster name:           H2O_started_from_R_bradboehmke_kdm557 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   1.78 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        TRUE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.4.4 (2018-03-15)
+<span class="kw">h2o.removeAll</span>() <span class="co"># (Optional) Remove all objects in H2O cluster</span>
+## [1] 0</code></pre></div>
+</div>
+<div id="load-data-into-h2o-cluster" class="section level4">
+<h4><span class="header-section-number">6.5.4.2</span> Load Data into H2O Cluster</h4>
+<p>First, import a sample binary outcome train and test set into the H2O cluster.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># import data</span>
+train &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_train_10k.csv&quot;</span>)
+test &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">fread</span>(<span class="st">&quot;https://s3.amazonaws.com/erin-data/higgs/higgs_test_5k.csv&quot;</span>)
+
+<span class="co"># convert to h2o objects</span>
+train &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(train)
+test &lt;-<span class="st"> </span><span class="kw">as.h2o</span>(test)
+
+y &lt;-<span class="st"> &quot;response&quot;</span>
+x &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="kw">names</span>(train), y)
+family &lt;-<span class="st"> &quot;binomial&quot;</span></code></pre></div>
+<p>For binary classification, the response should be encoded as a <a href="http://stat.ethz.ch/R-manual/R-patched/library/base/html/factor.html">factor</a> type (also known as the <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html">enum</a> type in Java or <a href="http://pandas.pydata.org/pandas-docs/stable/categorical.html">categorial</a> in Python Pandas). The user can specify column types in the <code>h2o.importFile</code> command, or you can convert the response column as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train[, y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(train[, y])  
+test[, y] &lt;-<span class="st"> </span><span class="kw">as.factor</span>(test[, y])</code></pre></div>
+</div>
+<div id="specify-base-learners-metalearner" class="section level4">
+<h4><span class="header-section-number">6.5.4.3</span> Specify Base Learners &amp; Metalearner</h4>
+<p>For this example, we will use the default base learner library for <code>h2o.ensemble</code>, which includes the default H2O GLM, Random Forest, GBM and Deep Neural Net (all using default model parameter values). We will also use the default metalearner, the H2O GLM.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">learner &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;h2o.glm.wrapper&quot;</span>, <span class="st">&quot;h2o.randomForest.wrapper&quot;</span>, 
+             <span class="st">&quot;h2o.gbm.wrapper&quot;</span>, <span class="st">&quot;h2o.deeplearning.wrapper&quot;</span>)
+metalearner &lt;-<span class="st"> &quot;h2o.glm.wrapper&quot;</span></code></pre></div>
+</div>
+<div id="train-an-ensemble" class="section level4">
+<h4><span class="header-section-number">6.5.4.4</span> Train an Ensemble</h4>
+<p>Train the ensemble (using 5-fold internal CV) to generate the level-one data. Note that more CV folds will take longer to train, but should increase performance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">h2o.ensemble</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, 
+  <span class="dt">training_frame =</span> train, 
+  <span class="dt">family =</span> family, 
+  <span class="dt">learner =</span> learner, 
+  <span class="dt">metalearner =</span> metalearner,
+  <span class="dt">cvControl =</span> <span class="kw">list</span>(<span class="dt">V =</span> <span class="dv">5</span>)
+  )</code></pre></div>
+</div>
+<div id="evaluate-model-performance" class="section level4">
+<h4><span class="header-section-number">6.5.4.5</span> Evaluate Model Performance</h4>
+<p>Since the response is binomial, we can use Area Under the ROC Curve (<a href="https://www.kaggle.com/wiki/AUC">AUC</a>) to evaluate the model performance. Compute test set performance, and sort by AUC (the default metric that is printed for a binomial classification):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perf &lt;-<span class="st"> </span><span class="kw">h2o.ensemble_performance</span>(fit, <span class="dt">newdata =</span> test)</code></pre></div>
+<p>Print the base learner and ensemble performance:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perf
+## 
+## Base learner performance, sorted by specified metric:
+##                    learner       AUC
+## 1          h2o.glm.wrapper 0.6870611
+## 4 h2o.deeplearning.wrapper 0.7524101
+## 2 h2o.randomForest.wrapper 0.7686478
+## 3          h2o.gbm.wrapper 0.7817084
+## 
+## 
+## H2O Ensemble Performance on &lt;newdata&gt;:
+## ----------------
+## Family: binomial
+## 
+## Ensemble performance (AUC): 0.788077753779698</code></pre></div>
+<p>We can compare the performance of the ensemble to the performance of the individual learners in the ensemble.</p>
+<p>So we see the best individual algorithm in this group is the GBM with a test set AUC of 0.778, as compared to 0.781 for the ensemble. At first thought, this might not seem like much, but in many industries like medicine or finance, this small advantage can be highly valuable.</p>
+<p>To increase the performance of the ensemble, we have several options. One of them is to increase the number of internal cross-validation folds using the <code>cvControl</code> argument. The other options are to change the base learner library or the metalearning algorithm.</p>
+<p>Note that the ensemble results above are not reproducible since <code>h2o.deeplearning</code> is not reproducible when using multiple cores, and we did not set a seed for <code>h2o.randomForest.wrapper</code>.</p>
+<p>If we want to evaluate the model by a different metric, say “MSE”, then we can pass that metric to the <code>print</code> method for and ensemble performance object as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(perf, <span class="dt">metric =</span> <span class="st">&quot;MSE&quot;</span>)
+## 
+## Base learner performance, sorted by specified metric:
+##                    learner       MSE
+## 1          h2o.glm.wrapper 0.2217110
+## 4 h2o.deeplearning.wrapper 0.2055667
+## 2 h2o.randomForest.wrapper 0.1972701
+## 3          h2o.gbm.wrapper 0.1900488
+## 
+## 
+## H2O Ensemble Performance on &lt;newdata&gt;:
+## ----------------
+## Family: binomial
+## 
+## Ensemble performance (MSE): 0.187181902317254</code></pre></div>
+</div>
+<div id="predict" class="section level4">
+<h4><span class="header-section-number">6.5.4.6</span> Predict</h4>
+<p>If you actually need to generate the predictions (instead of looking only at model performance), you can use the <code>predict()</code> function with a test set. Generate predictions on the test set and store as an H2O Frame:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred &lt;-<span class="st"> </span><span class="kw">predict</span>(fit, <span class="dt">newdata =</span> test)</code></pre></div>
+<p>If you need to bring the predictions back into R memory for futher processing, you can convert <code>pred</code> to a local R data.frame as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predictions &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(pred<span class="op">$</span>pred)[,<span class="dv">3</span>]  <span class="co">#third column is P(Y==1)</span>
+labels &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(test[,y])[,<span class="dv">1</span>]</code></pre></div>
+<p>The <code>predict</code> method for an <code>h2o.ensemble</code> fit will return a list of two objects. The <code>pred$pred</code> object contains the ensemble predictions, and <code>pred$basepred</code> is a matrix of predictions from each of the base learners. In this particular example where we used four base learners, the <code>pred$basepred</code> matrix has four columns. Keeping the base learner predictions around is useful for model inspection and will allow us to calculate performance of each of the base learners on the test set (for comparison to the ensemble).</p>
+</div>
+<div id="specifying-new-learners" class="section level4">
+<h4><span class="header-section-number">6.5.4.7</span> Specifying new learners</h4>
+<p>Now let’s try again with a more extensive set of base learners. The <strong>h2oEnsemble</strong> packages comes with four functions by default that can be customized to use non-default parameters.</p>
+<p>Here is an example of how to generate a custom learner wrappers:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">h2o.glm.<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">alpha =</span> <span class="fl">0.0</span>) <span class="kw">h2o.glm.wrapper</span>(..., <span class="dt">alpha =</span> alpha)
+h2o.glm.<span class="dv">2</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="kw">h2o.glm.wrapper</span>(..., <span class="dt">alpha =</span> alpha)
+h2o.glm.<span class="dv">3</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">alpha =</span> <span class="fl">1.0</span>) <span class="kw">h2o.glm.wrapper</span>(..., <span class="dt">alpha =</span> alpha)
+
+h2o.randomForest.<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">200</span>, <span class="dt">nbins =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.randomForest.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">nbins =</span> nbins, <span class="dt">seed =</span> seed)
+h2o.randomForest.<span class="dv">2</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">200</span>, <span class="dt">sample_rate =</span> <span class="fl">0.75</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.randomForest.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">sample_rate =</span> sample_rate, <span class="dt">seed =</span> seed)
+h2o.randomForest.<span class="dv">3</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">200</span>, <span class="dt">sample_rate =</span> <span class="fl">0.85</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.randomForest.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">sample_rate =</span> sample_rate, <span class="dt">seed =</span> seed)
+h2o.randomForest.<span class="dv">4</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">200</span>, <span class="dt">nbins =</span> <span class="dv">50</span>, <span class="dt">balance_classes =</span> <span class="ot">TRUE</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.randomForest.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">nbins =</span> nbins, <span class="dt">balance_classes =</span> balance_classes, <span class="dt">seed =</span> seed)
+
+h2o.gbm.<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">2</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">nbins =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">nbins =</span> nbins, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">3</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">max_depth =</span> <span class="dv">10</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">max_depth =</span> max_depth, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">4</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">col_sample_rate =</span> <span class="fl">0.8</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">col_sample_rate =</span> col_sample_rate, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">5</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">col_sample_rate =</span> <span class="fl">0.7</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">col_sample_rate =</span> col_sample_rate, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">6</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">col_sample_rate =</span> <span class="fl">0.6</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">col_sample_rate =</span> col_sample_rate, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">7</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">balance_classes =</span> <span class="ot">TRUE</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">balance_classes =</span> balance_classes, <span class="dt">seed =</span> seed)
+h2o.gbm.<span class="dv">8</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">ntrees =</span> <span class="dv">100</span>, <span class="dt">max_depth =</span> <span class="dv">3</span>, <span class="dt">seed =</span> <span class="dv">1</span>) <span class="kw">h2o.gbm.wrapper</span>(..., <span class="dt">ntrees =</span> ntrees, <span class="dt">max_depth =</span> max_depth, <span class="dt">seed =</span> seed)
+
+h2o.deeplearning.<span class="dv">1</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">500</span>,<span class="dv">500</span>), <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">2</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">200</span>,<span class="dv">200</span>,<span class="dv">200</span>), <span class="dt">activation =</span> <span class="st">&quot;Tanh&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">3</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">500</span>,<span class="dv">500</span>), <span class="dt">activation =</span> <span class="st">&quot;RectifierWithDropout&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">4</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">500</span>,<span class="dv">500</span>), <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">balance_classes =</span> <span class="ot">TRUE</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">balance_classes =</span> balance_classes, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">5</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">100</span>), <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">6</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">50</span>), <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)
+h2o.deeplearning.<span class="dv">7</span> &lt;-<span class="st"> </span><span class="cf">function</span>(..., <span class="dt">hidden =</span> <span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">100</span>), <span class="dt">activation =</span> <span class="st">&quot;Rectifier&quot;</span>, <span class="dt">epochs =</span> <span class="dv">50</span>, <span class="dt">seed =</span> <span class="dv">1</span>)  <span class="kw">h2o.deeplearning.wrapper</span>(..., <span class="dt">hidden =</span> hidden, <span class="dt">activation =</span> activation, <span class="dt">seed =</span> seed)</code></pre></div>
+<p>Let’s grab a subset of these learners for our base learner library and re-train the ensemble.</p>
+</div>
+<div id="customized-base-learner-library" class="section level4">
+<h4><span class="header-section-number">6.5.4.8</span> Customized base learner library</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">learner &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">&quot;h2o.glm.wrapper&quot;</span>,
+  <span class="st">&quot;h2o.randomForest.1&quot;</span>, 
+  <span class="st">&quot;h2o.randomForest.2&quot;</span>,
+  <span class="st">&quot;h2o.gbm.1&quot;</span>, 
+  <span class="st">&quot;h2o.gbm.6&quot;</span>, 
+  <span class="st">&quot;h2o.gbm.8&quot;</span>,
+  <span class="st">&quot;h2o.deeplearning.1&quot;</span>, 
+  <span class="st">&quot;h2o.deeplearning.6&quot;</span>, 
+  <span class="st">&quot;h2o.deeplearning.7&quot;</span>
+  )</code></pre></div>
+<p>Train with new library:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">h2o.ensemble</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, 
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">family =</span> family, 
+  <span class="dt">learner =</span> learner, 
+  <span class="dt">metalearner =</span> metalearner,
+  <span class="dt">cvControl =</span> <span class="kw">list</span>(<span class="dt">V =</span> <span class="dv">5</span>)
+  )</code></pre></div>
+<p>Evaluate the test set performance:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perf &lt;-<span class="st"> </span><span class="kw">h2o.ensemble_performance</span>(fit, <span class="dt">newdata =</span> test)</code></pre></div>
+<p>We see an increase in performance by including a more diverse library.</p>
+<p>Base learner test AUC (for comparison)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perf
+## 
+## Base learner performance, sorted by specified metric:
+##              learner       AUC
+## 1    h2o.glm.wrapper 0.6870611
+## 8 h2o.deeplearning.6 0.7250912
+## 7 h2o.deeplearning.1 0.7304767
+## 9 h2o.deeplearning.7 0.7422359
+## 2 h2o.randomForest.1 0.7798627
+## 6          h2o.gbm.8 0.7804816
+## 4          h2o.gbm.1 0.7805141
+## 3 h2o.randomForest.2 0.7821736
+## 5          h2o.gbm.6 0.7825354
+## 
+## 
+## H2O Ensemble Performance on &lt;newdata&gt;:
+## ----------------
+## Family: binomial
+## 
+## Ensemble performance (AUC): 0.789971483845538</code></pre></div>
+<p>So what happens to the ensemble if we remove some of the weaker learners? Let’s remove the GLM and DL from the learner library and see what happens…</p>
+<p>Here is a more stripped down version of the base learner library used above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">learner &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="st">&quot;h2o.randomForest.1&quot;</span>,
+  <span class="st">&quot;h2o.randomForest.2&quot;</span>,
+  <span class="st">&quot;h2o.gbm.1&quot;</span>, 
+  <span class="st">&quot;h2o.gbm.6&quot;</span>, 
+  <span class="st">&quot;h2o.gbm.8&quot;</span>
+  )</code></pre></div>
+<p>Again re-train the ensemble and evaluate the performance:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">h2o.ensemble</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, 
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">family =</span> family, 
+  <span class="dt">learner =</span> learner,
+  <span class="dt">metalearner =</span> metalearner,
+  <span class="dt">cvControl =</span> <span class="kw">list</span>(<span class="dt">V =</span> <span class="dv">5</span>)
+  )
+
+perf &lt;-<span class="st"> </span><span class="kw">h2o.ensemble_performance</span>(fit, <span class="dt">newdata =</span> test)</code></pre></div>
+<p>We actually lose ensemble performance by removing the weak learners! This demonstrates the power of stacking with a large and diverse set of base learners.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perf
+## 
+## Base learner performance, sorted by specified metric:
+##              learner       AUC
+## 1 h2o.randomForest.1 0.7798627
+## 5          h2o.gbm.8 0.7804816
+## 3          h2o.gbm.1 0.7805141
+## 2 h2o.randomForest.2 0.7821736
+## 4          h2o.gbm.6 0.7825354
+## 
+## 
+## H2O Ensemble Performance on &lt;newdata&gt;:
+## ----------------
+## Family: binomial
+## 
+## Ensemble performance (AUC): 0.787453857322699</code></pre></div>
+<p>At first thought, you may assume that removing less performant models would increase the perforamnce of the ensemble. However, each learner has it’s own unique contribution to the ensemble and the added diversity among learners usually improves performance. The Super Learner algorithm learns the optimal way of combining all these learners together in a way that is superior to other combination/blending methods.</p>
+</div>
+</div>
+<div id="stacking-existing-model-sets" class="section level3">
+<h3><span class="header-section-number">6.5.5</span> Stacking Existing Model Sets</h3>
+<p>You can also use an existing (cross-validated) list of H2O models as the starting point and use the <code>h2o.stack()</code> function to ensemble them together via a specified metalearner. The base models must have been trained on the same dataset with same response and for cross-validation, must have all used the same folds.</p>
+<p>An example follows. As above, start up the H2O cluster and load the training and test data.</p>
+<p>Cross-validate and train a handful of base learners and then use the <code>h2o.stack()</code> function to create the ensemble:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The h2o.stack function is an alternative to the h2o.ensemble function, which</span>
+<span class="co"># allows the user to specify H2O models individually and then stack them together</span>
+<span class="co"># at a later time.  Saved models, re-loaded from disk, can also be stacked.</span>
+
+<span class="co"># The base models must use identical cv folds; this can be achieved in two ways:</span>
+<span class="co"># 1. they be specified explicitly by using the fold_column argument, or</span>
+<span class="co"># 2. use same value for `nfolds` and set `fold_assignment = &quot;Modulo&quot;`</span>
+
+nfolds &lt;-<span class="st"> </span><span class="dv">5</span>  
+
+glm1 &lt;-<span class="st"> </span><span class="kw">h2o.glm</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y,
+  <span class="dt">family =</span> family,
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">nfolds =</span> nfolds,
+  <span class="dt">fold_assignment =</span> <span class="st">&quot;Modulo&quot;</span>,
+  <span class="dt">keep_cross_validation_predictions =</span> <span class="ot">TRUE</span>
+  )
+
+gbm1 &lt;-<span class="st"> </span><span class="kw">h2o.gbm</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, 
+  <span class="dt">distribution =</span> <span class="st">&quot;bernoulli&quot;</span>,
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">seed =</span> <span class="dv">1</span>,
+  <span class="dt">nfolds =</span> nfolds,
+  <span class="dt">fold_assignment =</span> <span class="st">&quot;Modulo&quot;</span>,
+  <span class="dt">keep_cross_validation_predictions =</span> <span class="ot">TRUE</span>
+  )
+
+rf1 &lt;-<span class="st"> </span><span class="kw">h2o.randomForest</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="co"># distribution not used for RF</span>
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">seed =</span> <span class="dv">1</span>,
+  <span class="dt">nfolds =</span> nfolds,
+  <span class="dt">fold_assignment =</span> <span class="st">&quot;Modulo&quot;</span>,
+  <span class="dt">keep_cross_validation_predictions =</span> <span class="ot">TRUE</span>
+  )
+
+dl1 &lt;-<span class="st"> </span><span class="kw">h2o.deeplearning</span>(
+  <span class="dt">x =</span> x, <span class="dt">y =</span> y, 
+  <span class="dt">distribution =</span> <span class="st">&quot;bernoulli&quot;</span>,
+  <span class="dt">training_frame =</span> train,
+  <span class="dt">nfolds =</span> nfolds,
+  <span class="dt">fold_assignment =</span> <span class="st">&quot;Modulo&quot;</span>,
+  <span class="dt">keep_cross_validation_predictions =</span> <span class="ot">TRUE</span>
+  )
+
+models &lt;-<span class="st"> </span><span class="kw">list</span>(glm1, gbm1, rf1, dl1)
+metalearner &lt;-<span class="st"> &quot;h2o.glm.wrapper&quot;</span>
+
+<span class="co"># stack existing models</span>
+stack &lt;-<span class="st"> </span><span class="kw">h2o.stack</span>(
+  <span class="dt">models =</span> models,
+  <span class="dt">response_frame =</span> train[,y],
+  <span class="dt">metalearner =</span> metalearner, 
+  <span class="dt">seed =</span> <span class="dv">1</span>,
+  <span class="dt">keep_levelone_data =</span> <span class="ot">TRUE</span>
+  )
+
+
+<span class="co"># Compute test set performance:</span>
+perf &lt;-<span class="st"> </span><span class="kw">h2o.ensemble_performance</span>(stack, <span class="dt">newdata =</span> test)</code></pre></div>
+<p>Print base learner and ensemble test set performance:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(perf)
+## 
+## Base learner performance, sorted by specified metric:
+##                                    learner       AUC
+## 1           GLM_model_R_1522981883987_9864 0.6870611
+## 4 DeepLearning_model_R_1522981883987_11012 0.7248477
+## 3          DRF_model_R_1522981883987_10450 0.7691438
+## 2           GBM_model_R_1522981883987_9882 0.7817084
+## 
+## 
+## H2O Ensemble Performance on &lt;newdata&gt;:
+## ----------------
+## Family: binomial
+## 
+## Ensemble performance (AUC): 0.787627447904726</code></pre></div>
+<div id="all-done-shutdown-h2o" class="section level4">
+<h4><span class="header-section-number">6.5.5.1</span> All done, shutdown H2O</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># good practice</span>
+<span class="kw">h2o.shutdown</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)
+## [1] TRUE</code></pre></div>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="deep-neural-networks.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/06-stacking.Rmd",
+"text": "Edit"
+},
+"download": ["bookdown-start.pdf", "bookdown-start.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -410,7 +410,7 @@ caret::RMSE(pred = pred, obs = test$price)
 
 
 
-#### GLM in caret
+### GLM in caret
 
 Now let's run the same model using caret's glm method to get a sense of how much
 easier it is to use.
@@ -446,7 +446,7 @@ caret::RMSE(pred = pred, obs = test$price)
 Ok, this looks much better.  And we didn't have to deal with the missing factor
 levels! :-)
 
-#### h2o
+### h2o
 
 Authors: Tomas Nykodym, H2O.ai contributors
 
@@ -542,7 +542,7 @@ h2o.shutdown(prompt = FALSE)
 ```
 
 
-#### speedglm
+### speedglm
 
 Also worth metioning is the
 [speedglm](https://cran.r-project.org/web/packages/speedglm/index.html) package,
@@ -558,7 +558,7 @@ Ok, so let's assume that we have wide, sparse, collinear or big data.  If your
 training set falls into any of those categories, it might be a good idea to use
 a regularlized GLM.
 
-#### glmnet
+### glmnet
 
 Authors: [Jerome Friedman](https://statweb.stanford.edu/~jhf/), [Trevor
 Hastie](http://web.stanford.edu/~hastie/), [Noah
@@ -708,7 +708,7 @@ cvAUC::AUC(predictions = preds, labels = test_y)
 
 
 
-#### h2o
+### h2o
 
 Introduced in the previous section, the h2o package can perform unregularized or
 regularized regression.  By default, `h2o.glm` will perform an Elastic Net
