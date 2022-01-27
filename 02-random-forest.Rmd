@@ -21,7 +21,7 @@ Drawing by Phil Cutler.
 ## Introduction
 
 Any tutorial on [Random Forests](https://en.wikipedia.org/wiki/Random_forest)
-(RF) should also include a review of decicion trees, as these are models that
+(RF) should also include a review of decision trees, as these are models that
 are ensembled together to create the Random Forest model -- or put another way,
 the "trees that comprise the forest."  Much of the complexity and detail of the
 Random Forest algorithm occurs within the individual decision trees and
